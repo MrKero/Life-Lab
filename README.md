@@ -14,8 +14,6 @@ Eine eigenständige Web-App: eine einzige HTML-Datei, keine Abhängigkeiten, lä
 
 </div>
 
-![Life Lab am Computer](screenshots/desktop.png)
-
 ---
 
 ## Worum geht es?
