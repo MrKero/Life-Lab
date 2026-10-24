@@ -10,7 +10,7 @@ Eine eigenständige Web-App: eine einzige HTML-Datei, keine Abhängigkeiten, lä
 
 🇩🇪 Deutsch · 🇬🇧 English · 🇹🇷 Türkçe
 
-[**▶ Life Lab öffnen**](https://MrKero.github.io/life-lab/)
+[**▶ Life Lab öffnen**](https://MrKero.github.io/Life-Lab/)
 
 </div>
 
@@ -82,7 +82,7 @@ In Life Lab sind **19 Easter Eggs** versteckt: zwei freischaltbare Designs, Zaub
 
 ## Benutzen
 
-**Direkt im Browser:** [Life Lab öffnen](https://MrKero.github.io/life-lab/)
+**Direkt im Browser:** [Life Lab öffnen](https://MrKero.github.io/Life-Lab/)
 
 **Als App installieren:**
 - **Android (Chrome):** Seite öffnen → Menü ⋮ → *App installieren*
