@@ -142,10 +142,6 @@ life-lab/
 
 Eröffne gern ein [Issue](../../issues). Kerem freut sich über jede Nachricht.
 
-## Lizenz
-
-*Noch festzulegen.* Für ein offenes Projekt wie dieses bietet sich z. B. die [MIT-Lizenz](https://choosealicense.com/licenses/mit/) an.
-
 ---
 
 <details>
