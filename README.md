@@ -52,6 +52,7 @@ Aus diesen einfachen, rein lokalen Regeln entstehen stabile Formen, pulsierende 
 - Jeder Automat hat einen „Demo starten“-Button
 
 ### Lernen
+- **Einführung** beim ersten Besuch: was das Game of Life ist, die vier Regeln und drei Startideen (jederzeit wieder über „Was ist das?“)
 - **Erklär-Modus:** Zelle antippen und sehen, welche Nachbarn zählen, welche Regel greift und was in der nächsten Generation passiert, für alle vier Automaten
 - Die Regeln als **illustrierte Karten** und in Worten
 - **Emergenz-Fenster** mit 11 Beispielen aus der echten Welt: Vogelschwärme, Ameisenstraßen, Staus aus dem Nichts, Schneeflocken, Bénard-Zellen, BZ-Reaktion, Mizellen, Temperatur, Neuronen, Leben aus Atomen und ab wann Gold ein Metall ist
