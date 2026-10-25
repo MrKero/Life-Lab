@@ -122,8 +122,25 @@ button.armed{background:#f0765a!important;border-color:#f0765a!important;color:#
 .example p{margin:6px 0}
 .example .link{color:var(--accent);font-size:13px}
 .rulecards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 10px;margin:12px 0 6px}
-#ruleCardsDialog .rulecards{grid-template-columns:repeat(4,1fr)}
-@media(max-width:560px){#ruleCardsDialog .rulecards{grid-template-columns:repeat(2,1fr)}}
+#ruleCardsDialog .rulecards,#ruleCardsWelcome .rulecards{grid-template-columns:repeat(4,1fr)}
+@media(max-width:560px){#ruleCardsDialog .rulecards,#ruleCardsWelcome .rulecards{grid-template-columns:repeat(2,1fr)}}
+.welcome .modal-body{min-height:300px}
+.w-hero{display:flex;gap:18px;align-items:center}
+.w-hero canvas{width:120px;height:120px;flex:none;border-radius:16px;background:var(--bg);border:1px solid var(--border)}
+.w-lead{color:var(--text)!important;font-size:16px;font-weight:600;line-height:1.45}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);font-weight:650;cursor:pointer}
+.w-starts{display:grid;gap:10px;margin:12px 0}
+.w-start{display:flex;gap:14px;align-items:center;text-align:left;padding:12px 14px;border-radius:14px}
+.w-start:hover{border-color:var(--accent)}
+.w-start b{display:block;font-size:15px}
+.w-start small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.w-ico{font-size:26px;width:38px;text-align:center;flex:none}
+.w-foot{justify-content:space-between!important;align-items:center}
+.w-nav{display:flex;gap:8px}
+.w-dots{display:flex;gap:6px}
+.w-dots i{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .2s,transform .2s}
+.w-dots i.on{background:var(--accent);transform:scale(1.25)}
+@media(max-width:560px){.w-hero{flex-direction:column;align-items:flex-start}.w-hero canvas{width:96px;height:96px}.w-foot #welcomeSkip{padding:8px 6px}}
 .rulecard{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
 .rulecard .num{font-size:24px;font-weight:850;color:#f6b443;line-height:1}
 .rulecard .mini{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:3px;padding:4px;width:100%;max-width:118px;aspect-ratio:1;background:var(--bg);border:1px solid var(--grid);border-radius:10px}
@@ -292,7 +309,7 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
     </span>
     <button class="ghost" id="soundBtn" type="button" title="Ton an/aus (M)" aria-label="Ton einschalten" aria-pressed="false">🔇</button>
     <button class="ghost" id="helpBtn" title="Bedienung und Tastenkürzel (?)">Hilfe</button>
-    <button class="ghost" id="emergenceHeaderBtn">Was ist Emergenz?</button>
+    <button class="ghost" id="welcomeBtn" type="button">Was ist das?</button>
     <button class="ghost" id="exportBtn">Export &amp; Teilen</button>
   </div>
 </header>
@@ -585,6 +602,41 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
   <div class="modal-foot"><button class="primary" data-close>Verstanden</button></div>
 </dialog>
 
+<dialog id="welcomeDialog" class="welcome" aria-labelledby="welcomeTitle">
+  <div class="modal-head"><h2 id="welcomeTitle">Willkommen im Life Lab</h2><button data-close aria-label="Dialog schließen">✕</button></div>
+  <div class="modal-body">
+    <section class="wstep" data-step="0">
+      <div class="w-hero"><canvas id="welcomeGlider" width="140" height="140" aria-hidden="true"></canvas>
+        <div>
+          <p class="w-lead">Das Game of Life ist ein „Spiel ohne Spieler“: ein Universum aus Zellen auf einem Gitter. Jede Zelle ist entweder lebendig oder tot.</p>
+          <p>Du legst fest, welche Zellen am Anfang leben – danach entscheiden nur noch vier einfache Regeln, was passiert.</p>
+        </div>
+      </div>
+      <p>Es gibt nichts zu gewinnen. Das Spannende ist zuzusehen, was aus deinem Startmuster wird: Manche Muster sterben aus, manche erstarren, manche pulsieren – und manche wandern los, wie dieser Gleiter.</p>
+    </section>
+    <section class="wstep" data-step="1" hidden>
+      <p class="w-lead">Jede Zelle zählt ihre 8 Nachbarn. Dann gilt für alle Zellen gleichzeitig:</p>
+      <div id="ruleCardsWelcome"></div>
+      <p>Aus diesen vier Regeln entsteht alles, was du hier sehen wirst. Dass aus einfachen lokalen Regeln komplexe Muster entstehen, nennt man <b>Emergenz</b>.</p>
+      <button type="button" class="linkbtn" id="welcomeEmergence">Mehr über Emergenz →</button>
+    </section>
+    <section class="wstep" data-step="2" hidden>
+      <p class="w-lead">Womit willst du anfangen?</p>
+      <div class="w-starts">
+        <button type="button" class="w-start" data-start="glider"><span class="w-ico">✈️</span><span><b>Gleiter losschicken</b><small>Ein einzelner Gleiter wandert diagonal über das Feld.</small></span></button>
+        <button type="button" class="w-start" data-start="random"><span class="w-ico">🎲</span><span><b>Zufälliges Universum</b><small>Ein Viertel aller Zellen lebt – schau zu, wie Ordnung entsteht.</small></span></button>
+        <button type="button" class="w-start" data-start="draw"><span class="w-ico">✎</span><span><b>Selbst zeichnen</b><small>Setze eigene Zellen und drücke dann auf „Start“.</small></span></button>
+      </div>
+      <p class="small">Tipp: In der Musterbibliothek findest du viele berühmte Muster. Diese Einführung öffnest du jederzeit wieder oben über „Was ist das?“.</p>
+    </section>
+  </div>
+  <div class="modal-foot w-foot">
+    <button type="button" class="ghost" id="welcomeSkip">Überspringen</button>
+    <span class="w-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="w-nav"><button type="button" id="welcomeBack">Zurück</button><button type="button" class="primary" id="welcomeNext">Weiter</button></span>
+  </div>
+</dialog>
+
 <dialog id="helpDialog" aria-labelledby="helpTitle">
   <div class="modal-head"><h2 id="helpTitle">Bedienung</h2><button data-close aria-label="Dialog schließen">✕</button></div>
   <div class="modal-body">
@@ -718,6 +770,27 @@ Object.assign(I18N_EXACT, {
      "Ses düzeyi %60, simülasyon seslendirme açık, özel modlarda müzik açık, arka plan müziği kapalı. Sesin açık ya da kapalı olması senin ayarladığın gibi kalır."]
 });
 I18N_EXACT["Sound"] = ["Sound", "Ses"];
+Object.assign(I18N_EXACT, {
+  "Was ist das?": ["What is this?", "Bu nedir?"],
+  "Willkommen im Life Lab": ["Welcome to Life Lab", "Life Lab'e hoş geldin"],
+  "Das Game of Life ist ein „Spiel ohne Spieler“: ein Universum aus Zellen auf einem Gitter. Jede Zelle ist entweder lebendig oder tot.": ["The Game of Life is a “game without players”: a universe of cells on a grid. Every cell is either alive or dead.", "Hayat Oyunu „oyuncusu olmayan bir oyun“dur: bir ızgara üzerindeki hücrelerden oluşan bir evren. Her hücre ya canlıdır ya da ölü."],
+  "Du legst fest, welche Zellen am Anfang leben – danach entscheiden nur noch vier einfache Regeln, was passiert.": ["You decide which cells are alive at the start – after that, only four simple rules decide what happens.", "Başlangıçta hangi hücrelerin yaşayacağına sen karar verirsin – sonrasında ne olacağına yalnızca dört basit kural karar verir."],
+  "Es gibt nichts zu gewinnen. Das Spannende ist zuzusehen, was aus deinem Startmuster wird: Manche Muster sterben aus, manche erstarren, manche pulsieren – und manche wandern los, wie dieser Gleiter.": ["There's nothing to win. The exciting part is watching what becomes of your starting pattern: some patterns die out, some freeze, some pulse – and some set off travelling, like this glider.", "Kazanılacak bir şey yok. Heyecan verici olan, başlangıç deseninin neye dönüştüğünü izlemek: Bazı desenler yok olur, bazıları donar, bazıları nabız gibi atar – bazıları da bu planör gibi yola koyulur."],
+  "Jede Zelle zählt ihre 8 Nachbarn. Dann gilt für alle Zellen gleichzeitig:": ["Every cell counts its 8 neighbours. Then, for all cells at the same time:", "Her hücre 8 komşusunu sayar. Sonra tüm hücreler için aynı anda şu geçerlidir:"],
+  "Aus diesen vier Regeln entsteht alles, was du hier sehen wirst. Dass aus einfachen lokalen Regeln komplexe Muster entstehen, nennt man": ["Everything you will see here comes from these four rules. Complex patterns arising from simple local rules is called", "Burada göreceğin her şey bu dört kuraldan doğar. Basit yerel kurallardan karmaşık desenlerin ortaya çıkmasına şu ad verilir:"],
+  "Mehr über Emergenz →": ["More about emergence →", "Emergence hakkında daha fazla →"],
+  "Womit willst du anfangen?": ["How do you want to start?", "Nereden başlamak istersin?"],
+  "Gleiter losschicken": ["Launch a glider", "Bir planör gönder"],
+  "Ein einzelner Gleiter wandert diagonal über das Feld.": ["A single glider travels diagonally across the field.", "Tek bir planör alan boyunca çapraz ilerler."],
+  "Zufälliges Universum": ["Random universe", "Rastgele evren"],
+  "Ein Viertel aller Zellen lebt – schau zu, wie Ordnung entsteht.": ["A quarter of all cells are alive – watch order emerge.", "Hücrelerin dörtte biri canlı – düzenin nasıl doğduğunu izle."],
+  "Selbst zeichnen": ["Draw it yourself", "Kendin çiz"],
+  "Setze eigene Zellen und drücke dann auf „Start“.": ["Place your own cells and then press “Start”.", "Kendi hücrelerini yerleştir, sonra „Başlat“a bas."],
+  "Tipp: In der Musterbibliothek findest du viele berühmte Muster. Diese Einführung öffnest du jederzeit wieder oben über „Was ist das?“.": ["Tip: The pattern library holds many famous patterns. You can reopen this introduction at any time via “What is this?” at the top.", "İpucu: Desen kütüphanesinde birçok ünlü desen bulursun. Bu tanıtımı istediğin zaman yukarıdaki „Bu nedir?“ ile yeniden açabilirsin."],
+  "Überspringen": ["Skip", "Geç"], "Weiter": ["Next", "İleri"], "Zurück": ["Back", "Geri"],
+  "Zeichne ein paar Zellen ins Feld und drücke dann auf „▶ Start“.": ["Draw a few cells on the field and then press “▶ Start”.", "Alana birkaç hücre çiz, sonra „▶ Başlat“a bas."],
+  "Der Gleiter wandert diagonal – nach 4 Generationen hat er wieder dieselbe Form, nur eine Zelle weiter.": ["The glider travels diagonally – after 4 generations it has the same shape again, just one cell further on.", "Planör çapraz ilerler – 4 nesil sonra aynı şekle döner, sadece bir hücre ileride."]
+});
 Object.assign(I18N_EXACT, {
   "🔍 Erklären": ["🔍 Explain", "🔍 Açıkla"], "Zelle erklären (X)": ["Explain a cell (X)", "Hücreyi açıkla (X)"],
   "◐ Nachbarzahlen": ["◐ Neighbour counts", "◐ Komşu sayıları"], "Erklärung schließen": ["Close explanation", "Açıklamayı kapat"], "Schließen (Esc)": ["Close (Esc)", "Kapat (Esc)"],
@@ -2125,7 +2198,7 @@ const RULE_CARDS = [
   { tone: "die",   nb: [[0, 0], [1, 0], [0, 1], [1, 2]], alive: false, badge: "Mehr als 3: stirbt",    title: "Zu eng" },
   { tone: "birth", nb: [[1, 0], [0, 1], [2, 2]],         alive: true,  badge: "Tot, genau 3: lebt",    title: "Geburt" }
 ];
-function renderRuleCards(box) {
+function renderRuleCards(box, compact = false) {
   const wrap = document.createElement("div"); wrap.className = "rulecards";
   RULE_CARDS.forEach((c, i) => {
     const card = document.createElement("div"); card.className = "rulecard " + c.tone;
@@ -2156,7 +2229,7 @@ function renderRuleCards(box) {
       <li><b class="t-birth">Geburt:</b> Eine tote Zelle mit genau 3 lebenden Nachbarn wird lebendig. Alle anderen toten Zellen bleiben tot.</li>
     </ol>
     Kurz geschrieben heißt das <b>B3/S23</b>: <b>B</b>orn (geboren) bei 3, <b>S</b>urvive (überlebt) bei 2 oder 3.`;
-  box.replaceChildren(wrap, cap, words);
+  box.replaceChildren(...(compact ? [wrap] : [wrap, cap, words]));
 }
 
 /* ---------- Bibliothek anzeigen, suchen, springen ---------- */
@@ -3476,7 +3549,76 @@ $("volume").onchange = () => sfx("place");
 // Browser erlauben Ton erst nach einer Nutzeraktion
 addEventListener("pointerdown", () => { if (S.sound) audio(); }, { once: true });
 addEventListener("keydown", () => { if (S.sound) audio(); }, { once: true });
-$("emergenceBtn").onclick = $("emergenceHeaderBtn").onclick = () => $("emergenceDialog").showModal();
+$("emergenceBtn").onclick = () => $("emergenceDialog").showModal();
+
+/* ---------- Willkommen: kurze Einführung beim ersten Besuch ---------- */
+let welcomeStep = 0, welcomeAnim = 0;
+function showWelcomeStep(i) {
+  welcomeStep = clamp(i, 0, 2);
+  document.querySelectorAll("#welcomeDialog .wstep").forEach(sec => sec.hidden = +sec.dataset.step !== welcomeStep);
+  document.querySelectorAll("#welcomeDialog .w-dots i").forEach((d, k) => d.classList.toggle("on", k === welcomeStep));
+  $("welcomeBack").hidden = welcomeStep === 0;
+  $("welcomeNext").hidden = welcomeStep === 2;
+  $("welcomeSkip").textContent = welcomeStep === 2 ? "Schließen" : "Überspringen";
+  $("welcomeDialog").querySelector(".modal-body").scrollTop = 0;
+}
+function openWelcome() {
+  showWelcomeStep(0);
+  $("welcomeDialog").showModal();
+  startWelcomeGlider();
+}
+function closeWelcome() { $("welcomeDialog").close(); }
+$("welcomeDialog").addEventListener("close", () => { cancelAnimationFrame(welcomeAnim); saveJSON("lifelab-welcomed", 1); });
+$("welcomeBtn").onclick = openWelcome;
+$("welcomeNext").onclick = () => { showWelcomeStep(welcomeStep + 1); tone(880 + welcomeStep * 220, { dur: 0.08, vol: 0.05, type: "sine" }); };
+$("welcomeBack").onclick = () => showWelcomeStep(welcomeStep - 1);
+$("welcomeSkip").onclick = closeWelcome;
+$("welcomeEmergence").onclick = () => { closeWelcome(); $("emergenceDialog").showModal(); };
+/** Kleiner animierter Gleiter im ersten Schritt (Torus 7 × 7). */
+function startWelcomeGlider() {
+  const c = $("welcomeGlider"), x = c.getContext("2d"), N = 7, sz = c.width / N;
+  let cells = new Set(["1,0", "2,1", "0,2", "1,2", "2,2"]), last = 0;
+  cancelAnimationFrame(welcomeAnim);
+  const draw = () => {
+    x.clearRect(0, 0, c.width, c.height);
+    x.strokeStyle = colors.grid; x.lineWidth = 1;
+    for (let i = 1; i < N; i++) { x.beginPath(); x.moveTo(i * sz, 0); x.lineTo(i * sz, c.height); x.moveTo(0, i * sz); x.lineTo(c.width, i * sz); x.stroke(); }
+    x.fillStyle = colors.cell;
+    for (const k of cells) { const [a, b] = k.split(",").map(Number); x.beginPath(); x.roundRect ? x.roundRect(a * sz + 2, b * sz + 2, sz - 4, sz - 4, 4) : x.rect(a * sz + 2, b * sz + 2, sz - 4, sz - 4); x.fill(); }
+  };
+  const tick = t => {
+    if (!$("welcomeDialog").open) return;
+    if (t - last > 380 && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      last = t;
+      const cnt = new Map();
+      for (const k of cells) { const [a, b] = k.split(",").map(Number);
+        for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (dx || dy) { const key = `${(a + dx + N) % N},${(b + dy + N) % N}`; cnt.set(key, (cnt.get(key) || 0) + 1); } }
+      const next = new Set();
+      for (const [k, n] of cnt) if (n === 3 || (n === 2 && cells.has(k))) next.add(k);
+      cells = next; draw();
+    }
+    welcomeAnim = requestAnimationFrame(tick);
+  };
+  draw(); welcomeAnim = requestAnimationFrame(tick);
+}
+/** Startideen im dritten Schritt. */
+document.querySelectorAll(".w-start").forEach(b => b.onclick = () => {
+  const what = b.dataset.start;
+  closeWelcome();
+  if (what === "draw") { setTool("draw"); jumpTo(boardWrap, $("welcomeBtn")); toast("Zeichne ein paar Zellen ins Feld und drücke dann auf „▶ Start“."); return; }
+  if (S.automaton !== "life") setAutomaton("life", { silent: true });
+  if (ruleString() !== "B3/S23") { S.birth = [3]; S.survive = [2, 3]; buildLifeTable(); syncRuleInputs(); renderLibrary(); saveSettings(); }
+  if (what === "random") { randomize(); play(); }
+  else {
+    clearBoard();
+    const g = libraryCache.life[0].items.find(p => p.id === "glider"), gx = Math.floor(S.cols * 0.3), gy = Math.floor(S.rows * 0.3);
+    placePattern(g, gx, gy);
+    view.cs = 16; view.cx = gx + 12; view.cy = gy + 8; view.fitted = false; clampView(); requestRender();
+    play();
+    toast("Der Gleiter wandert diagonal – nach 4 Generationen hat er wieder dieselbe Form, nur eine Zelle weiter.");
+  }
+  jumpTo(boardWrap, $("welcomeBtn"));
+});
 $("exportBtn").onclick = () => { $("exportText").value = exportRLE(); $("exportDialog").showModal(); };
 $("copyExport").onclick = () => copyText($("exportText").value, "RLE in die Zwischenablage kopiert");
 $("downloadExport").onclick = () => download(new Blob([$("exportText").value], { type: "text/plain;charset=utf-8" }), "life-lab.rle");
@@ -3842,6 +3984,7 @@ renderEggs();
 setTimeout(checkNight, 1500); setInterval(checkNight, 60000);
 renderRuleCards($("ruleCardsTab"));
 renderRuleCards($("ruleCardsDialog"));
+renderRuleCards($("ruleCardsWelcome"), true);
 try {
   console.log("%c Life Lab %c Idee & Konzept: Kerem ", "background:#74e0b7;color:#101820;font-weight:bold;padding:4px 8px;border-radius:4px 0 0 4px", "background:#20343c;color:#e7f3f0;padding:4px 8px;border-radius:0 4px 4px 0");
   console.log("Neugierig? In Life Lab sind 19 Geheimnisse versteckt. Tipp für Entwickler: Der Quelltext beginnt mit einem Gleiter.");
@@ -3857,6 +4000,7 @@ updateStatus(); updateButtons();
 // Sprache: gespeichert oder aus dem Browser erkannt; danach übersetzt der Beobachter alles Neue
 i18nObs.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: I18N_ATTRS });
 setLang(S.lang || detectLang(), { save: false });
+if (!loadJSON("lifelab-welcomed", 0)) setTimeout(openWelcome, 400);
 document.querySelectorAll(".flag").forEach(b => b.onclick = () => { if (b.dataset.lang !== S.lang) { setLang(b.dataset.lang); sfx("tab"); } });
 requestAnimationFrame(t => { lastT = t; fitView(); requestAnimationFrame(frame); });
 
