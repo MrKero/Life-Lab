@@ -14,6 +14,8 @@ Eine eigenständige Web-App: eine einzige HTML-Datei, keine Abhängigkeiten, lä
 
 </div>
 
+![Life Lab am Computer](screenshots/desktop.png)
+
 ---
 
 ## Worum geht es?
@@ -128,8 +130,8 @@ life-lab/
 ```
 
 ### Eine neue Version veröffentlichen
-1. Neue `index.html` hochladen
-2. In `sw.js` die Versionsnummer erhöhen (z. B. `life-lab-v3` → `life-lab-v4`), damit installierte Apps die neue Version laden
+Neue `index.html` hochladen – fertig. Installierte Apps holen sich die neue Version beim nächsten Öffnen automatisch.
+Nur wenn sich Icons oder `manifest.webmanifest` ändern, zusätzlich in `sw.js` die Versionsnummer erhöhen (z. B. `life-lab-v4` → `life-lab-v5`).
 
 ## Credits
 

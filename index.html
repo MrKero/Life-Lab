@@ -1032,7 +1032,28 @@ const SFX = {
   swoosh: () => { for (let i = 0; i < 6; i++) noise({ when: i * 0.08, dur: 0.14, vol: 0.05, type: "bandpass", freq: 600 + i * 500, pan: -1 + i * 0.4 }); tone(200, { dur: 0.5, slide: 1200, vol: 0.06, type: "sine" }); },
   teleport: () => { tone(1500, { dur: 0.25, slide: 300, vol: 0.08, type: "sine" }); tone(300, { when: 0.2, dur: 0.25, slide: 1500, vol: 0.08, type: "sine" }); },
   deny: () => { tone(160, { dur: 0.18, vol: 0.12, type: "square" }); tone(130, { when: 0.2, dur: 0.25, vol: 0.12, type: "square" }); },
-  toggleOn: () => arp([7, 10, 14], 0.06, { dur: 0.12, vol: 0.12 })
+  toggleOn: () => arp([7, 10, 14], 0.06, { dur: 0.12, vol: 0.12 }),
+  // Bedienelemente
+  pik: () => { tone(1568, { dur: 0.045, vol: 0.09, type: "sine", attack: 0.003 }); tone(2093, { when: 0.018, dur: 0.03, vol: 0.035, type: "sine" }); },
+  puk: () => tone(560, { dur: 0.07, slide: 420, vol: 0.12, type: "triangle", attack: 0.003 }),
+  next: () => { tone(988, { dur: 0.06, vol: 0.07, type: "sine" }); tone(1319, { when: 0.06, dur: 0.09, vol: 0.07, type: "sine" }); },
+  back: () => { tone(1319, { dur: 0.06, vol: 0.07, type: "sine" }); tone(988, { when: 0.06, dur: 0.09, vol: 0.07, type: "sine" }); },
+  skip: () => { noise({ dur: 0.18, vol: 0.05, type: "bandpass", freq: 2200, sweepTo: 500, q: 1 }); tone(700, { dur: 0.16, slide: 330, vol: 0.06, type: "sine" }); },
+  xclose: () => { tone(1250, { dur: 0.025, vol: 0.05, type: "square", attack: 0.002 }); tone(830, { when: 0.05, dur: 0.035, vol: 0.05, type: "square", attack: 0.002 }); },
+  mute: () => { tone(660, { dur: 0.32, slide: 110, vol: 0.12, type: "triangle" }); noise({ when: 0.05, dur: 0.12, vol: 0.03, type: "lowpass", freq: 900 }); },
+  open: () => tone(440, { dur: 0.12, slide: 880, vol: 0.06, type: "sine" }),
+  zoomIn: () => tone(700, { dur: 0.08, slide: 1150, vol: 0.06, type: "sine" }),
+  zoomOut: () => tone(1150, { dur: 0.08, slide: 700, vol: 0.06, type: "sine" }),
+  fit: () => { tone(500, { dur: 0.06, vol: 0.05, type: "sine" }); tone(750, { when: 0.05, dur: 0.06, vol: 0.05, type: "sine" }); tone(1000, { when: 0.1, dur: 0.08, vol: 0.05, type: "sine" }); },
+  undo: () => tone(950, { dur: 0.08, slide: 600, vol: 0.07, type: "triangle" }),
+  redo: () => tone(600, { dur: 0.08, slide: 950, vol: 0.07, type: "triangle" }),
+  tool: () => tone(1180, { dur: 0.035, vol: 0.06, type: "sine" }),
+  rotate: () => { tone(1000, { dur: 0.04, vol: 0.06, type: "sine" }); tone(1260, { when: 0.04, dur: 0.05, vol: 0.06, type: "sine" }); },
+  flip: () => { tone(1260, { dur: 0.04, vol: 0.06, type: "sine" }); tone(1000, { when: 0.04, dur: 0.05, vol: 0.06, type: "sine" }); },
+  copy: () => arp([12, 14], 0.06, { dur: 0.1, vol: 0.08 }),
+  rewind: () => { tone(1500, { dur: 0.32, slide: 260, vol: 0.07, type: "triangle" }); for (let i = 0; i < 6; i++) tone(2000 - i * 220, { when: i * 0.045, dur: 0.02, vol: 0.025, type: "square" }); },
+  toggle: () => tone(1500, { dur: 0.025, vol: 0.04, type: "sine" }),
+  scrub: () => { const n = performance.now(); if (n - lastClick < 35) return; lastClick = n; tone(1800, { dur: 0.015, vol: 0.03, type: "sine" }); }
 };
 /** Besondere Klänge beim ersten Entdecken eines Geheimnisses. */
 const EGG_SFX = {
@@ -1502,12 +1523,14 @@ function beginEdit() {
   updateButtons();
 }
 function undo() {
+  if (undoStack.length) sfx("undo");
   if (!undoStack.length) { toast("Nichts zum Rückgängigmachen"); return; }
   redoStack.push(snapshot());
   restore(undoStack.pop());
   afterBigChange();
 }
 function redo() {
+  if (redoStack.length) sfx("redo");
   if (!redoStack.length) { toast("Nichts zum Wiederholen"); return; }
   undoStack.push(snapshot());
   restore(redoStack.pop());
@@ -1557,10 +1580,12 @@ function step() {
 }
 function stepBack() {
   pause();
+  sfx("puk");
   if (!history.length) { toast("Kein früherer Zustand gespeichert"); return; }
   scrubTo(generation - 1);
 }
 function restoreStart() {
+  if (startSnap && !dirty) sfx("rewind");
   if (!startSnap || dirty) { toast("Startzustand = aktueller Zustand (noch nicht gestartet)"); return; }
   pause();
   beginEdit();
@@ -2759,7 +2784,7 @@ function download(blob, name) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 async function copyText(text, okMsg) {
-  try { await navigator.clipboard.writeText(text); toast(okMsg); }
+  try { await navigator.clipboard.writeText(text); toast(okMsg); sfx("copy"); }
   catch {
     const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
     document.body.append(ta); ta.select();
@@ -3384,13 +3409,13 @@ document.addEventListener("keydown", e => {
   if (mod && (k === "y" || k === "Y")) { e.preventDefault(); redo(); return; }
   if (mod || e.altKey) return;
   const actions = {
-    " ": play, ArrowRight: () => { pause(); step(); updateButtons(); }, n: () => { pause(); step(); updateButtons(); },
+    " ": play, ArrowRight: stepOnce, n: stepOnce,
     ArrowLeft: stepBack, b: stepBack, s: restoreStart, z: randomize, c: clearBoard,
-    d: () => setTool("draw"), e: () => setTool("erase"), v: () => setTool("pan"), x: () => setTool(tool === "explain" ? "draw" : "explain"), g: toggleGrid, m: () => { setSound(!S.sound); toast(S.sound ? "🔊 Ton an" : "🔇 Ton aus"); },
-    r: () => { if (selectedPattern) selectPattern(rotatePattern(selectedPattern)); },
-    f: () => { if (selectedPattern) selectPattern(flipPattern(selectedPattern)); },
+    d: () => { setTool("draw"); sfx("tool"); }, e: () => { setTool("erase"); sfx("tool"); }, v: () => { setTool("pan"); sfx("tool"); }, x: () => { setTool(tool === "explain" ? "draw" : "explain"); sfx("tool"); }, g: toggleGrid, m: () => { setSound(!S.sound); toast(S.sound ? "🔊 Ton an" : "🔇 Ton aus"); },
+    r: () => { if (selectedPattern) { selectPattern(rotatePattern(selectedPattern)); sfx("rotate"); } },
+    f: () => { if (selectedPattern) { selectPattern(flipPattern(selectedPattern)); sfx("flip"); } },
     Escape: () => { if (explainCell) setExplain(null); else selectPattern(null); },
-    "+": () => zoomCenter(1.25), "=": () => zoomCenter(1.25), "-": () => zoomCenter(0.8), "0": fitView,
+    "+": () => { zoomCenter(1.25); sfx("zoomIn"); }, "=": () => { zoomCenter(1.25); sfx("zoomIn"); }, "-": () => { zoomCenter(0.8); sfx("zoomOut"); }, "0": () => { fitView(); sfx("fit"); },
     "?": () => $("helpDialog").showModal(),
     "[": () => setPen(PENS[Math.max(0, PENS.indexOf(S.pen) - 1)]),
     "]": () => setPen(PENS[Math.min(PENS.length - 1, PENS.indexOf(S.pen) + 1)])
@@ -3441,8 +3466,9 @@ document.querySelectorAll("dialog").forEach(dlg => dlg.addEventListener("wheel",
   }
   e.preventDefault();
 }, { passive: false }));
-document.querySelectorAll("dialog [data-close]").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
-$("helpBtn").onclick = () => $("helpDialog").showModal();
+// ✕ oben im Fenster: charakteristisches „Tk-tk“; Knöpfe unten (Verstanden, Fertig …): sanftes Wegwischen
+document.querySelectorAll("dialog [data-close]").forEach(b => b.addEventListener("click", () => { sfx(b.closest(".modal-head") ? "xclose" : "skip"); b.closest("dialog").close(); }));
+$("helpBtn").onclick = () => { sfx("open"); $("helpDialog").showModal(); };
 /* ---------- „Kerem“ in der Hilfe: hüpfende Buchstaben, Funken und eine kleine Melodie ---------- */
 /* ---------- Großes „Kerem“ in den Credits: 3D-Dreher in Regenbogenfarben, Krone und Gleiter-Explosion ---------- */
 (() => {
@@ -3523,6 +3549,7 @@ document.querySelectorAll(".kerem-name").forEach(btn => {
 });
 $("toast").onclick = hideToast;
 function setSound(on) {
+  if (!on && S.sound) sfx("mute"); // Stumm-Klang noch abspielen, bevor der Ton aus ist
   S.sound = on; saveSettings();
   const b = $("soundBtn");
   b.textContent = on ? "🔊" : "🔇"; b.setAttribute("aria-pressed", String(on));
@@ -3549,7 +3576,7 @@ $("volume").onchange = () => sfx("place");
 // Browser erlauben Ton erst nach einer Nutzeraktion
 addEventListener("pointerdown", () => { if (S.sound) audio(); }, { once: true });
 addEventListener("keydown", () => { if (S.sound) audio(); }, { once: true });
-$("emergenceBtn").onclick = () => $("emergenceDialog").showModal();
+$("emergenceBtn").onclick = () => { sfx("open"); $("emergenceDialog").showModal(); };
 
 /* ---------- Willkommen: kurze Einführung beim ersten Besuch ---------- */
 let welcomeStep = 0, welcomeAnim = 0;
@@ -3569,10 +3596,10 @@ function openWelcome() {
 }
 function closeWelcome() { $("welcomeDialog").close(); }
 $("welcomeDialog").addEventListener("close", () => { cancelAnimationFrame(welcomeAnim); saveJSON("lifelab-welcomed", 1); });
-$("welcomeBtn").onclick = openWelcome;
-$("welcomeNext").onclick = () => { showWelcomeStep(welcomeStep + 1); tone(880 + welcomeStep * 220, { dur: 0.08, vol: 0.05, type: "sine" }); };
-$("welcomeBack").onclick = () => showWelcomeStep(welcomeStep - 1);
-$("welcomeSkip").onclick = closeWelcome;
+$("welcomeBtn").onclick = () => { sfx("open"); openWelcome(); };
+$("welcomeNext").onclick = () => { showWelcomeStep(welcomeStep + 1); sfx("next"); };
+$("welcomeBack").onclick = () => { showWelcomeStep(welcomeStep - 1); sfx("back"); };
+$("welcomeSkip").onclick = () => { sfx("skip"); closeWelcome(); };
 $("welcomeEmergence").onclick = () => { closeWelcome(); $("emergenceDialog").showModal(); };
 /** Kleiner animierter Gleiter im ersten Schritt (Torus 7 × 7). */
 function startWelcomeGlider() {
@@ -3619,7 +3646,7 @@ document.querySelectorAll(".w-start").forEach(b => b.onclick = () => {
   }
   jumpTo(boardWrap, $("welcomeBtn"));
 });
-$("exportBtn").onclick = () => { $("exportText").value = exportRLE(); $("exportDialog").showModal(); };
+$("exportBtn").onclick = () => { sfx("open"); $("exportText").value = exportRLE(); $("exportDialog").showModal(); };
 $("copyExport").onclick = () => copyText($("exportText").value, "RLE in die Zwischenablage kopiert");
 $("downloadExport").onclick = () => download(new Blob([$("exportText").value], { type: "text/plain;charset=utf-8" }), "life-lab.rle");
 $("copyLink").onclick = shareLink;
@@ -3627,28 +3654,29 @@ $("pngExport").onclick = exportPNG;
 $("gifExport").onclick = () => exportGIF().catch(err => { $("gifStatus").textContent = "Fehler: " + err.message; $("gifExport").disabled = false; });
 
 $("playBtn").onclick = play;
-$("stepBtn").onclick = () => { pause(); step(); updateButtons(); };
+function stepOnce() { pause(); step(); updateButtons(); sfx("pik"); }
+$("stepBtn").onclick = stepOnce;
 $("backBtn").onclick = stepBack;
 $("randomBtn").onclick = randomize;
 $("clearBtn").onclick = clearBoard;
 $("restartBtn").onclick = restoreStart;
 $("undoBtn").onclick = undo;
 $("redoBtn").onclick = redo;
-$("drawBtn").onclick = () => setTool("draw");
-$("eraseBtn").onclick = () => setTool("erase");
-$("panBtn").onclick = () => setTool("pan");
-$("explainBtn").onclick = () => setTool(tool === "explain" ? "draw" : "explain");
-$("exClose").onclick = () => setExplain(null);
-$("zoomInBtn").onclick = () => zoomCenter(1.25);
-$("zoomOutBtn").onclick = () => zoomCenter(0.8);
-$("fitBtn").onclick = fitView;
-$("rotBtn").onclick = () => selectedPattern && selectPattern(rotatePattern(selectedPattern));
-$("flipBtn").onclick = () => selectedPattern && selectPattern(flipPattern(selectedPattern));
-$("selCancel").onclick = () => selectPattern(null);
-$("timeline").addEventListener("input", e => { pause(); scrubTo(+e.target.value); });
+$("drawBtn").onclick = () => { setTool("draw"); sfx("tool"); };
+$("eraseBtn").onclick = () => { setTool("erase"); sfx("tool"); };
+$("panBtn").onclick = () => { setTool("pan"); sfx("tool"); };
+$("explainBtn").onclick = () => { setTool(tool === "explain" ? "draw" : "explain"); sfx("tool"); };
+$("exClose").onclick = () => { setExplain(null); sfx("xclose"); };
+$("zoomInBtn").onclick = () => { zoomCenter(1.25); sfx("zoomIn"); };
+$("zoomOutBtn").onclick = () => { zoomCenter(0.8); sfx("zoomOut"); };
+$("fitBtn").onclick = () => { fitView(); sfx("fit"); };
+$("rotBtn").onclick = () => { if (selectedPattern) { selectPattern(rotatePattern(selectedPattern)); sfx("rotate"); } };
+$("flipBtn").onclick = () => { if (selectedPattern) { selectPattern(flipPattern(selectedPattern)); sfx("flip"); } };
+$("selCancel").onclick = () => { selectPattern(null); sfx("xclose"); };
+$("timeline").addEventListener("input", e => { pause(); scrubTo(+e.target.value); sfx("scrub"); });
 $("timeline").addEventListener("change", () => { if (future.length) toast(`Zeitleiste: Generation ${generation} – „Start“ oder „Schritt“ spielt die gespeicherte Zukunft ab. Jede Änderung beginnt eine neue.`); });
 $("speed").oninput = () => { S.speed = +$("speed").value; $("speedLabel").textContent = S.speed + " Gen/s"; saveSettings(); };
-$("displayMode").onchange = e => { S.displayMode = e.target.value; drawNeighborNumbers.hinted = false; saveSettings(); requestRender(); };
+$("displayMode").onchange = e => { sfx("toggle"); S.displayMode = e.target.value; drawNeighborNumbers.hinted = false; saveSettings(); requestRender(); };
 
 // Regeln
 $("automatonSelect").onchange = e => setAutomaton(e.target.value);
@@ -3831,6 +3859,7 @@ $("patternSearch").addEventListener("input", e => {
   }, 700);
 });
 $("groupToggle").onclick = () => {
+  sfx("toggle");
   const groups = (libraryCache[S.automaton] || []).map(g => g.group);
   const anyOpen = [...document.querySelectorAll("#patternLibrary .lib-group")].some(d => d.open);
   if (anyOpen) groups.forEach(g => collapsedGroups.add(g)); else collapsedGroups.clear();
@@ -3854,6 +3883,8 @@ $("demoBtn").onclick = () => {
   jumpTo(boardWrap, $("demoBtn"));
 };
 $("patternSearch").addEventListener("keydown", e => { if (e.key === "Escape") { e.target.value = ""; renderLibrary(); } });
+// Häkchen-Felder: kurzer Klick (außer „Ton an“, das hat eigene Klänge)
+document.querySelectorAll('input[type="checkbox"]').forEach(cb => { if (cb.id !== "soundOn") cb.addEventListener("change", () => sfx("toggle")); });
 $("creditsBtn").onclick = () => {
   renderEggs(); $("creditsDialog").showModal();
   const f = loadJSON(KEYS.eggs, {}), n = EGGS.filter(e => f[e[0]]).length;
