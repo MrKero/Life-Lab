@@ -10,7 +10,7 @@ Eine eigenständige Web-App: eine einzige HTML-Datei, keine Abhängigkeiten, lä
 
 🇩🇪 Deutsch · 🇬🇧 English · 🇹🇷 Türkçe
 
-[**▶ Life Lab öffnen**](https://MrKero.github.io/Life-Lab/)
+[**▶ Life Lab öffnen**](https://mrkero.github.io/Life-Lab/)
 
 </div>
 
@@ -37,7 +37,7 @@ Aus diesen einfachen, rein lokalen Regeln entstehen stabile Formen, pulsierende 
 - **Zeitleiste** zum Vor- und Zurückspulen durch die letzten 1000 Generationen
 - Rückgängig / Wiederholen, Startzustand wiederherstellen, Tempo 1–60 Generationen pro Sekunde
 - Ränder offen oder als **Torus** verbunden
-- Ansichten: Normal, **Zellalter** und **Heatmap**
+- Ansichten: Normal, **Zellalter**, **Heatmap** und **Nachbarzahlen** (grün = wird geboren, rot = stirbt)
 - Live-**Populationskurve**
 - Automatische **Erkennung** von ausgestorbenen Feldern, Stillleben, Oszillatoren (mit Periode) und Raumschiffen (mit Geschwindigkeit)
 
@@ -52,6 +52,7 @@ Aus diesen einfachen, rein lokalen Regeln entstehen stabile Formen, pulsierende 
 - Jeder Automat hat einen „Demo starten“-Button
 
 ### Lernen
+- **Erklär-Modus:** Zelle antippen und sehen, welche Nachbarn zählen, welche Regel greift und was in der nächsten Generation passiert, für alle vier Automaten
 - Die Regeln als **illustrierte Karten** und in Worten
 - **Emergenz-Fenster** mit 11 Beispielen aus der echten Welt: Vogelschwärme, Ameisenstraßen, Staus aus dem Nichts, Schneeflocken, Bénard-Zellen, BZ-Reaktion, Mizellen, Temperatur, Neuronen, Leben aus Atomen und ab wann Gold ein Metall ist
 - **7 Missionen** mit automatischer Prüfung (z. B. „Baue ein Raumschiff“, „Methusalem“, „Totale Auslöschung“)
@@ -80,7 +81,7 @@ In Life Lab sind **19 Easter Eggs** versteckt: zwei freischaltbare Designs, Zaub
 
 ## Benutzen
 
-**Direkt im Browser:** [Life Lab öffnen](https://MrKero.github.io/Life-Lab/)
+**Direkt im Browser:** [Life Lab öffnen](https://mrkero.github.io/Life-Lab/)
 
 **Als App installieren:**
 - **Android (Chrome):** Seite öffnen → Menü ⋮ → *App installieren*
@@ -100,7 +101,7 @@ Danach startet Life Lab im Vollbild und funktioniert auch **offline**.
 | `S` | Zurück zum Startzustand |
 | `Z` / `C` | Zufall / Leeren |
 | `Strg`+`Z` · `Strg`+`Y` | Rückgängig · Wiederholen |
-| `D` `E` `V` | Zeichnen · Radierer · Verschieben |
+| `D` `E` `V` `X` | Zeichnen · Radierer · Verschieben · Erklären |
 | `[` `]` | Stift kleiner / größer |
 | `R` / `F` / `Esc` | Muster drehen / spiegeln / abwählen |
 | `+` `−` `0` | Zoom rein · raus · ganzes Feld |
@@ -127,7 +128,7 @@ life-lab/
 
 ### Eine neue Version veröffentlichen
 1. Neue `index.html` hochladen
-2. In `sw.js` die Versionsnummer erhöhen (z. B. `life-lab-v2` → `life-lab-v3`), damit installierte Apps die neue Version laden
+2. In `sw.js` die Versionsnummer erhöhen (z. B. `life-lab-v3` → `life-lab-v4`), damit installierte Apps die neue Version laden
 
 ## Credits
 
@@ -147,7 +148,7 @@ Eröffne gern ein [Issue](../../issues). Kerem freut sich über jede Nachricht.
 
 **Life Lab** is a self-contained, offline-capable web app for exploring Conway's Game of Life: a single HTML file with no dependencies, installable as a PWA.
 
-Features: drawing with several pen sizes, zoom, a timeline to rewind generations, automatic detection of still lifes, oscillators and spaceships, a library of 36 verified patterns, RLE import/export, 10 known rule sets plus Brian's Brain, Wireworld and cyclic automata, 7 missions, an illustrated explanation of emergence with real-world examples, live-generated sound and music, 7 themes, PNG/GIF export, 19 hidden Easter eggs, and a full English and Turkish translation (switch with the flags at the top).
+Features: drawing with several pen sizes, an explain mode that shows why a cell lives or dies, zoom, a timeline to rewind generations, automatic detection of still lifes, oscillators and spaceships, a library of 36 verified patterns, RLE import/export, 10 known rule sets plus Brian's Brain, Wireworld and cyclic automata, 7 missions, an illustrated explanation of emergence with real-world examples, live-generated sound and music, 7 themes, PNG/GIF export, 19 hidden Easter eggs, and a full English and Turkish translation (switch with the flags at the top).
 
 Idea & concept: Kerem. Built with the help of ChatGPT and Claude.
 

@@ -66,6 +66,17 @@ main{max-width:1440px;margin:auto;padding:6px 22px 30px;display:grid;grid-templa
 .board-wrap{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:12px;background:var(--bg);touch-action:none;height:clamp(320px,62vh,780px)}
 #board{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
 .board-overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;text-align:center;padding:20px;color:var(--muted)}
+.explain{position:absolute;left:10px;top:10px;z-index:3;max-width:min(330px,calc(100% - 70px));background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:10px 12px;font-size:13px;box-shadow:var(--shadow)}
+.explain.die{border-left-color:#f0765a}.explain.live{border-left-color:#33d1b2}.explain.birth{border-left-color:#f6b443}.explain.none{border-left-color:var(--muted)}
+.ex-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px}
+.ex-head button{padding:2px 7px;font-size:12px;background:transparent;border:0;color:var(--muted)}
+.ex-line{color:var(--muted)}
+.ex-result{margin-top:5px;font-size:15px;font-weight:700;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ex-badge{font-size:11.5px;font-weight:750;padding:2px 8px;border-radius:999px;color:#1b1206;background:var(--muted)}
+.explain.die .ex-badge{background:#f0765a}.explain.live .ex-badge{background:#33d1b2}.explain.birth .ex-badge{background:#f6b443}
+.ex-why{margin-top:4px;color:var(--text);line-height:1.4}
+.ex-hint{margin-top:6px;font-size:11.5px;color:var(--muted)}
+@media(max-width:560px){.explain{left:6px;top:6px;padding:8px 10px;font-size:12px;max-width:calc(100% - 64px)}.ex-result{font-size:14px;margin-top:3px}.ex-hint{display:none}}
 .selbar{position:absolute;left:10px;top:10px;right:60px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;pointer-events:none}
 .selbar>*{pointer-events:auto}
 .selbar .chip{background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:6px 10px;font-size:13px;cursor:pointer}
@@ -228,8 +239,9 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
 .modal-body td:first-child{white-space:nowrap;width:1%}
 .modal-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
 #gifPreview{max-width:100%;image-rendering:pixelated;border-radius:8px;border:1px solid var(--border);margin-top:10px}
-.toast{cursor:pointer;line-height:1.45;max-width:min(560px,calc(100vw - 30px))!important;position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 15px;border-radius:11px;box-shadow:var(--shadow);z-index:10;display:none;max-width:calc(100vw - 30px);font-size:13px}
-.toast.show{display:block}
+.toast{cursor:pointer;line-height:1.45;width:max-content;max-width:min(560px,calc(100vw - 24px));position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translate(-50%,-140%);background:var(--text);color:var(--bg);padding:11px 16px 11px 14px;border-radius:12px;border-left:5px solid var(--accent);box-shadow:0 14px 40px rgba(0,0,0,.35);z-index:60;font-size:14px;opacity:0;pointer-events:none;transition:transform .32s cubic-bezier(.2,1.3,.4,1),opacity .2s}
+.toast.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+@media (prefers-reduced-motion:reduce){.toast{transition:opacity .2s}}
 .small{font-size:12px;color:var(--muted)}
 
 /* Großer Bildschirm: Die Simulation bleibt beim Scrollen stehen, nur die rechte Spalte läuft weiter */
@@ -303,6 +315,13 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
     <div class="board-wrap" id="boardWrap">
       <canvas id="board" aria-label="Spielfeld. Klicke oder tippe auf Zellen, um sie umzuschalten. Mausrad zoomt, rechte Maustaste verschiebt."></canvas>
       <div class="board-overlay" id="overlay"><div><strong>Dein Universum wartet.</strong><br><span class="small">Tippe oder klicke, um Zellen zu setzen – oder wähle rechts ein Muster.</span></div></div>
+      <div class="explain" id="explainCard" hidden role="status" aria-live="polite">
+        <div class="ex-head"><b id="exTitle"></b><button id="exClose" type="button" aria-label="Erklärung schließen" title="Schließen (Esc)">✕</button></div>
+        <div class="ex-line"><span id="exState"></span> · <span id="exCount"></span></div>
+        <div class="ex-result"><span id="exArrow">→</span> <span id="exOutcome"></span> <span class="ex-badge" id="exRule"></span></div>
+        <div class="ex-why" id="exWhy"></div>
+        <div class="ex-hint" id="exHint">Tippe weitere Zellen an · „Schritt ▶“ zeigt, was passiert</div>
+      </div>
       <div class="selbar" id="selBar" hidden>
         <button class="chip" id="selChip" type="button" title="In der Bibliothek zeigen">Muster: <b id="selName"></b></button>
         <button id="rotBtn" title="Drehen (R)">↻ Drehen</button>
@@ -329,12 +348,14 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
       <button id="drawBtn" class="active" title="Zeichnen (D)">✎ Zeichnen</button>
       <button id="eraseBtn" title="Radierer (E)">⌫ Radierer</button>
       <button id="panBtn" title="Verschieben (V)">✥ Verschieben</button>
+      <button id="explainBtn" title="Zelle erklären (X)">🔍 Erklären</button>
       <button id="undoBtn" title="Rückgängig (Strg+Z)" aria-label="Rückgängig">↶</button>
       <button id="redoBtn" title="Wiederholen (Strg+Umschalt+Z)" aria-label="Wiederholen">↷</button>
       <select id="displayMode" aria-label="Ansicht" title="Darstellung">
         <option value="normal">◐ Normal</option>
         <option value="age">◐ Zellalter</option>
         <option value="heat">◐ Heatmap</option>
+        <option value="neighbors">◐ Nachbarzahlen</option>
       </select>
     </div>
     <div class="penline" role="group" aria-label="Stiftgröße">
@@ -583,7 +604,7 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
       <tr><td><kbd>S</kbd></td><td>Zurück zum Startzustand</td></tr>
       <tr><td><kbd>Z</kbd> / <kbd>C</kbd></td><td>Zufall / Leeren</td></tr>
       <tr><td><kbd>Strg</kbd>+<kbd>Z</kbd> · <kbd>Strg</kbd>+<kbd>Y</kbd></td><td>Rückgängig · Wiederholen</td></tr>
-      <tr><td><kbd>D</kbd> <kbd>E</kbd> <kbd>V</kbd></td><td>Zeichnen · Radierer · Verschieben</td></tr>
+      <tr><td><kbd>D</kbd> <kbd>E</kbd> <kbd>V</kbd> <kbd>X</kbd></td><td>Zeichnen · Radierer · Verschieben · Erklären</td></tr>
       <tr><td><kbd>R</kbd> / <kbd>F</kbd> / <kbd>Esc</kbd></td><td>Muster drehen / spiegeln / abwählen</td></tr>
       <tr><td><kbd>+</kbd> <kbd>−</kbd> <kbd>0</kbd></td><td>Zoom rein · raus · ganzes Feld</td></tr>
       <tr><td><kbd>G</kbd></td><td>Raster an/aus</td></tr>
@@ -591,7 +612,8 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
       <tr><td><kbd>?</kbd></td><td>Diese Hilfe</td></tr>
     </table>
     <h3>Ansichten</h3>
-    <p><b>Zellalter</b> färbt neu geborene Zellen hell und alte Zellen dunkler. <b>Heatmap</b> zeigt, wo im Lauf der Zeit am meisten Leben war.</p>
+    <p><b>Zellalter</b> färbt neu geborene Zellen hell und alte Zellen dunkler. <b>Heatmap</b> zeigt, wo im Lauf der Zeit am meisten Leben war. <b>Nachbarzahlen</b> schreibt in jede Zelle, wie viele lebende Nachbarn sie hat – grün wird geboren, rot stirbt.</p>
+    <p><b>Erklären:</b> Mit „🔍 Erklären“ tippst du eine Zelle an und siehst ihre Nachbarn, die passende Regel und was in der nächsten Generation mit ihr passiert.</p>
     <p><b>Zeitleiste:</b> Mit dem Schieberegler spulst du durch die gespeicherten Generationen vor und zurück. „Start“ oder „Schritt“ spielt danach die gespeicherte Zukunft weiter ab, jede Änderung beginnt eine neue.</p>
     <h3>Erkennung</h3>
     <p>Life Lab erkennt automatisch, wenn alles ausgestorben ist, ein Stillleben entstanden ist, sich das Feld periodisch wiederholt (Oszillator) oder ein einzelnes Muster seine Form behält und wandert (Raumschiff).</p>
@@ -696,7 +718,54 @@ Object.assign(I18N_EXACT, {
      "Ses düzeyi %60, simülasyon seslendirme açık, özel modlarda müzik açık, arka plan müziği kapalı. Sesin açık ya da kapalı olması senin ayarladığın gibi kalır."]
 });
 I18N_EXACT["Sound"] = ["Sound", "Ses"];
-const I18N_PAT = [["^Max ([\\d.,  ]+)\\s+Min ([\\d.,  ]+)$","Max {=1}\nMin {=2}","Maks {=1}\nMin {=2}"],["^Gen ([\\d.,  ]+) / ([\\d.,  ]+)$","Gen {=1} / {=2}","Nesil {=1} / {=2}"],["^Gen ([\\d.,  ]+)$","Gen {=1}","Nesil {=1}"],["^(\\d+) Gen/s$","{=1} gen/s","{=1} nesil/sn"],["^Gespeichert: Generation ([\\d.,  ]+) bis ([\\d.,  ]+)$","Stored: generation {=1} to {=2}","Kayıtlı: {=1}. nesilden {=2}. nesle"],["^Population der letzten (\\d+) Generationen$","Population over the last {=1} generations","Son {=1} nesildeki nüfus"],["^Zustand (\\d+)$","State {=1}","Durum {=1}"],["^Zyklisch (\\d+)$","Cyclic {=1}","Döngüsel {=1}"],["^(\\d+) von (\\d+) Missionen geschafft$","{=1} of {=2} missions completed","{=2} görevden {=1} tanesi tamamlandı"],["^Entdeckt am (.+)$","Discovered on {=1}","Keşif tarihi: {=1}"],["^(\\d+) – 🎆 alle gefunden, Respekt!$","{=1} – 🎆 all found, respect!","{=1} – 🎆 hepsi bulundu, saygılar!"],["^: (.+)$",": {1}",": {1}"],["^✓ (.+)$","✓ {1}","✓ {1}"],["^✗ (.+?)( \\(geprüft mit B3/S23\\))?$","✗ {1}{2}","✗ {1}{2}"],["^ \\(geprüft mit B3/S23\\)$"," (checked with B3/S23)"," (B3/S23 ile kontrol edildi)"],["^(.+?) \\(geprüft mit B3/S23\\)$","{1} (checked with B3/S23)","{1} (B3/S23 ile kontrol edildi)"],["^Stillleben \\((\\d+)\\)$","Still lifes ({=1})","Durağan yaşamlar ({=1})"],["^Periode (\\d+)$","Period {=1}","Periyot {=1}"],["^(.+) \\((\\d+)\\)$","{1} ({=2})","{1} ({=2})"],["^(.*) \\((\\d+) Zellen( · .+)?\\)$","{1} ({=2} cells{=3})","{1} ({=2} hücre{=3})"],["^(.+): (\\d) lebende Nachbarn – (.+)$","{1}: {=2} living neighbours – {3}","{1}: {=2} canlı komşu – {3}"],["^Kein Muster zu „(.*)“ gefunden\\.$","No pattern found for “{=1}”.","„{=1}“ için desen bulunamadı."],["^Farbschema (.+) löschen$","Delete colour scheme {=1}","{=1} renk şemasını sil"],["^Farbschema „(.+)“ gespeichert$","Colour scheme “{=1}” saved","„{=1}“ renk şeması kaydedildi"],["^Farbschema „(.+)“ aktiv$","Colour scheme “{=1}” active","„{=1}“ renk şeması etkin"],["^„(.+)“ gibt es schon – nochmal klicken zum Überschreiben\\.$","“{=1}” already exists – click again to overwrite.","„{=1}“ zaten var – üzerine yazmak için tekrar tıkla."],["^Maximal (\\d+) eigene Schemata – lösche zuerst eins oder überschreibe eins mit gleichem Namen\\.$","At most {=1} custom schemes – delete one first or overwrite one with the same name.","En fazla {=1} özel şema – önce birini sil ya da aynı adla birinin üzerine yaz."],["^(.+) · 🛡️ Unsterblichkeits-Modus$","{1} · 🛡️ Immortality mode","{1} · 🛡️ Ölümsüzlük modu"],["^Oszillator · Periode (\\d+)$","Oscillator · period {=1}","Osilatör · periyot {=1}"],["^Raumschiff · Periode (\\d+) · (.+)$","Spaceship · period {=1} · {=2}","Uzay gemisi · periyot {=1} · {=2}"],["^(.+) – automatisch pausiert$","{1} – paused automatically","{1} – otomatik duraklatıldı"],["^♪ Läuft gerade: (.+)$","♪ Now playing: {1}","♪ Şu an çalıyor: {1}"],["^Automat gewechselt: (.+?) – drück „▶ Demo starten“, um ihn in Aktion zu sehen\\.$","Automaton switched: {1} – press “▶ Start demo” to see it in action.","Otomat değiştirildi: {1} – iş başında görmek için „▶ Demoyu başlat“a bas."],["^Automat gewechselt: (.+)$","Automaton switched: {1}","Otomat değiştirildi: {1}"],["^🥚 Geheimnis gefunden! \\((\\d+) von (\\d+)\\)$","🥚 Secret found! ({=1} of {=2})","🥚 Sır bulundu! ({=1} / {=2})"],["^Ausgewählt: (.+) – klicke aufs Spielfeld, um es zu platzieren$","Selected: {1} – click on the field to place it","Seçildi: {1} – yerleştirmek için alana tıkla"],["^Ausgewählt: (.+) – nochmal antippen springt zum Spielfeld$","Selected: {1} – tap again to jump to the field","Seçildi: {1} – alana gitmek için tekrar dokun"],["^Klicke aufs Feld, um (.+) zu platzieren \\(✕ hebt die Auswahl auf\\)$","Click on the field to place {1} (✕ deselects)","{1} yerleştirmek için alana tıkla (✕ seçimi kaldırır)"],["^(.+) platziert – (\\d+) Zellen lagen außerhalb des Felds$","{1} placed – {=2} cells were outside the field","{1} yerleştirildi – {=2} hücre alanın dışında kaldı"],["^(.+) platziert$","{1} placed","{1} yerleştirildi"],["^Mission geschafft: (.+)$","Mission complete: {1}","Görev tamamlandı: {1}"],["^Regel (.+) aktiv$","Rule {=1} active","{=1} kuralı etkin"],["^Zyklisch: (\\d+) Zustände, Schwelle (\\d+)$","Cyclic: {=1} states, threshold {=2}","Döngüsel: {=1} durum, eşik {=2}"],["^„(.+)“ geladen \\((\\d+) Zellen\\)(?: · Regel (.+) übernommen)? – klicke aufs Feld$","“{1}” loaded ({=2} cells) – click on the field","„{1}“ yüklendi ({=2} hücre) – alana tıkla"],["^Feldgröße: (\\d+) × (\\d+)$","Field size: {=1} × {=2}","Alan boyutu: {=1} × {=2}"],["^Zurück zum Startzustand \\(Generation (\\d+)\\)$","Back to start state (generation {=1})","Başlangıç durumuna dönüldü ({=1}. nesil)"],["^Zeitleiste: Generation (\\d+) – „Start“ oder „Schritt“ spielt die gespeicherte Zukunft ab\\. Jede Änderung beginnt eine neue\\.$","Timeline: generation {=1} – “Start” or “Step” plays the stored future. Any change starts a new one.","Zaman çizelgesi: {=1}. nesil – „Başlat“ veya „Adım“ kaydedilmiş geleceği oynatır. Her değişiklik yeni bir gelecek başlatır."],["^Unbekannte Regel: (.+)$","Unknown rule: {=1}","Bilinmeyen kural: {=1}"],["^Unbekanntes Zeichen im RLE: (.+)$","Unknown character in RLE: {=1}","RLE'de bilinmeyen karakter: {=1}"],["^Link konnte nicht gelesen werden: (.+)$","Couldn't read the link: {1}","Bağlantı okunamadı: {1}"],["^Fehler: (.+)$","Error: {1}","Hata: {1}"],["^Berechne Bild (\\d+) von (\\d+) …$","Computing frame {=1} of {=2} …","{=2} kareden {=1}. kare hesaplanıyor …"],["^Fertig: (\\d+) Generationen, (\\d+)×(\\d+) px, (\\d+) KB\\. Download gestartet – Vorschau unten\\.$","Done: {=1} generations, {=2}×{=3} px, {=4} KB. Download started – preview below.","Tamam: {=1} nesil, {=2}×{=3} px, {=4} KB. İndirme başladı – önizleme aşağıda."],["^Nur (\\d+) Zellen – mindestens 8 nötig\\.$","Only {=1} cells – at least 8 needed.","Yalnızca {=1} hücre – en az 8 gerekli."],["^Nach (\\d+) Generationen ausgestorben\\.$","Died out after {=1} generations.","{=1} nesil sonra yok oldu."],["^Oszillator mit Periode (\\d+)!$","Oscillator with period {=1}!","Periyodu {=1} olan osilatör!"],["^Raumschiff! Periode (\\d+), verschiebt sich um \\((-?\\d+), (-?\\d+)\\)\\.$","Spaceship! Period {=1}, shifts by ({=2}, {=3}).","Uzay gemisi! Periyot {=1}, ({=2}, {=3}) kadar kayar."],["^(\\d+) Startzellen – höchstens (\\d+) erlaubt\\.$","{=1} starting cells – at most {=2} allowed.","{=1} başlangıç hücresi – en fazla {=2} izinli."],["^(\\d+) Startzellen – erlaubt sind 6 bis 10\\.$","{=1} starting cells – 6 to 10 allowed.","{=1} başlangıç hücresi – 6 ile 10 arası izinli."],["^Kommt erst nach (\\d+) Generationen zur Ruhe\\.$","Only settles down after {=1} generations.","Ancak {=1} nesil sonra durulur."],["^Schon nach (\\d+) Generationen ruhig – Ziel: 200\\.$","Already calm after {=1} generations – goal: 200.","{=1} nesil sonra durgunlaştı bile – hedef: 200."],["^Über 150 Zellen in Generation (\\d+)!$","Over 150 cells in generation {=1}!","{=1}. nesilde 150'den fazla hücre!"],["^Maximum: (\\d+) Zellen\\.$","Maximum: {=1} cells.","En fazla: {=1} hücre."],["^Komplett ausgelöscht in Generation (\\d+)\\.$","Completely wiped out in generation {=1}.","{=1}. nesilde tamamen silindi."],["^Schon nach (\\d+) Generationen weg – das zählt nicht als Kollision\\.$","Gone after just {=1} generations – that doesn't count as a collision.","Yalnızca {=1} nesilde yok oldu – bu çarpışma sayılmaz."],["^Population wächst dauerhaft: ca\\. (\\d+) → (\\d+) Zellen\\.$","Population keeps growing: approx. {=1} → {=2} cells.","Nüfus sürekli büyüyor: yaklaşık {=1} → {=2} hücre."],["^Kein dauerhaftes Wachstum: ca\\. (\\d+) → (\\d+) Zellen\\.$","No lasting growth: approx. {=1} → {=2} cells.","Kalıcı büyüme yok: yaklaşık {=1} → {=2} hücre."],["^🌳 5\\.206 Generationen geschafft – Respekt für die Geduld! Hier war Acorn schon ab ca\\. Generation (\\d+) ruhig, weil die Ränder bremsen\\. Auf einer unendlichen Ebene braucht es genau 5\\.206\\.$","🌳 5,206 generations done – respect for your patience! Here Acorn was already calm from about generation {=1}, because the edges slow it down. On an infinite plane it needs exactly 5,206.","🌳 5.206 nesil tamamlandı – sabrına saygı! Burada Acorn kenarlar frenlediği için yaklaşık {=1}. nesilden itibaren sakindi. Sonsuz bir düzlemde tam 5.206 nesil gerekir."]].map(([re, en, tr]) => [new RegExp(re), en, tr]);
+Object.assign(I18N_EXACT, {
+  "🔍 Erklären": ["🔍 Explain", "🔍 Açıkla"], "Zelle erklären (X)": ["Explain a cell (X)", "Hücreyi açıkla (X)"],
+  "◐ Nachbarzahlen": ["◐ Neighbour counts", "◐ Komşu sayıları"], "Erklärung schließen": ["Close explanation", "Açıklamayı kapat"], "Schließen (Esc)": ["Close (Esc)", "Kapat (Esc)"],
+  "Tippe weitere Zellen an · „Schritt ▶“ zeigt, was passiert": ["Tap more cells · “Step ▶” shows what happens", "Başka hücrelere dokun · „Adım ▶“ ne olacağını gösterir"],
+  "🔍 Erklär-Modus: Tippe eine Zelle an, um zu sehen, warum sie lebt oder stirbt.": ["🔍 Explain mode: tap a cell to see why it lives or dies.", "🔍 Açıklama modu: Neden yaşadığını ya da öldüğünü görmek için bir hücreye dokun."],
+  "Nachbarzahlen: Zum Lesen etwas hineinzoomen (Mausrad, Pinch oder +).": ["Neighbour counts: zoom in a little to read them (mouse wheel, pinch or +).", "Komşu sayıları: Okumak için biraz yakınlaştır (fare tekerleği, iki parmak veya +)."],
+  "Zeichnen · Radierer · Verschieben · Erklären": ["Draw · eraser · move · explain", "Çiz · silgi · kaydır · açıkla"],
+  "Nachbarzahlen": ["Neighbour counts", "Komşu sayıları"],
+  "schreibt in jede Zelle, wie viele lebende Nachbarn sie hat – grün wird geboren, rot stirbt.": ["writes into every cell how many living neighbours it has – green is born, red dies.", "her hücreye kaç canlı komşusu olduğunu yazar – yeşil doğar, kırmızı ölür."],
+  "Erklären:": ["Explain:", "Açıkla:"],
+  "Mit „🔍 Erklären“ tippst du eine Zelle an und siehst ihre Nachbarn, die passende Regel und was in der nächsten Generation mit ihr passiert.": ["With “🔍 Explain” you tap a cell and see its neighbours, the matching rule and what happens to it in the next generation.", "„🔍 Açıkla“ ile bir hücreye dokunur, komşularını, ilgili kuralı ve bir sonraki nesilde ona ne olacağını görürsün."],
+  "lebendig": ["alive", "canlı"], "tot": ["dead", "ölü"], "aus": ["off", "kapalı"], "an": ["on", "açık"], "sterbend": ["dying", "ölüyor"], "leer": ["empty", "boş"],
+  "bleibt am Leben": ["stays alive", "yaşamaya devam eder"], "stirbt": ["dies", "ölür"], "wird geboren": ["is born", "doğar"], "bleibt tot": ["stays dead", "ölü kalır"],
+  "Keine Geburt": ["No birth", "Doğum yok"], "wird „sterbend“": ["becomes “dying”", "„ölüyor“ olur"], "geht aus": ["turns off", "kapanır"], "geht an": ["turns on", "açılır"], "bleibt aus": ["stays off", "kapalı kalır"],
+  "Erschöpfung": ["Exhaustion", "Tükenme"], "Erholung": ["Recovery", "Toparlanma"],
+  "In Brian's Brain bleibt eine Zelle nie länger als eine Generation an.": ["In Brian's Brain a cell never stays on for more than one generation.", "Brian's Brain'de bir hücre asla bir nesilden uzun açık kalmaz."],
+  "Eine sterbende Zelle geht immer aus – erst danach kann sie wieder angehen.": ["A dying cell always turns off – only then can it turn on again.", "Ölen bir hücre her zaman kapanır – ancak sonra yeniden açılabilir."],
+  "Eine ausgeschaltete Zelle geht an, wenn genau 2 Nachbarn an sind.": ["An off cell turns on if exactly 2 neighbours are on.", "Kapalı bir hücre, tam 2 komşusu açıksa açılır."],
+  "Zum Angehen braucht es genau 2 Nachbarn, die an sind.": ["To turn on, exactly 2 neighbours must be on.", "Açılmak için tam 2 komşunun açık olması gerekir."],
+  "bleibt leer": ["stays empty", "boş kalır"], "Kein Leiter": ["No conductor", "İletken yok"], "Leere Zellen ändern sich in Wireworld nie.": ["Empty cells never change in Wireworld.", "Wireworld'de boş hücreler asla değişmez."],
+  "wird Elektronenschwanz": ["becomes electron tail", "elektron kuyruğu olur"], "Weiterfließen": ["Flowing on", "İlerleme"], "Ein Kopf wird immer zum Schwanz – so bewegt sich das Elektron vorwärts.": ["A head always becomes a tail – that's how the electron moves forward.", "Baş her zaman kuyruğa dönüşür – elektron böyle ilerler."],
+  "wird wieder Leiter": ["becomes a conductor again", "yeniden iletken olur"], "Abklingen": ["Decay", "Sönme"], "Ein Schwanz wird immer wieder zum Leiter.": ["A tail always turns back into a conductor.", "Kuyruk her zaman yeniden iletkene dönüşür."],
+  "wird Elektronenkopf": ["becomes electron head", "elektron başı olur"], "Strom fließt": ["Current flows", "Akım geçiyor"], "Ein Leiter wird zum Kopf, wenn 1 oder 2 Nachbarn Köpfe sind.": ["A conductor becomes a head if 1 or 2 neighbours are heads.", "Bir iletken, 1 veya 2 komşusu baş ise başa dönüşür."],
+  "bleibt Leiter": ["stays a conductor", "iletken kalır"], "Kein Strom": ["No current", "Akım yok"], "Bei mehr als 2 Köpfen daneben bleibt der Leiter ruhig.": ["With more than 2 heads next to it, the conductor stays quiet.", "Yanında 2'den fazla baş varsa iletken sakin kalır."], "Kein Elektronenkopf in der Nähe.": ["No electron head nearby.", "Yakında elektron başı yok."],
+  "Weiterspringen": ["Advance", "İlerleme"], "Warten": ["Wait", "Bekleme"],
+  "Eine tote Zelle mit genau 3 lebenden Nachbarn wird lebendig.": ["A dead cell with exactly 3 living neighbours comes alive.", "Tam olarak 3 canlı komşusu olan ölü hücre canlanır."],
+  "Zum Geborenwerden braucht eine tote Zelle genau 3 lebende Nachbarn.": ["To be born, a dead cell needs exactly 3 living neighbours.", "Doğmak için ölü bir hücrenin tam 3 canlı komşusu olmalıdır."]
+});
+const I18N_PAT_EXTRA = [
+  ["^Zelle \\((\\d+), (\\d+)\\)$", "Cell ({=1}, {=2})", "Hücre ({=1}, {=2})"],
+  ["^(\\d+) lebende Nachbarn$", "{=1} living neighbours", "{=1} canlı komşu"],
+  ["^1 lebender Nachbar$", "1 living neighbour", "1 canlı komşu"],
+  ["^1 Nachbar an$", "1 neighbour on", "1 komşu açık"],
+  ["^1 Elektronenkopf daneben$", "1 electron head next to it", "yanında 1 elektron başı"],
+  ["^1 Nachbar im Zustand (\\d+)$", "1 neighbour in state {=1}", "{=1} durumunda 1 komşu"],
+  ["^Eine Zelle springt zum nächsten Zustand, sobald mindestens 1 Nachbar schon dort ist\\.$", "A cell advances to the next state as soon as at least 1 neighbour is already there.", "En az 1 komşu bir sonraki durumdaysa hücre de o duruma geçer."],
+  ["^(\\d+) Nachbarn an$", "{=1} neighbours on", "{=1} komşu açık"],
+  ["^(\\d+) Elektronenköpfe daneben$", "{=1} electron heads next to it", "yanında {=1} elektron başı"],
+  ["^(\\d+) Nachbarn im Zustand (\\d+)$", "{=1} neighbours in state {=2}", "{=2} durumunda {=1} komşu"],
+  ["^wechselt zu Zustand (\\d+)$", "switches to state {=1}", "{=1} durumuna geçer"],
+  ["^bleibt im Zustand (\\d+)$", "stays in state {=1}", "{=1} durumunda kalır"],
+  ["^Eine Zelle springt zum nächsten Zustand, sobald mindestens (\\d+) Nachbarn schon dort sind\\.$", "A cell advances to the next state as soon as at least {=1} neighbours are already there.", "En az {=1} komşu bir sonraki durumdaysa hücre de o duruma geçer."],
+  ["^Die Regel (\\S+) lässt lebende Zellen bei (.+) Nachbarn überleben\\.$", "Rule {=1} lets living cells survive with {=2} neighbours.", "{=1} kuralında canlı hücreler {=2} komşuyla hayatta kalır."],
+  ["^Die Regel (\\S+) lässt lebende Zellen nur bei (.+) Nachbarn überleben\\.$", "Rule {=1} only lets living cells survive with {=2} neighbours.", "{=1} kuralında canlı hücreler yalnızca {=2} komşuyla hayatta kalır."],
+  ["^Die Regel (\\S+) lässt tote Zellen bei (.+) Nachbarn geboren werden\\.$", "Rule {=1} makes dead cells come alive with {=2} neighbours.", "{=1} kuralında ölü hücreler {=2} komşuyla doğar."],
+  ["^Die Regel (\\S+) braucht für eine Geburt (.+) Nachbarn\\.$", "Rule {=1} needs {=2} neighbours for a birth.", "{=1} kuralında doğum için {=2} komşu gerekir."]
+];
+const I18N_PAT = [["^Max ([\\d.,  ]+)\\s+Min ([\\d.,  ]+)$","Max {=1}\nMin {=2}","Maks {=1}\nMin {=2}"],["^Gen ([\\d.,  ]+) / ([\\d.,  ]+)$","Gen {=1} / {=2}","Nesil {=1} / {=2}"],["^Gen ([\\d.,  ]+)$","Gen {=1}","Nesil {=1}"],["^(\\d+) Gen/s$","{=1} gen/s","{=1} nesil/sn"],["^Gespeichert: Generation ([\\d.,  ]+) bis ([\\d.,  ]+)$","Stored: generation {=1} to {=2}","Kayıtlı: {=1}. nesilden {=2}. nesle"],["^Population der letzten (\\d+) Generationen$","Population over the last {=1} generations","Son {=1} nesildeki nüfus"],["^Zustand (\\d+)$","State {=1}","Durum {=1}"],["^Zyklisch (\\d+)$","Cyclic {=1}","Döngüsel {=1}"],["^(\\d+) von (\\d+) Missionen geschafft$","{=1} of {=2} missions completed","{=2} görevden {=1} tanesi tamamlandı"],["^Entdeckt am (.+)$","Discovered on {=1}","Keşif tarihi: {=1}"],["^(\\d+) – 🎆 alle gefunden, Respekt!$","{=1} – 🎆 all found, respect!","{=1} – 🎆 hepsi bulundu, saygılar!"],["^: (.+)$",": {1}",": {1}"],["^✓ (.+)$","✓ {1}","✓ {1}"],["^✗ (.+?)( \\(geprüft mit B3/S23\\))?$","✗ {1}{2}","✗ {1}{2}"],["^ \\(geprüft mit B3/S23\\)$"," (checked with B3/S23)"," (B3/S23 ile kontrol edildi)"],["^(.+?) \\(geprüft mit B3/S23\\)$","{1} (checked with B3/S23)","{1} (B3/S23 ile kontrol edildi)"],["^Stillleben \\((\\d+)\\)$","Still lifes ({=1})","Durağan yaşamlar ({=1})"],["^Periode (\\d+)$","Period {=1}","Periyot {=1}"],["^(.+) \\((\\d+)\\)$","{1} ({=2})","{1} ({=2})"],["^(.*) \\((\\d+) Zellen( · .+)?\\)$","{1} ({=2} cells{=3})","{1} ({=2} hücre{=3})"],["^(.+): (\\d) lebende Nachbarn – (.+)$","{1}: {=2} living neighbours – {3}","{1}: {=2} canlı komşu – {3}"],["^Kein Muster zu „(.*)“ gefunden\\.$","No pattern found for “{=1}”.","„{=1}“ için desen bulunamadı."],["^Farbschema (.+) löschen$","Delete colour scheme {=1}","{=1} renk şemasını sil"],["^Farbschema „(.+)“ gespeichert$","Colour scheme “{=1}” saved","„{=1}“ renk şeması kaydedildi"],["^Farbschema „(.+)“ aktiv$","Colour scheme “{=1}” active","„{=1}“ renk şeması etkin"],["^„(.+)“ gibt es schon – nochmal klicken zum Überschreiben\\.$","“{=1}” already exists – click again to overwrite.","„{=1}“ zaten var – üzerine yazmak için tekrar tıkla."],["^Maximal (\\d+) eigene Schemata – lösche zuerst eins oder überschreibe eins mit gleichem Namen\\.$","At most {=1} custom schemes – delete one first or overwrite one with the same name.","En fazla {=1} özel şema – önce birini sil ya da aynı adla birinin üzerine yaz."],["^(.+) · 🛡️ Unsterblichkeits-Modus$","{1} · 🛡️ Immortality mode","{1} · 🛡️ Ölümsüzlük modu"],["^Oszillator · Periode (\\d+)$","Oscillator · period {=1}","Osilatör · periyot {=1}"],["^Raumschiff · Periode (\\d+) · (.+)$","Spaceship · period {=1} · {=2}","Uzay gemisi · periyot {=1} · {=2}"],["^(.+) – automatisch pausiert$","{1} – paused automatically","{1} – otomatik duraklatıldı"],["^♪ Läuft gerade: (.+)$","♪ Now playing: {1}","♪ Şu an çalıyor: {1}"],["^Automat gewechselt: (.+?) – drück „▶ Demo starten“, um ihn in Aktion zu sehen\\.$","Automaton switched: {1} – press “▶ Start demo” to see it in action.","Otomat değiştirildi: {1} – iş başında görmek için „▶ Demoyu başlat“a bas."],["^Automat gewechselt: (.+)$","Automaton switched: {1}","Otomat değiştirildi: {1}"],["^🥚 Geheimnis gefunden! \\((\\d+) von (\\d+)\\)$","🥚 Secret found! ({=1} of {=2})","🥚 Sır bulundu! ({=1} / {=2})"],["^Ausgewählt: (.+) – klicke aufs Spielfeld, um es zu platzieren$","Selected: {1} – click on the field to place it","Seçildi: {1} – yerleştirmek için alana tıkla"],["^Ausgewählt: (.+) – nochmal antippen springt zum Spielfeld$","Selected: {1} – tap again to jump to the field","Seçildi: {1} – alana gitmek için tekrar dokun"],["^Klicke aufs Feld, um (.+) zu platzieren \\(✕ hebt die Auswahl auf\\)$","Click on the field to place {1} (✕ deselects)","{1} yerleştirmek için alana tıkla (✕ seçimi kaldırır)"],["^(.+) platziert – (\\d+) Zellen lagen außerhalb des Felds$","{1} placed – {=2} cells were outside the field","{1} yerleştirildi – {=2} hücre alanın dışında kaldı"],["^(.+) platziert$","{1} placed","{1} yerleştirildi"],["^Mission geschafft: (.+)$","Mission complete: {1}","Görev tamamlandı: {1}"],["^Regel (.+) aktiv$","Rule {=1} active","{=1} kuralı etkin"],["^Zyklisch: (\\d+) Zustände, Schwelle (\\d+)$","Cyclic: {=1} states, threshold {=2}","Döngüsel: {=1} durum, eşik {=2}"],["^„(.+)“ geladen \\((\\d+) Zellen\\)(?: · Regel (.+) übernommen)? – klicke aufs Feld$","“{1}” loaded ({=2} cells) – click on the field","„{1}“ yüklendi ({=2} hücre) – alana tıkla"],["^Feldgröße: (\\d+) × (\\d+)$","Field size: {=1} × {=2}","Alan boyutu: {=1} × {=2}"],["^Zurück zum Startzustand \\(Generation (\\d+)\\)$","Back to start state (generation {=1})","Başlangıç durumuna dönüldü ({=1}. nesil)"],["^Zeitleiste: Generation (\\d+) – „Start“ oder „Schritt“ spielt die gespeicherte Zukunft ab\\. Jede Änderung beginnt eine neue\\.$","Timeline: generation {=1} – “Start” or “Step” plays the stored future. Any change starts a new one.","Zaman çizelgesi: {=1}. nesil – „Başlat“ veya „Adım“ kaydedilmiş geleceği oynatır. Her değişiklik yeni bir gelecek başlatır."],["^Unbekannte Regel: (.+)$","Unknown rule: {=1}","Bilinmeyen kural: {=1}"],["^Unbekanntes Zeichen im RLE: (.+)$","Unknown character in RLE: {=1}","RLE'de bilinmeyen karakter: {=1}"],["^Link konnte nicht gelesen werden: (.+)$","Couldn't read the link: {1}","Bağlantı okunamadı: {1}"],["^Fehler: (.+)$","Error: {1}","Hata: {1}"],["^Berechne Bild (\\d+) von (\\d+) …$","Computing frame {=1} of {=2} …","{=2} kareden {=1}. kare hesaplanıyor …"],["^Fertig: (\\d+) Generationen, (\\d+)×(\\d+) px, (\\d+) KB\\. Download gestartet – Vorschau unten\\.$","Done: {=1} generations, {=2}×{=3} px, {=4} KB. Download started – preview below.","Tamam: {=1} nesil, {=2}×{=3} px, {=4} KB. İndirme başladı – önizleme aşağıda."],["^Nur (\\d+) Zellen – mindestens 8 nötig\\.$","Only {=1} cells – at least 8 needed.","Yalnızca {=1} hücre – en az 8 gerekli."],["^Nach (\\d+) Generationen ausgestorben\\.$","Died out after {=1} generations.","{=1} nesil sonra yok oldu."],["^Oszillator mit Periode (\\d+)!$","Oscillator with period {=1}!","Periyodu {=1} olan osilatör!"],["^Raumschiff! Periode (\\d+), verschiebt sich um \\((-?\\d+), (-?\\d+)\\)\\.$","Spaceship! Period {=1}, shifts by ({=2}, {=3}).","Uzay gemisi! Periyot {=1}, ({=2}, {=3}) kadar kayar."],["^(\\d+) Startzellen – höchstens (\\d+) erlaubt\\.$","{=1} starting cells – at most {=2} allowed.","{=1} başlangıç hücresi – en fazla {=2} izinli."],["^(\\d+) Startzellen – erlaubt sind 6 bis 10\\.$","{=1} starting cells – 6 to 10 allowed.","{=1} başlangıç hücresi – 6 ile 10 arası izinli."],["^Kommt erst nach (\\d+) Generationen zur Ruhe\\.$","Only settles down after {=1} generations.","Ancak {=1} nesil sonra durulur."],["^Schon nach (\\d+) Generationen ruhig – Ziel: 200\\.$","Already calm after {=1} generations – goal: 200.","{=1} nesil sonra durgunlaştı bile – hedef: 200."],["^Über 150 Zellen in Generation (\\d+)!$","Over 150 cells in generation {=1}!","{=1}. nesilde 150'den fazla hücre!"],["^Maximum: (\\d+) Zellen\\.$","Maximum: {=1} cells.","En fazla: {=1} hücre."],["^Komplett ausgelöscht in Generation (\\d+)\\.$","Completely wiped out in generation {=1}.","{=1}. nesilde tamamen silindi."],["^Schon nach (\\d+) Generationen weg – das zählt nicht als Kollision\\.$","Gone after just {=1} generations – that doesn't count as a collision.","Yalnızca {=1} nesilde yok oldu – bu çarpışma sayılmaz."],["^Population wächst dauerhaft: ca\\. (\\d+) → (\\d+) Zellen\\.$","Population keeps growing: approx. {=1} → {=2} cells.","Nüfus sürekli büyüyor: yaklaşık {=1} → {=2} hücre."],["^Kein dauerhaftes Wachstum: ca\\. (\\d+) → (\\d+) Zellen\\.$","No lasting growth: approx. {=1} → {=2} cells.","Kalıcı büyüme yok: yaklaşık {=1} → {=2} hücre."],["^🌳 5\\.206 Generationen geschafft – Respekt für die Geduld! Hier war Acorn schon ab ca\\. Generation (\\d+) ruhig, weil die Ränder bremsen\\. Auf einer unendlichen Ebene braucht es genau 5\\.206\\.$","🌳 5,206 generations done – respect for your patience! Here Acorn was already calm from about generation {=1}, because the edges slow it down. On an infinite plane it needs exactly 5,206.","🌳 5.206 nesil tamamlandı – sabrına saygı! Burada Acorn kenarlar frenlediği için yaklaşık {=1}. nesilden itibaren sakindi. Sonsuz bir düzlemde tam 5.206 nesil gerekir."]].concat(I18N_PAT_EXTRA).map(([re, en, tr]) => [new RegExp(re), en, tr]);
 const LOCALES = { de: "de-DE", en: "en-GB", tr: "tr-TR" };
 const LOC = () => LOCALES[S.lang] || "de-DE";
 function trCore(core) {
@@ -761,7 +830,8 @@ function setLang(lang, { save = true } = {}) {
   i18nTree(document.documentElement);
   i18nObs.takeRecords();
   if (save) saveSettings();
-  renderLibrary(); renderMissions(); renderEggs(); updateStats(); updateStatus(); chartDirty = true; requestRender();
+  renderLibrary(); renderMissions(); renderEggs(); updateStats(); updateStatus(); updateExplain(); chartDirty = true; requestRender();
+  i18nTree(document.documentElement); i18nObs.takeRecords();
 }
 function detectLang() {
   const l = (navigator.languages && navigator.languages[0] || navigator.language || "de").toLowerCase();
@@ -1656,8 +1726,10 @@ function render() {
   ctx.strokeRect(ox - 0.75, oy - 0.75, bw + 1.5, bh + 1.5);
   ctx.setLineDash([]); ctx.globalAlpha = 1;
 
+  if (S.displayMode === "neighbors" && x1 >= x0 && y1 >= y0) drawNeighborNumbers(ox, oy, cs, x0, x1, y0, y1);
+  drawExplain(ox, oy, cs);
   // Vorschau des Stifts
-  if (!selectedPattern && hoverCell && !stroke && tool !== "pan" && S.pen !== 1) {
+  if (!selectedPattern && hoverCell && !stroke && tool !== "pan" && tool !== "explain" && S.pen !== 1) {
     ctx.globalAlpha = 0.22; ctx.fillStyle = colors.accent;
     for (const [dx, dy] of brush) {
       const x = hoverCell.x + dx, y = hoverCell.y + dy;
@@ -1683,6 +1755,7 @@ function render() {
   }
   updateStats();
   updateTimeline();
+  if (explainCell) updateExplain();
   if (chartDirty) drawChart();
 }
 function requestRender() { needsRender = true; }
@@ -2367,6 +2440,7 @@ function syncRuleInputs() {
   const dm = $("displayMode");
   dm.querySelector('[value="age"]').disabled = S.automaton !== "life";
   dm.querySelector('[value="heat"]').disabled = S.automaton === "cyclic";
+  dm.querySelector('[value="neighbors"]').disabled = S.automaton !== "life";
   if (dm.querySelector(`[value="${S.displayMode}"]`).disabled) S.displayMode = "normal";
   dm.value = S.displayMode;
   $("ruleNote").innerHTML = S.automaton === "life"
@@ -2808,6 +2882,15 @@ canvas.addEventListener("pointerdown", e => {
   }
   const c = cellAt(p.x, p.y);
   if (!c) return;
+  if (tool === "explain" && !selectedPattern) {
+    stroke = { none: true };
+    if (explainCell && explainCell.x === c.x && explainCell.y === c.y) { setExplain(null); return; }
+    if (view.cs < 24) { zoomAt(p.x, p.y, 30 / view.cs); }
+    setExplain(c);
+    requestAnimationFrame(() => revealExplainCell(c));
+    tone(880, { dur: 0.05, vol: 0.05, type: "sine" }); tone(1320, { when: 0.05, dur: 0.07, vol: 0.04, type: "sine" });
+    return;
+  }
   if (selectedPattern) {
     placePattern(selectedPattern, c.x, c.y);
     if (!e.shiftKey) selectPattern(null);
@@ -2881,8 +2964,148 @@ canvas.addEventListener("wheel", e => {
 
 function setTool(t) {
   tool = t;
-  for (const [id, v] of [["drawBtn", "draw"], ["eraseBtn", "erase"], ["panBtn", "pan"]]) $(id).classList.toggle("active", tool === v);
-  canvas.style.cursor = tool === "pan" ? "grab" : "crosshair";
+  for (const [id, v] of [["drawBtn", "draw"], ["eraseBtn", "erase"], ["panBtn", "pan"], ["explainBtn", "explain"]]) $(id).classList.toggle("active", tool === v);
+  canvas.style.cursor = tool === "pan" ? "grab" : tool === "explain" ? "help" : "crosshair";
+  if (t !== "explain") setExplain(null);
+  else if (!explainCell) toast("🔍 Erklär-Modus: Tippe eine Zelle an, um zu sehen, warum sie lebt oder stirbt.");
+}
+
+/* =====================================================================
+   Erklär-Modus: Nachbarn einer Zelle zeigen und die Regel erklären
+   ===================================================================== */
+let explainCell = null;
+/** Nachbarn (mit Wrap) einer Zelle: Liste [x, y, zustand]. */
+function neighborsOf(x, y, moore = true) {
+  const out = [], { cols, rows } = S;
+  const offs = moore ? [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]] : [[0, -1], [-1, 0], [1, 0], [0, 1]];
+  for (const [dx, dy] of offs) {
+    let nx = x + dx, ny = y + dy;
+    if (S.wrap) { nx = (nx + cols) % cols; ny = (ny + rows) % rows; }
+    else if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) { out.push([nx, ny, -1]); continue; }
+    out.push([nx, ny, grid[ny * cols + nx]]);
+  }
+  return out;
+}
+/** Erklärt, was mit einer Zelle in der nächsten Generation passiert. Alle Texte auf Deutsch (werden übersetzt). */
+function explainInfo(x, y) {
+  const s = grid[y * S.cols + x], A = S.automaton;
+  if (A === "cyclic") {
+    const N = S.cyclic.states, t = (s + 1) % N, nb = neighborsOf(x, y, S.cyclic.moore);
+    const n = nb.filter(c => c[2] === t).length, go = n >= S.cyclic.threshold;
+    return { title: `Zelle (${x}, ${y})`, state: `Zustand ${s}`, count: n === 1 ? `1 Nachbar im Zustand ${t}` : `${n} Nachbarn im Zustand ${t}`, nb, mark: c => c[2] === t,
+      outcome: go ? `wechselt zu Zustand ${t}` : `bleibt im Zustand ${s}`, rule: go ? "Weiterspringen" : "Warten", tone: go ? "birth" : "none",
+      why: `Eine Zelle springt zum nächsten Zustand, sobald mindestens ${S.cyclic.threshold} ${S.cyclic.threshold === 1 ? "Nachbar" : "Nachbarn"} schon dort ${S.cyclic.threshold === 1 ? "ist" : "sind"}.` };
+  }
+  const nb = neighborsOf(x, y), n = nb.filter(c => c[2] === 1).length;
+  const base = { title: `Zelle (${x}, ${y})`, nb, mark: c => c[2] === 1 };
+  if (A === "brain") {
+    const st = ["aus", "an", "sterbend"][s], an = n === 1 ? "1 Nachbar an" : `${n} Nachbarn an`;
+    if (s === 1) return { ...base, state: st, count: an, outcome: "wird „sterbend“", rule: "Erschöpfung", tone: "die", why: "In Brian's Brain bleibt eine Zelle nie länger als eine Generation an." };
+    if (s === 2) return { ...base, state: st, count: an, outcome: "geht aus", rule: "Erholung", tone: "die", why: "Eine sterbende Zelle geht immer aus – erst danach kann sie wieder angehen." };
+    return n === 2
+      ? { ...base, state: st, count: an, outcome: "geht an", rule: "Geburt", tone: "birth", why: "Eine ausgeschaltete Zelle geht an, wenn genau 2 Nachbarn an sind." }
+      : { ...base, state: st, count: an, outcome: "bleibt aus", rule: "Keine Geburt", tone: "none", why: "Zum Angehen braucht es genau 2 Nachbarn, die an sind." };
+  }
+  if (A === "wire") {
+    const st = ["leer", "Elektronenkopf", "Elektronenschwanz", "Leiter"][s], cnt = n === 1 ? "1 Elektronenkopf daneben" : `${n} Elektronenköpfe daneben`;
+    if (s === 0) return { ...base, state: st, count: cnt, outcome: "bleibt leer", rule: "Kein Leiter", tone: "none", why: "Leere Zellen ändern sich in Wireworld nie." };
+    if (s === 1) return { ...base, state: st, count: cnt, outcome: "wird Elektronenschwanz", rule: "Weiterfließen", tone: "die", why: "Ein Kopf wird immer zum Schwanz – so bewegt sich das Elektron vorwärts." };
+    if (s === 2) return { ...base, state: st, count: cnt, outcome: "wird wieder Leiter", rule: "Abklingen", tone: "none", why: "Ein Schwanz wird immer wieder zum Leiter." };
+    return n === 1 || n === 2
+      ? { ...base, state: st, count: cnt, outcome: "wird Elektronenkopf", rule: "Strom fließt", tone: "birth", why: "Ein Leiter wird zum Kopf, wenn 1 oder 2 Nachbarn Köpfe sind." }
+      : { ...base, state: st, count: cnt, outcome: "bleibt Leiter", rule: "Kein Strom", tone: "none", why: n ? "Bei mehr als 2 Köpfen daneben bleibt der Leiter ruhig." : "Kein Elektronenkopf in der Nähe." };
+  }
+  // Life-artig
+  const alive = s === 1, classic = ruleString() === "B3/S23", cnt = n === 1 ? "1 lebender Nachbar" : `${n} lebende Nachbarn`;
+  if (alive) {
+    if (S.survive.includes(n)) return { ...base, state: "lebendig", count: cnt, outcome: "bleibt am Leben", rule: "Überleben", tone: "live",
+      why: classic ? "Eine lebende Zelle mit 2 oder 3 lebenden Nachbarn bleibt am Leben." : `Die Regel ${ruleString()} lässt lebende Zellen bei ${S.survive.join(", ") || "–"} Nachbarn überleben.` };
+    const lonely = S.survive.length ? n < Math.min(...S.survive) : n < 2;
+    return { ...base, state: "lebendig", count: cnt, outcome: "stirbt", rule: lonely ? "Einsamkeit" : "Zu eng", tone: "die",
+      why: classic ? (lonely ? "Eine lebende Zelle mit 0 oder 1 lebenden Nachbarn stirbt." : "Eine lebende Zelle mit 4 oder mehr lebenden Nachbarn stirbt an Überbevölkerung.")
+                   : `Die Regel ${ruleString()} lässt lebende Zellen nur bei ${S.survive.join(", ") || "–"} Nachbarn überleben.` };
+  }
+  if (S.birth.includes(n)) return { ...base, state: "tot", count: cnt, outcome: "wird geboren", rule: "Geburt", tone: "birth",
+    why: classic ? "Eine tote Zelle mit genau 3 lebenden Nachbarn wird lebendig." : `Die Regel ${ruleString()} lässt tote Zellen bei ${S.birth.join(", ")} Nachbarn geboren werden.` };
+  return { ...base, state: "tot", count: cnt, outcome: "bleibt tot", rule: "Keine Geburt", tone: "none",
+    why: classic ? "Zum Geborenwerden braucht eine tote Zelle genau 3 lebende Nachbarn." : `Die Regel ${ruleString()} braucht für eine Geburt ${S.birth.join(", ") || "–"} Nachbarn.` };
+}
+/** Verdeckt die Erklär-Karte die Zelle, wird die Ansicht so verschoben, dass Zelle und Nachbarn frei sichtbar sind. */
+function revealExplainCell(c) {
+  const card = $("explainCard"); if (card.hidden || !lastView) return;
+  const { w, h } = boardSize(), cs = view.cs;
+  const ox = Math.round(w / 2 - view.cx * cs), oy = Math.round(h / 2 - view.cy * cs);
+  const cx = ox + (c.x + 0.5) * cs, cy = oy + (c.y + 0.5) * cs, pad = cs * 1.8;
+  const cr = { l: card.offsetLeft, t: card.offsetTop, r: card.offsetLeft + card.offsetWidth, b: card.offsetTop + card.offsetHeight };
+  const covered = cx + pad > cr.l && cx - pad < cr.r && cy + pad > cr.t && cy - pad < cr.b;
+  if (!covered && cy + pad < h && cx + pad < w) return;
+  const freeTop = cr.b, targetY = freeTop + (h - freeTop) / 2, targetX = cr.r + pad < w - 50 && h - freeTop < 3 * pad ? (cr.r + w) / 2 : w / 2;
+  view.cx = c.x + 0.5 - (targetX - w / 2) / cs;
+  view.cy = c.y + 0.5 - (targetY - h / 2) / cs;
+  view.fitted = false; requestRender();
+}
+function setExplain(c) {
+  explainCell = c;
+  $("explainCard").hidden = !c;
+  if (c) updateExplain();
+  requestRender();
+}
+function updateExplain() {
+  if (!explainCell) return;
+  if (explainCell.x >= S.cols || explainCell.y >= S.rows) { setExplain(null); return; }
+  const info = explainInfo(explainCell.x, explainCell.y), card = $("explainCard");
+  card.className = "explain " + info.tone;
+  setText("exTitle", info.title); setText("exState", info.state); setText("exCount", info.count);
+  setText("exOutcome", info.outcome); setText("exRule", info.rule); setText("exWhy", info.why);
+}
+/** Zeichnet die Hervorhebung der Nachbarn ins Spielfeld. */
+function drawExplain(ox, oy, cs) {
+  if (!explainCell) return;
+  const info = explainInfo(explainCell.x, explainCell.y), col = { die: "#f0765a", live: "#33d1b2", birth: "#f6b443", none: colors.text }[info.tone];
+  ctx.save();
+  let k = 0;
+  ctx.font = `bold ${Math.max(9, Math.floor(cs * 0.55))}px system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  for (const c of info.nb) {
+    if (c[2] < 0) continue;
+    const px = ox + c[0] * cs, py = oy + c[1] * cs;
+    ctx.globalAlpha = 0.9; ctx.lineWidth = Math.max(1, cs * 0.08); ctx.strokeStyle = colors.accent;
+    ctx.setLineDash([Math.max(2, cs * 0.18), Math.max(2, cs * 0.12)]);
+    ctx.strokeRect(px + 1, py + 1, cs - 2, cs - 2);
+    ctx.setLineDash([]);
+    if (info.mark(c)) {
+      k++;
+      ctx.fillStyle = "#f6b443"; ctx.globalAlpha = 0.95; ctx.fillRect(px + 1, py + 1, cs - 2, cs - 2);
+      if (cs >= 9) { ctx.fillStyle = "#24170a"; ctx.fillText(String(k), px + cs / 2, py + cs / 2 + 0.5); }
+    }
+  }
+  const px = ox + explainCell.x * cs, py = oy + explainCell.y * cs;
+  ctx.globalAlpha = 1; ctx.lineWidth = Math.max(2, cs * 0.14); ctx.strokeStyle = col;
+  ctx.strokeRect(px - 1, py - 1, cs + 2, cs + 2);
+  ctx.restore();
+}
+/** Ansicht „Nachbarzahlen“: Zahl in jeder Zelle, farbig nach dem, was als Nächstes passiert. */
+function drawNeighborNumbers(ox, oy, cs, x0, x1, y0, y1) {
+  if (S.automaton !== "life") return;
+  if (cs < 11) { if (!drawNeighborNumbers.hinted) { drawNeighborNumbers.hinted = true; toast("Nachbarzahlen: Zum Lesen etwas hineinzoomen (Mausrad, Pinch oder +)."); } return; }
+  ctx.save();
+  ctx.font = `600 ${Math.floor(cs * 0.5)}px system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    let n = 0;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      if (!dx && !dy) continue;
+      let nx = x + dx, ny = y + dy;
+      if (S.wrap) { nx = (nx + S.cols) % S.cols; ny = (ny + S.rows) % S.rows; } else if (nx < 0 || ny < 0 || nx >= S.cols || ny >= S.rows) continue;
+      if (grid[ny * S.cols + nx] === 1) n++;
+    }
+    const alive = grid[y * S.cols + x] === 1;
+    if (!n && !alive) continue;
+    const next = alive ? S.survive.includes(n) : S.birth.includes(n);
+    ctx.fillStyle = alive ? (next ? "#0d2b22" : "#b8321b") : (next ? "#33d1b2" : colors.text);
+    ctx.globalAlpha = alive ? 1 : next ? 1 : 0.45;
+    if (alive && !next) { ctx.globalAlpha = 1; }
+    ctx.fillText(String(n), ox + x * cs + cs / 2, oy + y * cs + cs / 2 + 0.5);
+  }
+  ctx.restore();
 }
 function toggleGrid() { S.showGrid = !S.showGrid; $("showGrid").checked = S.showGrid; saveSettings(); requestRender(); }
 function zoomCenter(f) { const { w, h } = boardSize(); zoomAt(w / 2, h / 2, f); }
@@ -3090,10 +3313,10 @@ document.addEventListener("keydown", e => {
   const actions = {
     " ": play, ArrowRight: () => { pause(); step(); updateButtons(); }, n: () => { pause(); step(); updateButtons(); },
     ArrowLeft: stepBack, b: stepBack, s: restoreStart, z: randomize, c: clearBoard,
-    d: () => setTool("draw"), e: () => setTool("erase"), v: () => setTool("pan"), g: toggleGrid, m: () => { setSound(!S.sound); toast(S.sound ? "🔊 Ton an" : "🔇 Ton aus"); },
+    d: () => setTool("draw"), e: () => setTool("erase"), v: () => setTool("pan"), x: () => setTool(tool === "explain" ? "draw" : "explain"), g: toggleGrid, m: () => { setSound(!S.sound); toast(S.sound ? "🔊 Ton an" : "🔇 Ton aus"); },
     r: () => { if (selectedPattern) selectPattern(rotatePattern(selectedPattern)); },
     f: () => { if (selectedPattern) selectPattern(flipPattern(selectedPattern)); },
-    Escape: () => selectPattern(null),
+    Escape: () => { if (explainCell) setExplain(null); else selectPattern(null); },
     "+": () => zoomCenter(1.25), "=": () => zoomCenter(1.25), "-": () => zoomCenter(0.8), "0": fitView,
     "?": () => $("helpDialog").showModal(),
     "[": () => setPen(PENS[Math.max(0, PENS.indexOf(S.pen) - 1)]),
@@ -3272,6 +3495,8 @@ $("redoBtn").onclick = redo;
 $("drawBtn").onclick = () => setTool("draw");
 $("eraseBtn").onclick = () => setTool("erase");
 $("panBtn").onclick = () => setTool("pan");
+$("explainBtn").onclick = () => setTool(tool === "explain" ? "draw" : "explain");
+$("exClose").onclick = () => setExplain(null);
 $("zoomInBtn").onclick = () => zoomCenter(1.25);
 $("zoomOutBtn").onclick = () => zoomCenter(0.8);
 $("fitBtn").onclick = fitView;
@@ -3281,7 +3506,7 @@ $("selCancel").onclick = () => selectPattern(null);
 $("timeline").addEventListener("input", e => { pause(); scrubTo(+e.target.value); });
 $("timeline").addEventListener("change", () => { if (future.length) toast(`Zeitleiste: Generation ${generation} – „Start“ oder „Schritt“ spielt die gespeicherte Zukunft ab. Jede Änderung beginnt eine neue.`); });
 $("speed").oninput = () => { S.speed = +$("speed").value; $("speedLabel").textContent = S.speed + " Gen/s"; saveSettings(); };
-$("displayMode").onchange = e => { S.displayMode = e.target.value; saveSettings(); requestRender(); };
+$("displayMode").onchange = e => { S.displayMode = e.target.value; drawNeighborNumbers.hinted = false; saveSettings(); requestRender(); };
 
 // Regeln
 $("automatonSelect").onchange = e => setAutomaton(e.target.value);
@@ -3630,8 +3855,8 @@ resetPopHist();
 startSnap = snapshot();
 updateStatus(); updateButtons();
 // Sprache: gespeichert oder aus dem Browser erkannt; danach übersetzt der Beobachter alles Neue
-setLang(S.lang || detectLang(), { save: false });
 i18nObs.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: I18N_ATTRS });
+setLang(S.lang || detectLang(), { save: false });
 document.querySelectorAll(".flag").forEach(b => b.onclick = () => { if (b.dataset.lang !== S.lang) { setLang(b.dataset.lang); sfx("tab"); } });
 requestAnimationFrame(t => { lastT = t; fitView(); requestAnimationFrame(frame); });
 
