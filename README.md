@@ -40,18 +40,25 @@ Aus diesen einfachen, rein lokalen Regeln entstehen stabile Formen, pulsierende 
 - Rückgängig / Wiederholen, Startzustand wiederherstellen, Tempo 1–60 Generationen pro Sekunde
 - Ränder offen oder als **Torus** verbunden
 - Ansichten: Normal, **Zellalter**, **Heatmap** und **Nachbarzahlen** (grün = wird geboren, rot = stirbt)
-- Live-**Populationskurve**
+- Live-**Populationskurve**; ein Klick darauf öffnet das **Statistik-Fenster** mit Höchst- und Tiefststand, Dichte, Wachstum, Geburten und Toden pro Generation, ältester Zelle und **CSV-Export**
 - Automatische **Erkennung** von ausgestorbenen Feldern, Stillleben, Oszillatoren (mit Periode) und Raumschiffen (mit Geschwindigkeit)
 
 ### Musterbibliothek
 - **36 geprüfte Muster** in fünf Gruppen: Raumschiffe, Oszillatoren, Stillleben, Kanonen & Wachstum, Methusalems
+- **10 Sechseck-Muster** für B2/S34H und HighHexLife (Oszillatoren mit Periode 2 bis 48), alle in der App nachgeprüft
+- **Steckbriefe:** Das kleine ⓘ auf jeder Musterkarte zeigt eine animierte Vorschau, Typ, Größe, Entdecker, Jahr und die Geschichte des Musters
 - Vorschau beim Platzieren, Drehen und Spiegeln, Suche und Gruppen zum Ein- und Ausklappen
 - Import von **RLE** und Klartext (`.cells`), eigene Muster speichern
 
 ### Regeln & Automaten
 - **10 bekannte Regeln** (HighLife, Seeds, Day & Night, Maze …) oder eine eigene B/S-Regel
 - Weitere Automaten: **Brian's Brain**, **Wireworld** (Elektronen, Dioden, Taktgeber) und **zyklische Automaten**, deren Spiralwellen an die Belousov-Zhabotinsky-Reaktion erinnern
-- Jeder Automat hat einen „Demo starten“-Button
+- **Sechseck-Life:** Life auf einem Sechseck-Gitter mit 6 gleich weit entfernten Nachbarn, Regeln wie **B2/S34H** (Hexagonal Life) oder B25/S34H (HighHexLife), eigene Musterbibliothek mit Oszillatoren von Periode 2 bis 48, Drehen um 60°, RLE kompatibel mit Golly
+- **Wissenschaft:**
+  - **Reaktion-Diffusion (Gray-Scott):** zwei Stoffe reagieren (A + 2B → 3B) und bilden Turing-Muster wie Korallen, Zellteilung, Labyrinthe oder Würmer; Zufuhr F und Abbau k frei einstellbar
+  - **Kristallwachstum (DLA):** Teilchen in Brownscher Bewegung lagern sich an und bilden Dendriten wie Eisblumen; Farbringe zeigen die Wachstumsreihenfolge
+  - **Elementare 1D-Automaten (Wolfram):** alle 256 Regeln, z. B. Regel 30 (Chaos), 90 (Sierpinski-Dreieck) und 110 (Turing-vollständig), mit anklickbarer Regeltabelle
+- Jeder Automat hat einen „Demo starten“-Button und wird im Erklär-Modus erklärt
 
 ### Lernen
 - **Einführung** beim ersten Besuch: was das Game of Life ist, die vier Regeln und drei Startideen (jederzeit wieder über „Was ist das?“)
@@ -59,6 +66,14 @@ Aus diesen einfachen, rein lokalen Regeln entstehen stabile Formen, pulsierende 
 - Die Regeln als **illustrierte Karten** und in Worten
 - **Emergenz-Fenster** mit 11 Beispielen aus der echten Welt: Vogelschwärme, Ameisenstraßen, Staus aus dem Nichts, Schneeflocken, Bénard-Zellen, BZ-Reaktion, Mizellen, Temperatur, Neuronen, Leben aus Atomen und ab wann Gold ein Metall ist
 - **7 Missionen** mit automatischer Prüfung (z. B. „Baue ein Raumschiff“, „Methusalem“, „Totale Auslöschung“)
+
+### Spiele
+- **Zwei-Spieler-Duell:** Rot und Blau setzen nacheinander (auf Wunsch verdeckt) eine begrenzte Zahl Zellen auf ihre Hälfte. Dann läuft die Simulation nach der „Immigration“-Regel: Neue Zellen bekommen die Mehrheitsfarbe ihrer Eltern. Wer nach N Generationen mehr Zellen hat, gewinnt.
+  - 10 bis 100 Zellen pro Spieler, 50 bis 1000 Generationen
+  - gespielt wird immer auf einem **Torus** (Ränder verbunden)
+  - „Zufall“ verteilt beim Setzen genau die erlaubte Zahl Zellen auf der eigenen Hälfte, „Leeren“ entfernt nur die eigenen Zellen
+  - während des Duells sind Zeichnen, Rückgängig und Feldänderungen gesperrt; „Abbrechen“ bzw. „Beenden“ leert das Feld und schaltet zurück auf Life
+  - Spielstand über mehrere Runden und „Nochmal ansehen“
 
 ### Design & Sound
 - **7 Themes**, eigene Farben und bis zu 5 gespeicherte Farbschemata
@@ -131,7 +146,7 @@ life-lab/
 
 ### Eine neue Version veröffentlichen
 Neue `index.html` hochladen – fertig. Installierte Apps holen sich die neue Version beim nächsten Öffnen automatisch.
-Nur wenn sich Icons oder `manifest.webmanifest` ändern, zusätzlich in `sw.js` die Versionsnummer erhöhen (z. B. `life-lab-v4` → `life-lab-v5`).
+Nur wenn sich Icons oder `manifest.webmanifest` ändern, zusätzlich in `sw.js` die Versionsnummer erhöhen (z. B. `life-lab-v5` → `life-lab-v6`).
 
 ## Credits
 
@@ -151,7 +166,7 @@ Eröffne gern ein [Issue](../../issues). Kerem freut sich über jede Nachricht.
 
 **Life Lab** is a self-contained, offline-capable web app for exploring Conway's Game of Life: a single HTML file with no dependencies, installable as a PWA.
 
-Features: drawing with several pen sizes, an explain mode that shows why a cell lives or dies, zoom, a timeline to rewind generations, automatic detection of still lifes, oscillators and spaceships, a library of 36 verified patterns, RLE import/export, 10 known rule sets plus Brian's Brain, Wireworld and cyclic automata, 7 missions, an illustrated explanation of emergence with real-world examples, live-generated sound and music, 7 themes, PNG/GIF export, 19 hidden Easter eggs, and a full English and Turkish translation (switch with the flags at the top).
+Features: drawing with several pen sizes, an explain mode that shows why a cell lives or dies, zoom, a timeline to rewind generations, automatic detection of still lifes, oscillators and spaceships, a library of 36 verified patterns with animated profile cards (discoverer, year, history), RLE import/export, 10 known rule sets plus a hexagonal grid (Hex Life, B2/S34H and more, Golly-compatible RLE), Brian's Brain, Wireworld and cyclic automata, science modes (Gray-Scott reaction-diffusion, crystal growth by diffusion-limited aggregation, all 256 elementary Wolfram rules), a two-player duel, a statistics window with CSV export, 7 missions, an illustrated explanation of emergence with real-world examples, live-generated sound and music, 7 themes, PNG/GIF export, 19 hidden Easter eggs, and a full English and Turkish translation (switch with the flags at the top).
 
 Idea & concept: Kerem. Built with the help of ChatGPT and Claude.
 

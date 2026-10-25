@@ -1,7 +1,7 @@
 {
   "name": "Life Lab – Conway's Game of Life",
   "short_name": "Life Lab",
-  "description": "Conway's Game of Life zum Ausprobieren – mit Musterbibliothek, Missionen, mehreren Automaten und Emergenz-Erklärungen. Idee & Konzept: Kerem.",
+  "description": "Conway's Game of Life zum Ausprobieren – mit Musterbibliothek, Zwei-Spieler-Duell, Missionen, Sechseck-Gitter, Wissenschafts-Modi, Statistik und Emergenz-Erklärungen. Idee & Konzept: Kerem.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -1,6 +1,6 @@
 // Life Lab – Service Worker: macht die App offline nutzbar.
 // Bei einer neuen Version die Nummer erhöhen, damit Geräte die neuen Dateien laden.
-const CACHE = "life-lab-v4";
+const CACHE = "life-lab-v5";
 const FILES = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable-512.png", "./icons/apple-touch-icon.png"];
 

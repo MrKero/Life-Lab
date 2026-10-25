@@ -61,6 +61,22 @@ main{max-width:1440px;margin:auto;padding:6px 22px 30px;display:grid;grid-templa
 .detect{display:inline-block;margin-top:3px;padding:2px 8px;border-radius:999px;background:var(--panel2);color:var(--accent);font-weight:650}
 .chart-row{display:flex;gap:10px;align-items:center}
 .chart-row canvas{flex:1;height:46px;min-width:0;display:block;border-radius:8px;background:var(--panel2)}
+.chart-row canvas{cursor:pointer}
+.chart-btn{flex:none;width:34px;height:34px;padding:0;display:grid;place-items:center;color:var(--muted)}
+.chart-btn:hover{color:var(--accent)}
+.stat-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:4px 0 14px}
+@media(max-width:560px){.stat-tiles{grid-template-columns:repeat(2,1fr)}}
+.stat-tiles div{background:var(--panel2);border-radius:10px;padding:7px 10px;font-size:11.5px;color:var(--muted);min-width:0}
+.stat-tiles b{display:block;color:var(--text);font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-tiles small{display:block;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-chart{position:relative}
+.stat-chart canvas{display:block;width:100%;border-radius:10px;background:var(--panel2);touch-action:pan-y}
+.stat-tip{position:absolute;top:6px;pointer-events:none;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:12px;white-space:nowrap;box-shadow:var(--shadow);font-variant-numeric:tabular-nums}
+.stat-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:6px 0 2px}
+.stat-legend i{display:inline-block;width:10px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:5px 11px;font-size:12.5px;background:transparent;color:var(--muted)}
+.seg button.active{background:var(--panel2);color:var(--text)}
 .chart-info{font-size:11px;color:var(--muted);width:76px;line-height:1.35;flex:none;white-space:pre-line}
 
 .board-wrap{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:12px;background:var(--bg);touch-action:none;height:clamp(320px,62vh,780px)}
@@ -77,6 +93,20 @@ main{max-width:1440px;margin:auto;padding:6px 22px 30px;display:grid;grid-templa
 .ex-why{margin-top:4px;color:var(--text);line-height:1.4}
 .ex-hint{margin-top:6px;font-size:11.5px;color:var(--muted)}
 @media(max-width:560px){.explain{left:6px;top:6px;padding:8px 10px;font-size:12px;max-width:calc(100% - 64px)}.ex-result{font-size:14px;margin-top:3px}.ex-hint{display:none}}
+.duel-hud{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:3;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:7px 10px;box-shadow:var(--shadow);font-size:13px;min-width:min(300px,calc(100% - 20px));max-width:calc(100% - 20px)}
+.duel-hud-row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.duel-hud-row span{font-weight:650;font-variant-numeric:tabular-nums}
+.duel-hud-row button{padding:5px 12px;flex:none}
+.duel-hud-row button[hidden]{display:none}
+.duel-bar{display:flex;height:6px;border-radius:99px;overflow:hidden;background:var(--panel2);margin-top:6px}
+.duel-hud.placing .duel-bar{display:none}
+@media(max-width:560px){.duel-hud{left:8px;right:54px;transform:none;min-width:0;max-width:none;bottom:8px;padding:6px 8px;font-size:12px}}
+.duel-bar i{display:block;height:100%;transition:width .25s}
+.duel-bar i:first-child{background:#ff6b78}.duel-bar i:last-child{background:#5aa8ff;margin-left:auto}
+.duel-box{border:1px solid var(--border);border-radius:12px;padding:11px 12px;background:var(--bg);margin:9px 0 4px}
+.duel-box .field{margin:0 0 8px}
+.duel-status{font-size:13px;margin:8px 0;font-weight:600}
+.duel-status .r{color:#ff6b78}.duel-status .b{color:#5aa8ff}
 .selbar{position:absolute;left:10px;top:10px;right:60px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;pointer-events:none}
 .selbar>*{pointer-events:auto}
 .selbar .chip{background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:6px 10px;font-size:13px;cursor:pointer}
@@ -218,11 +248,31 @@ body.retro::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:
 .inline>*{min-width:0}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pattern-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.pcard{position:relative;min-width:0}
+.pcard .pattern{width:100%;height:100%;padding-right:24px}
+.pinfo{position:absolute;top:5px;right:5px;width:19px;height:19px;min-height:0;padding:0;border-radius:50%;border:1px solid currentColor;background:transparent;color:var(--muted);font:600 11px/17px Georgia,serif;font-style:italic;text-align:center;opacity:.35;transition:opacity .15s,color .15s}
+.pcard:hover .pinfo,.pinfo:focus-visible{opacity:.85}
+.pinfo:hover{opacity:1;color:var(--accent)}
+@media(hover:none){.pinfo{opacity:.55}}
+.pd-top{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:560px){.pd-top{grid-template-columns:1fr}}
+#pdCanvas{display:block;width:100%;aspect-ratio:4/3;border-radius:12px;border:1px solid var(--border)}
+.pd-gen{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--muted);margin-top:5px;font-variant-numeric:tabular-nums}
+.pd-gen button{padding:2px 9px;min-height:0;font-size:13px}
+.pd-facts{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0;font-size:13px}
+.pd-facts dt{color:var(--muted)}
+.pd-facts dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.pd-text{margin:14px 0 0;font-size:14px;line-height:1.55}
 .pattern{display:flex;align-items:center;gap:9px;text-align:left;padding:8px}
 .pattern canvas{width:42px;height:42px;flex:none;border-radius:5px;border:1px solid var(--border)}
 .pattern span{display:block;font-size:12.5px;line-height:1.3;min-width:0;overflow-wrap:anywhere;hyphens:auto}
 .pattern small{display:block;color:var(--muted);font-size:11px}
 .note{padding:10px 12px;background:var(--panel2);border-radius:11px;color:var(--muted);font-size:13px}
+.wolf-bits{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:4px 0 8px}
+.wolf-bits button{padding:5px 0 4px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px}
+.wolf-bits .tri{display:grid;grid-template-columns:repeat(3,6px);gap:1px}
+.wolf-bits .tri i,.wolf-bits .out{width:6px;height:6px;border-radius:1px;background:color-mix(in srgb,var(--text) 18%,transparent)}
+.wolf-bits .tri i.on,.wolf-bits .out.on{background:var(--accent)}
 .rule-preview{font-family:ui-monospace,SFMono-Regular,monospace;font-size:18px;color:var(--accent);padding:4px 0}
 details{border-top:1px solid var(--border);padding-top:12px;margin-top:12px}
 summary{cursor:pointer;font-weight:650;font-size:13px}
@@ -328,6 +378,7 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
     <div class="chart-row">
       <canvas id="chart" aria-label="Verlauf der Population"></canvas>
       <div class="chart-info" id="chartInfo">Populationsverlauf</div>
+      <button class="chart-btn" id="statsBtn" type="button" title="Statistik öffnen" aria-label="Statistik öffnen"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 14h12M4 12V8M7 12V4M10 12V6.5M13 12V9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></svg></button>
     </div>
     <div class="board-wrap" id="boardWrap">
       <canvas id="board" aria-label="Spielfeld. Klicke oder tippe auf Zellen, um sie umzuschalten. Mausrad zoomt, rechte Maustaste verschiebt."></canvas>
@@ -338,6 +389,10 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
         <div class="ex-result"><span id="exArrow">→</span> <span id="exOutcome"></span> <span class="ex-badge" id="exRule"></span></div>
         <div class="ex-why" id="exWhy"></div>
         <div class="ex-hint" id="exHint">Tippe weitere Zellen an · „Schritt ▶“ zeigt, was passiert</div>
+      </div>
+      <div class="duel-hud" id="duelHud" hidden>
+        <div class="duel-hud-row"><span id="duelHudText"></span><button id="duelDone" class="primary" type="button">Fertig ✓</button></div>
+        <div class="duel-bar"><i id="duelBarRed"></i><i id="duelBarBlue"></i></div>
       </div>
       <div class="selbar" id="selBar" hidden>
         <button class="chip" id="selChip" type="button" title="In der Bibliothek zeigen">Muster: <b id="selName"></b></button>
@@ -395,7 +450,7 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
         <button class="tab" role="tab" id="tab-field" aria-controls="page-field" aria-selected="false" data-tab="field">Feld</button>
         <button class="tab" role="tab" id="tab-design" aria-controls="page-design" aria-selected="false" data-tab="design">Design</button>
         <button class="tab" role="tab" id="tab-sound" aria-controls="page-sound" aria-selected="false" data-tab="sound">Sound</button>
-        <button class="tab" role="tab" id="tab-missions" aria-controls="page-missions" aria-selected="false" data-tab="missions">Missionen</button>
+        <button class="tab" role="tab" id="tab-missions" aria-controls="page-missions" aria-selected="false" data-tab="missions">Spiele</button>
       </div>
 
       <div class="tabpage active" id="page-patterns" role="tabpanel" aria-labelledby="tab-patterns">
@@ -426,6 +481,13 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
             <option value="brain">Brian's Brain</option>
             <option value="wire">Wireworld (Schaltkreise)</option>
             <option value="cyclic">Zyklischer Automat</option>
+            <option value="hex">Sechseck-Life (6 Nachbarn)</option>
+            <option value="duel">Immigration (zwei Farben)</option>
+            <optgroup label="Wissenschaft">
+              <option value="rd">Reaktion-Diffusion (Gray-Scott)</option>
+              <option value="dla">Kristallwachstum (DLA)</option>
+              <option value="wolfram">Elementar 1D (Wolfram)</option>
+            </optgroup>
           </select>
         </div>
         <p id="automatonInfo"></p>
@@ -446,6 +508,17 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
           <div class="toolbar" style="margin-top:12px"><button class="primary" id="applyRuleBtn">Regel anwenden</button><button id="standardRuleBtn">Standard B3/S23</button></div>
         </div>
 
+        <div id="hexRuleBox" hidden>
+          <div class="field"><label for="hexPreset">Bekannte Sechseck-Regeln</label><select id="hexPreset"></select></div>
+          <div class="rule-preview" id="hexRulePreview">B2/S34H</div>
+          <div class="grid2">
+            <div class="field"><label for="hexBirth">Geburt (B)</label><input id="hexBirth" type="text" inputmode="numeric" placeholder="z. B. 2"></div>
+            <div class="field"><label for="hexSurvive">Überleben (S)</label><input id="hexSurvive" type="text" inputmode="numeric" placeholder="z. B. 34"></div>
+          </div>
+          <div class="small">Ziffern 0–6 = Anzahl lebender Nachbarn (jede Zelle hat hier nur 6).</div>
+          <div class="toolbar" style="margin-top:12px"><button class="primary" id="applyHexBtn" type="button">Regel anwenden</button><button id="standardHexBtn" type="button">Standard B2/S34H</button></div>
+        </div>
+
         <div id="cyclicBox" hidden>
           <div class="grid2">
             <div class="field"><label for="cycStates">Anzahl Zustände</label><input id="cycStates" type="number" min="3" max="24" value="14"></div>
@@ -455,6 +528,29 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
             <select id="cycNeighborhood"><option value="vn">von Neumann (4 Nachbarn)</option><option value="moore">Moore (8 Nachbarn)</option></select>
           </div>
           <button class="primary" id="applyCyclicBtn" style="width:100%">Übernehmen</button>
+        </div>
+
+        <div id="rdBox" hidden>
+          <div class="field"><label for="rdPreset">Muster-Typ</label><select id="rdPreset"></select></div>
+          <div class="grid2">
+            <div class="field"><label for="rdF">Zufuhr F: <span id="rdFLabel"></span></label><input id="rdF" type="range" min="0.01" max="0.1" step="0.0005"></div>
+            <div class="field"><label for="rdK">Abbau k: <span id="rdKLabel"></span></label><input id="rdK" type="range" min="0.04" max="0.075" step="0.0005"></div>
+          </div>
+          <div class="small">Zeichnen gibt Stoff B dazu. Schon winzige Änderungen an F und k erzeugen völlig andere Muster. Ränder: Mit „Torus“ (Tab „Feld“) fließen die Stoffe auf der Gegenseite weiter, sonst wirkt der Rand wie eine geschlossene Wand.</div>
+        </div>
+
+        <div id="dlaBox" hidden>
+          <div class="field"><label for="dlaWalkers">Freie Teilchen: <span id="dlaWalkersLabel"></span></label><input id="dlaWalkers" type="range" min="10" max="400" step="10"></div>
+          <div class="small">Gezeichnete Zellen werden zu Kristallkeimen. Die Farbringe zeigen, in welcher Reihenfolge der Kristall gewachsen ist.</div>
+        </div>
+
+        <div id="wolfBox" hidden>
+          <div class="grid2" style="grid-template-columns:1fr 96px">
+            <div class="field"><label for="wolfPreset">Bekannte Regeln</label><select id="wolfPreset"></select></div>
+            <div class="field"><label for="wolfRule">Regel (0–255)</label><input id="wolfRule" type="number" min="0" max="255" inputmode="numeric"></div>
+          </div>
+          <div class="wolf-bits" id="wolfBits" aria-label="Regeltabelle"></div>
+          <div class="small">Jede Zeile ist eine Generation. Die drei Zellen darüber bestimmen, ob eine Zelle an ist. Antippen schaltet ein Ergebnis um.</div>
         </div>
 
         <div class="field" id="drawStateField" hidden>
@@ -527,7 +623,20 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
         </div>
       </div>
       <div class="tabpage" id="page-missions" role="tabpanel" aria-labelledby="tab-missions">
-        <h2>Missionen</h2>
+        <h2>Spiele</h2>
+        <h3 style="margin-top:4px">Zwei-Spieler-Duell</h3>
+        <p>Rot setzt Zellen auf die linke Hälfte, Blau auf die rechte. Dann läuft die Simulation: Neue Zellen bekommen die Farbe, die unter ihren Eltern in der Mehrheit ist. Wer am Ende mehr Zellen hat, gewinnt.</p>
+        <div id="duelBox" class="duel-box">
+          <div class="grid2">
+            <div class="field"><label for="duelCells">Zellen pro Spieler</label><select id="duelCells"><option value="10">10</option><option value="20">20</option><option value="40">40</option><option value="60">60</option><option value="100">100</option></select></div>
+            <div class="field"><label for="duelGens">Generationen</label><select id="duelGens"><option value="50">50</option><option value="100">100</option><option value="200">200</option><option value="500">500</option><option value="1000">1000</option></select></div>
+          </div>
+          <label class="check"><input type="checkbox" id="duelHide" checked><span>Verdeckt setzen<small>Während Blau setzt, sind die roten Zellen unsichtbar.</small></span></label>
+          <div class="small" style="margin-top:2px">Gespielt wird auf einem Torus: Was über einen Rand hinausläuft, kommt gegenüber wieder herein.</div>
+          <div class="duel-status" id="duelStatus" hidden></div>
+          <div class="toolbar"><button class="primary" id="duelBtn" type="button">Duell starten</button><button id="duelReplay" type="button" hidden>↺ Nochmal ansehen</button><button id="duelCancel" class="ghost" type="button" hidden>Abbrechen</button></div>
+        </div>
+        <h3>Missionen</h3>
         <p>Baue das gesuchte Muster aufs Feld und klicke auf „Prüfen“. Geprüft wird mit der klassischen Regel B3/S23 auf einer freien Fläche – Randeffekte spielen keine Rolle.</p>
         <div class="progress"><div id="missionProgress"></div></div>
         <div class="small" id="missionCount"></div>
@@ -672,6 +781,33 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
     <p class="help-foot">🐞 Fehler gefunden oder eine Idee? Schreib <button type="button" class="kerem-name" aria-label="Kerem">Kerem</button> – er freut sich über jede Nachricht.</p>
   </div>
   <div class="modal-foot"><button class="primary" data-close>Alles klar</button></div>
+</dialog>
+
+<dialog id="patternDialog" aria-labelledby="pdTitle">
+  <div class="modal-head"><h2 id="pdTitle"></h2><button data-close aria-label="Dialog schließen">✕</button></div>
+  <div class="modal-body">
+    <div class="pd-top">
+      <div><canvas id="pdCanvas" aria-label="Animierte Vorschau"></canvas><div class="pd-gen"><span id="pdGen"></span><button id="pdReplay" type="button" class="ghost" title="Von vorn">↺</button></div></div>
+      <dl class="pd-facts" id="pdFacts"></dl>
+    </div>
+    <p id="pdText" class="pd-text"></p>
+  </div>
+  <div class="modal-foot"><button data-close>Schließen</button><button class="primary" id="pdSelect" type="button">Auswählen</button></div>
+</dialog>
+
+<dialog id="statsDialog" aria-labelledby="statsTitle">
+  <div class="modal-head"><h2 id="statsTitle">Statistik</h2><button data-close aria-label="Dialog schließen">✕</button></div>
+  <div class="modal-body">
+    <div class="stat-tiles" id="statTiles"></div>
+    <div class="inline" style="justify-content:space-between;margin-bottom:6px"><h3 style="margin:0" id="statChartTitle">Population</h3><div class="seg" id="statRange"><button data-n="100" type="button">100</button><button data-n="500" type="button" class="active">500</button><button data-n="0" type="button">Alle</button></div></div>
+    <div class="stat-chart"><canvas id="statChart" data-h="190"></canvas><div class="stat-tip" id="statTip" hidden></div></div>
+    <div class="stat-legend" id="statLegend"></div>
+    <h3>Geburten &amp; Tode pro Generation</h3>
+    <div class="stat-chart"><canvas id="statFlow" data-h="90"></canvas></div>
+    <div class="stat-legend"><span><i style="background:#33d1b2"></i>Geburten</span><span><i style="background:#f0765a"></i>Tode</span></div>
+    <p class="small" id="statNote">Die Werte aktualisieren sich live, während die Simulation läuft. Gespeichert werden bis zu 2000 Generationen.</p>
+  </div>
+  <div class="modal-foot"><button id="statCsv" type="button">Als CSV speichern</button><button class="primary" data-close>Fertig</button></div>
 </dialog>
 
 <dialog id="exportDialog" aria-labelledby="exportTitle">
@@ -838,6 +974,147 @@ const I18N_PAT_EXTRA = [
   ["^Die Regel (\\S+) lässt tote Zellen bei (.+) Nachbarn geboren werden\\.$", "Rule {=1} makes dead cells come alive with {=2} neighbours.", "{=1} kuralında ölü hücreler {=2} komşuyla doğar."],
   ["^Die Regel (\\S+) braucht für eine Geburt (.+) Nachbarn\\.$", "Rule {=1} needs {=2} neighbours for a birth.", "{=1} kuralında doğum için {=2} komşu gerekir."]
 ];
+/* ---------- Übersetzungen: Wissenschaft, Duell, Statistik, Steckbriefe ---------- */
+Object.assign(I18N_EXACT, {
+  "Spiele": ["Games", "Oyunlar"], "Wissenschaft": ["Science", "Bilim"],
+  "Immigration (zwei Farben)": ["Immigration (two colours)", "Göç (iki renk)"],
+  "Reaktion-Diffusion (Gray-Scott)": ["Reaction-diffusion (Gray-Scott)", "Tepkime-difüzyon (Gray-Scott)"],
+  "Kristallwachstum (DLA)": ["Crystal growth (DLA)", "Kristal büyümesi (DLA)"],
+  "Elementar 1D (Wolfram)": ["Elementary 1D (Wolfram)", "Temel 1B (Wolfram)"],
+  "Conways Regeln mit zwei Farben: Eine neue Zelle bekommt die Farbe, die unter ihren drei Eltern in der Mehrheit ist. Die Grundlage für das Zwei-Spieler-Duell im Tab „Spiele“.": ["Conway's rules with two colours: a new cell takes the colour that is in the majority among its three parents. The basis for the two-player duel in the “Games” tab.", "İki renkli Conway kuralları: Yeni bir hücre, üç ebeveyni arasında çoğunlukta olan rengi alır. „Oyunlar“ sekmesindeki iki kişilik düellonun temeli."],
+  "Zwei Stoffe A und B breiten sich aus und reagieren: A + 2B → 3B. A wird ständig nachgefüllt (F), B zerfällt langsam (k). So entstehen Muster wie auf Zebras, Korallen oder Fingerabdrücken – Alan Turing hat das 1952 vorhergesagt.": ["Two substances A and B spread out and react: A + 2B → 3B. A is constantly replenished (F), B slowly decays (k). This creates patterns like those on zebras, corals or fingerprints – Alan Turing predicted this in 1952.", "İki madde, A ve B, yayılır ve tepkimeye girer: A + 2B → 3B. A sürekli takviye edilir (F), B yavaşça bozunur (k). Böylece zebralardaki, mercanlardaki ya da parmak izlerindeki gibi desenler oluşur – Alan Turing bunu 1952'de öngörmüştü."],
+  "Teilchen irren zufällig umher (Brownsche Bewegung). Berühren sie den Kristall, bleiben sie kleben. So wachsen verästelte Strukturen wie Eisblumen, Blitze, Korallen oder Mineral-Dendriten.": ["Particles wander around randomly (Brownian motion). When they touch the crystal, they stick. This is how branching structures grow, like frost flowers, lightning, corals or mineral dendrites.", "Parçacıklar rastgele dolaşır (Brown hareketi). Kristale dokunduklarında yapışırlar. Böylece buz çiçekleri, şimşekler, mercanlar ya da mineral dendritleri gibi dallanan yapılar büyür."],
+  "Die einfachsten Automaten überhaupt: eine Zeile Zellen, jede Zelle schaut nur auf sich und ihre zwei Nachbarn. Es gibt genau 256 Regeln. Stephen Wolfram hat sie in den 1980ern systematisch untersucht.": ["The simplest automata of all: a single row of cells, each cell looks only at itself and its two neighbours. There are exactly 256 rules. Stephen Wolfram studied them systematically in the 1980s.", "Var olan en basit otomatlar: tek sıra hücre, her hücre yalnızca kendisine ve iki komşusuna bakar. Tam 256 kural vardır. Stephen Wolfram bunları 1980'lerde sistematik olarak inceledi."],
+  "Rot": ["Red", "Kırmızı"], "Blau": ["Blue", "Mavi"], "rot": ["red", "kırmızı"], "blau": ["blue", "mavi"],
+  "Stoff B": ["Substance B", "B maddesi"], "Kristallkeim": ["Crystal seed", "Kristal tohumu"],
+  "Muster-Typ": ["Pattern type", "Desen türü"], "Korallen": ["Coral", "Mercan"], "Zellteilung": ["Cell division", "Hücre bölünmesi"],
+  "Labyrinth": ["Labyrinth", "Labirent"], "Würmer": ["Worms", "Solucanlar"], "Löcher": ["Holes", "Delikler"],
+  "Wachsende Schleifen": ["Growing loops", "Büyüyen halkalar"], "Eigene Werte": ["Custom values", "Özel değerler"],
+  "Zufuhr F:": ["Feed F:", "Besleme F:"], "Abbau k:": ["Decay k:", "Bozunma k:"],
+  "Zeichnen gibt Stoff B dazu. Schon winzige Änderungen an F und k erzeugen völlig andere Muster.": ["Drawing adds substance B. Even tiny changes to F and k create completely different patterns.", "Çizmek B maddesi ekler. F ve k'deki en küçük değişiklikler bile bambaşka desenler oluşturur."],
+  "Freie Teilchen:": ["Free particles:", "Serbest parçacıklar:"],
+  "Gezeichnete Zellen werden zu Kristallkeimen. Die Farbringe zeigen, in welcher Reihenfolge der Kristall gewachsen ist.": ["Drawn cells become crystal seeds. The coloured rings show the order in which the crystal grew.", "Çizilen hücreler kristal tohumu olur. Renk halkaları kristalin hangi sırayla büyüdüğünü gösterir."],
+  "Eigene": ["Custom", "Özel"],
+  "30 – Chaos aus Ordnung": ["30 – chaos from order", "30 – düzenden kaos"], "90 – Sierpinski-Dreieck": ["90 – Sierpinski triangle", "90 – Sierpinski üçgeni"],
+  "110 – kann alles berechnen": ["110 – can compute anything", "110 – her şeyi hesaplayabilir"], "184 – Verkehrsfluss": ["184 – traffic flow", "184 – trafik akışı"],
+  "150 – Fraktal": ["150 – fractal", "150 – fraktal"], "54 – Teilchen": ["54 – particles", "54 – parçacıklar"],
+  "Regel (0–255)": ["Rule (0–255)", "Kural (0–255)"], "Regeltabelle": ["Rule table", "Kural tablosu"],
+  "Jede Zeile ist eine Generation. Die drei Zellen darüber bestimmen, ob eine Zelle an ist. Antippen schaltet ein Ergebnis um.": ["Each row is a generation. The three cells above decide whether a cell is on. Tap to toggle a result.", "Her satır bir nesildir. Üstteki üç hücre bir hücrenin açık olup olmadığını belirler. Bir sonucu değiştirmek için dokun."],
+  "Hier gibt es keine Muster zum Platzieren: Wähle oben bei „Regeln“ einen Muster-Typ, zeichne ein paar Flecken Stoff B und drücke „Start“ – oder nimm „Demo starten“.": ["There are no patterns to place here: choose a pattern type under “Rules”, draw a few spots of substance B and press “Start” – or use “Start demo”.", "Burada yerleştirilecek desen yok: „Kurallar“da bir desen türü seç, birkaç B maddesi lekesi çiz ve „Başlat“a bas – ya da „Demoyu başlat“ı kullan."],
+  "Zeichne einen oder mehrere Kristallkeime und drücke „Start“. Freie Teilchen fliegen von selbst heran.": ["Draw one or more crystal seeds and press “Start”. Free particles drift in by themselves.", "Bir ya da birkaç kristal tohumu çiz ve „Başlat“a bas. Serbest parçacıklar kendiliğinden gelir."],
+  "Setze ein paar Zellen in die oberste Zeile (oder nur eine einzige in die Mitte) und drücke „Start“. Die Regel wählst du bei „Regeln“.": ["Place a few cells in the top row (or just a single one in the middle) and press “Start”. You choose the rule under “Rules”.", "En üst satıra birkaç hücre (ya da ortaya tek bir hücre) koy ve „Başlat“a bas. Kuralı „Kurallar“da seçersin."],
+  "Ein Kristallkeim in der Mitte – zufällig umherirrende Teilchen bleiben daran kleben.": ["A crystal seed in the middle – randomly wandering particles stick to it.", "Ortada bir kristal tohumu – rastgele dolaşan parçacıklar ona yapışır."],
+  "Zellen mit Stoff B": ["Cells with substance B", "B maddeli hücreler"], "Kristall + Teilchen": ["Crystal + particles", "Kristal + parçacıklar"],
+  // Erklär-Modus
+  "oberste Zeile": ["top row", "en üst satır"], "Startzeile": ["Start row", "Başlangıç satırı"], "ist an": ["is on", "açık"], "ist aus": ["is off", "kapalı"],
+  "Die oberste Zeile ist der Anfang. Jede Zeile darunter ist eine Generation später.": ["The top row is the beginning. Each row below is one generation later.", "En üst satır başlangıçtır. Altındaki her satır bir nesil sonrasıdır."],
+  "B nimmt zu": ["B increases", "B artıyor"], "B nimmt ab": ["B decreases", "B azalıyor"], "bleibt fast gleich": ["stays almost the same", "neredeyse aynı kalır"],
+  "Reaktion A + 2B → 3B": ["Reaction A + 2B → 3B", "Tepkime A + 2B → 3B"], "Zerfall von B": ["Decay of B", "B'nin bozunması"], "Nachschub von A": ["Supply of A", "A takviyesi"],
+  "Wo B ist, verbraucht es A und vermehrt sich (A + 2B → 3B). Gleichzeitig zerfällt B langsam, A fließt nach, und beide verteilen sich auf die Nachbarn. Markiert: Nachbarn mit mehr B.": ["Where B is present, it uses up A and multiplies (A + 2B → 3B). At the same time B slowly decays, A flows in, and both spread to the neighbours. Marked: neighbours with more B.", "B'nin olduğu yerde A'yı tüketir ve çoğalır (A + 2B → 3B). Aynı anda B yavaşça bozunur, A akıp gelir ve ikisi de komşulara yayılır. İşaretli: daha çok B içeren komşular."],
+  "1 Kristall-Nachbar": ["1 crystal neighbour", "1 kristal komşu"], "Kristall": ["crystal", "kristal"], "freies Teilchen": ["free particle", "serbest parçacık"], "leer": ["empty", "boş"],
+  "bleibt für immer": ["stays forever", "sonsuza dek kalır"], "Erstarrt": ["Frozen", "Donmuş"], "dockt an": ["sticks", "yapışır"], "irrt weiter": ["keeps wandering", "dolaşmaya devam eder"],
+  "Andocken": ["Sticking", "Yapışma"], "Zufallsbewegung": ["Random walk", "Rastgele yürüyüş"], "wartet auf ein Teilchen": ["waits for a particle", "bir parçacık bekler"], "Leer": ["Empty", "Boş"],
+  "Ein Teilchen, das einmal angedockt hat, löst sich nie wieder. Die Farbe zeigt, wann es angedockt hat.": ["Once a particle has stuck, it never comes loose again. The colour shows when it stuck.", "Bir kez yapışan parçacık bir daha asla ayrılmaz. Renk, ne zaman yapıştığını gösterir."],
+  "Das Teilchen berührt den Kristall und bleibt kleben.": ["The particle touches the crystal and sticks.", "Parçacık kristale dokunur ve yapışır."],
+  "Freie Teilchen springen zufällig hin und her, bis sie den Kristall berühren.": ["Free particles hop around randomly until they touch the crystal.", "Serbest parçacıklar kristale dokunana kadar rastgele sağa sola zıplar."],
+  "Äste, die weit herausragen, fangen die meisten Teilchen ab. Deshalb wachsen sie schneller als die Lücken dazwischen – so entstehen die Verästelungen.": ["Branches that stick out far catch most of the particles. That's why they grow faster than the gaps between them – and that's how the branching forms.", "Dışarı doğru uzanan dallar parçacıkların çoğunu yakalar. Bu yüzden aralarındaki boşluklardan daha hızlı büyürler – dallanmalar böyle oluşur."],
+  "wird rot geboren": ["is born red", "kırmızı doğar"], "wird blau geboren": ["is born blue", "mavi doğar"],
+  "Eine tote Zelle mit genau 3 lebenden Nachbarn wird geboren – in der Farbe, die unter den dreien in der Mehrheit ist.": ["A dead cell with exactly 3 living neighbours is born – in the colour that is in the majority among the three.", "Tam 3 canlı komşusu olan ölü bir hücre doğar – üçü arasında çoğunlukta olan renkte."],
+  "Eine lebende Zelle mit 2 oder 3 lebenden Nachbarn bleibt am Leben und behält ihre Farbe.": ["A living cell with 2 or 3 living neighbours stays alive and keeps its colour.", "2 ya da 3 canlı komşusu olan canlı bir hücre hayatta kalır ve rengini korur."],
+  // Duell
+  "Zwei-Spieler-Duell": ["Two-player duel", "İki kişilik düello"],
+  "Rot setzt Zellen auf die linke Hälfte, Blau auf die rechte. Dann läuft die Simulation: Neue Zellen bekommen die Farbe, die unter ihren Eltern in der Mehrheit ist. Wer am Ende mehr Zellen hat, gewinnt.": ["Red places cells on the left half, Blue on the right. Then the simulation runs: new cells take the colour that is in the majority among their parents. Whoever has more cells at the end wins.", "Kırmızı hücrelerini sol yarıya, Mavi sağ yarıya yerleştirir. Sonra simülasyon çalışır: Yeni hücreler, ebeveynleri arasında çoğunlukta olan rengi alır. Sonunda daha çok hücresi olan kazanır."],
+  "Zellen pro Spieler": ["Cells per player", "Oyuncu başına hücre"], "Verdeckt setzen": ["Place hidden", "Gizli yerleştir"],
+  "Während Blau setzt, sind die roten Zellen unsichtbar.": ["While Blue is placing, the red cells are invisible.", "Mavi yerleştirirken kırmızı hücreler görünmez."],
+  "Duell starten": ["Start duel", "Düelloyu başlat"], "↺ Nochmal ansehen": ["↺ Watch again", "↺ Tekrar izle"], "Abbrechen": ["Cancel", "İptal"],
+  "Neu starten": ["Restart", "Yeniden başlat"], "Neues Duell": ["New duel", "Yeni düello"], "Fertig ✓": ["Done ✓", "Bitti ✓"],
+  "Das Duell läuft …": ["The duel is on …", "Düello sürüyor …"], "Duell abgebrochen": ["Duel cancelled", "Düello iptal edildi"], "Los geht's!": ["Here we go!", "Başlıyoruz!"],
+  "Rot gegen Blau": ["Red vs. Blue", "Kırmızı ve Mavi"], "Rot : Blau": ["Red : Blue", "Kırmızı : Mavi"],
+  "Das Duell startest du im Tab „Spiele“.": ["You start the duel in the “Games” tab.", "Düelloyu „Oyunlar“ sekmesinde başlatırsın."],
+  "Erst setzen beide ihre Zellen – dann „Fertig ✓“ drücken.": ["First both players place their cells – then press “Done ✓”.", "Önce iki oyuncu da hücrelerini yerleştirir – sonra „Bitti ✓“a bas."],
+  "Alle Zellen gesetzt – entferne eine oder drücke „Fertig ✓“.": ["All cells placed – remove one or press “Done ✓”.", "Tüm hücreler yerleştirildi – birini kaldır ya da „Bitti ✓“a bas."],
+  "Rot hat noch keine Zelle gesetzt.": ["Red hasn't placed a cell yet.", "Kırmızı henüz hücre yerleştirmedi."],
+  "Blau hat noch keine Zelle gesetzt.": ["Blue hasn't placed a cell yet.", "Mavi henüz hücre yerleştirmedi."],
+  // Statistik
+  "Statistik": ["Statistics", "İstatistik"], "Statistik öffnen": ["Open statistics", "İstatistiği aç"], "Population": ["Population", "Nüfus"], "Alle": ["All", "Tümü"],
+  "Geburten & Tode pro Generation": ["Births & deaths per generation", "Nesil başına doğum ve ölüm"], "Geburten": ["Births", "Doğumlar"], "Tode": ["Deaths", "Ölümler"],
+  "Die Werte aktualisieren sich live, während die Simulation läuft. Gespeichert werden bis zu 2000 Generationen.": ["The values update live while the simulation runs. Up to 2000 generations are stored.", "Değerler simülasyon çalışırken canlı güncellenir. En fazla 2000 nesil saklanır."],
+  "Als CSV speichern": ["Save as CSV", "CSV olarak kaydet"], "Dichte": ["Density", "Yoğunluk"], "Wachstum": ["Growth", "Büyüme"], "in 10 Generationen": ["in 10 generations", "10 nesilde"],
+  "Höchststand": ["Peak", "En yüksek"], "Tiefststand": ["Low", "En düşük"], "Durchschnitt": ["Average", "Ortalama"], "letzte Generation": ["last generation", "son nesil"],
+  "Ausdehnung": ["Extent", "Kapladığı alan"], "Zellen": ["cells", "hücre"], "Älteste Zelle": ["Oldest cell", "En yaşlı hücre"], "Generationen am Leben": ["generations alive", "nesildir hayatta"],
+  // Steckbriefe
+  "Typ": ["Type", "Tür"], "Eigenschaft": ["Property", "Özellik"], "Größe": ["Size", "Boyut"], "Entdeckt von": ["Discovered by", "Keşfeden"], "Jahr": ["Year", "Yıl"],
+  "Kanone": ["Gun", "Top"], "Unendliches Wachstum": ["Infinite growth", "Sonsuz büyüme"], "Raumschiff": ["Spaceship", "Uzay gemisi"], "Schaltkreis": ["Circuit", "Devre"],
+  "Animierte Vorschau": ["Animated preview", "Animasyonlu önizleme"], "Von vorn": ["From the start", "Baştan"], "Auswählen": ["Select", "Seç"]
+});
+I18N_PAT_EXTRA.push(
+  ["^🔴 Rot setzt · noch (\\d+)$", "🔴 Red's turn · {=1} left", "🔴 Kırmızı yerleştiriyor · {=1} kaldı"],
+  ["^🔵 Blau setzt · noch (\\d+)$", "🔵 Blue's turn · {=1} left", "🔵 Mavi yerleştiriyor · {=1} kaldı"],
+  ["^(Rot|Blau) setzt \\((\\d+)/(\\d+)\\)\\.$", "{1} is placing ({=2}/{=3}).", "{1} yerleştiriyor ({=2}/{=3})."],
+  ["^Rot beginnt: Setze (\\d+) Zellen auf die linke Hälfte\\. Muster aus der Bibliothek gehen auch\\.$", "Red starts: place {=1} cells on the left half. Patterns from the library work too.", "Kırmızı başlıyor: Sol yarıya {=1} hücre yerleştir. Kütüphanedeki desenler de olur."],
+  ["^Blau ist dran: Setze (\\d+) Zellen auf die rechte Hälfte\\. Die roten Zellen sind so lange verdeckt\\.$", "Blue's turn: place {=1} cells on the right half. Meanwhile the red cells are hidden.", "Sıra Mavi'de: Sağ yarıya {=1} hücre yerleştir. Bu sırada kırmızı hücreler gizlidir."],
+  ["^Blau ist dran: Setze (\\d+) Zellen auf die rechte Hälfte\\.$", "Blue's turn: place {=1} cells on the right half.", "Sıra Mavi'de: Sağ yarıya {=1} hücre yerleştir."],
+  ["^🏆 (Rot|Blau) gewinnt mit (\\d+) zu (\\d+) Zellen!$", "🏆 {1} wins with {=2} to {=3} cells!", "🏆 {1} kazandı: {=2} – {=3} hücre!"],
+  ["^🏆 (Rot|Blau) gewinnt mit (\\d+) zu (\\d+) Zellen\\.$", "🏆 {1} wins with {=2} to {=3} cells.", "🏆 {1} kazandı: {=2} – {=3} hücre."],
+  ["^Unentschieden: (\\d+) zu (\\d+) Zellen\\.$", "Draw: {=1} to {=2} cells.", "Berabere: {=1} – {=2} hücre."],
+  ["^🏆 (Rot|Blau) gewinnt · (\\d+) : (\\d+)$", "🏆 {1} wins · {=2} : {=3}", "🏆 {1} kazandı · {=2} : {=3}"],
+  ["^Unentschieden · (\\d+) : (\\d+)$", "Draw · {=1} : {=2}", "Berabere · {=1} : {=2}"],
+  ["^Stand: Rot (\\d+) : (\\d+) Blau$", "Score: Red {=1} : {=2} Blue", "Skor: Kırmızı {=1} : {=2} Mavi"],
+  ["^Das ist die Hälfte von (Rot|Blau)\\.$", "That's {1}'s half.", "Burası {1} tarafı."],
+  ["^(.+) platziert – (\\d+) Zellen passten nicht \\(fremde Hälfte oder keine Zellen mehr übrig\\)$", "{1} placed – {=2} cells didn't fit (other half or no cells left)", "{1} yerleştirildi – {=2} hücre sığmadı (rakibin yarısı ya da hücre kalmadı)"],
+  ["^(.+): Aus ein paar Tropfen Stoff B wächst ein Muster\\. Probier oben die anderen Muster-Typen aus\\.$", "{1}: a pattern grows from a few drops of substance B. Try the other pattern types above.", "{1}: Birkaç damla B maddesinden bir desen büyüyor. Yukarıdaki diğer desen türlerini de dene."],
+  ["^Eine einzige Zelle oben in der Mitte, Regel (\\d+)\\. Jede Zeile darunter ist eine Generation\\.$", "A single cell at the top in the middle, rule {=1}. Each row below is a generation.", "Üstte ortada tek bir hücre, kural {=1}. Altındaki her satır bir nesildir."],
+  ["^Regel (\\d+)$", "Rule {=1}", "Kural {=1}"],
+  ["^Darüber: (.+)$", "Above: {=1}", "Üstte: {=1}"],
+  ["^Für jedes der 8 möglichen Dreier-Muster legt die Regel fest, ob die Zelle darunter an ist\\. (\\S+) ist Muster Nr\\. (\\d+), und Stelle (\\d+) der Binärzahl (\\d+) ist (\\d)\\.$", "For each of the 8 possible three-cell patterns the rule decides whether the cell below is on. {=1} is pattern no. {=2}, and digit {=3} of the binary number {=4} is {=5}.", "Kural, olası 8 üçlü desenin her biri için alttaki hücrenin açık olup olmayacağını belirler. {=1} {=2} numaralı desendir ve {=4} ikili sayısının {=3}. basamağı {=5}'dir."],
+  ["^Muster (\\S+) → (an|aus)$", "Pattern {=1} → {2}", "Desen {=1} → {2}"],
+  ["^Stoff ([AB]): (\\d+) %$", "Substance {=1}: {=2} %", "{=1} maddesi: %{=2}"],
+  ["^(\\d+) Kristall-Nachbarn$", "{=1} crystal neighbours", "{=1} kristal komşu"],
+  ["^Generation ([\\d.,  ]+)$", "Generation {=1}", "{=1}. nesil"],
+  ["^([\\d.,  ]+) Generationen$", "{=1} generations", "{=1} nesil"],
+  ["^Gen ([\\d.,  ]+) · (.+)$", "Gen {=1} · {=2}", "Nesil {=1} · {=2}"],
+  ["^CSV gespeichert \\(([\\d.,  ]+) Generationen\\)$", "CSV saved ({=1} generations)", "CSV kaydedildi ({=1} nesil)"],
+  ["^Generation (\\d+) · startet nach (\\d+) neu$", "Generation {=1} · restarts after {=2}", "{=1}. nesil · {=2} nesilden sonra yeniden başlar"],
+  ["^Steckbrief: (.+)$", "Profile: {1}", "Kimlik kartı: {1}"]
+);
+Object.assign(I18N_EXACT, {
+  "Gespielt wird auf einem Torus: Was über einen Rand hinausläuft, kommt gegenüber wieder herein.": ["The game is played on a torus: whatever goes over one edge comes back in on the opposite side.", "Oyun bir torus üzerinde oynanır: Bir kenardan çıkan, karşı taraftan geri girer."],
+  "Beenden": ["Finish", "Bitir"], "Duell beendet": ["Duel finished", "Düello bitti"],
+  "Während des Duells nicht möglich – erst „Abbrechen“ oder „Beenden“.": ["Not possible during the duel – first press “Cancel” or “Finish”.", "Düello sırasında mümkün değil – önce „İptal“ ya da „Bitir“e bas."],
+  "Während des Duells kann nichts gesetzt werden.": ["Nothing can be placed during the duel.", "Düello sırasında hiçbir şey yerleştirilemez."],
+  "Im Duell sind die Ränder immer verbunden (Torus).": ["In the duel the edges are always connected (torus).", "Düelloda kenarlar her zaman bağlıdır (torus)."],
+  "Zeichnen gibt Stoff B dazu. Schon winzige Änderungen an F und k erzeugen völlig andere Muster. Ränder: Mit „Torus“ (Tab „Feld“) fließen die Stoffe auf der Gegenseite weiter, sonst wirkt der Rand wie eine geschlossene Wand.": ["Drawing adds substance B. Even tiny changes to F and k create completely different patterns. Edges: with “torus” (Field tab) the substances flow on at the opposite side, otherwise the edge acts like a closed wall.", "Çizmek B maddesi ekler. F ve k'deki en küçük değişiklikler bile bambaşka desenler oluşturur. Kenarlar: „Torus“ açıkken (Alan sekmesi) maddeler karşı tarafta akmaya devam eder, aksi halde kenar kapalı bir duvar gibi davranır."]
+});
+I18N_PAT_EXTRA.push(
+  ["^(Rot|Blau): (\\d+) Zellen zufällig verteilt$", "{1}: {=2} cells placed at random", "{1}: {=2} hücre rastgele dağıtıldı"],
+  ["^Die Zellen von (Rot|Blau) wurden entfernt$", "{1}'s cells were removed", "{1} hücreleri kaldırıldı"]
+);
+Object.assign(I18N_EXACT, {
+  "Sechseck-Life (6 Nachbarn)": ["Hex Life (6 neighbours)", "Altıgen Life (6 komşu)"],
+  "Life auf Sechsecken: Jede Zelle hat nur 6 Nachbarn, alle gleich weit entfernt. Dafür braucht es eigene Regeln – die bekannteste ist B2/S34H: Geburt bei 2, Überleben bei 3 oder 4 Nachbarn. Das „H“ steht für hexagonal.": ["Life on hexagons: every cell has only 6 neighbours, all equally far away. That needs its own rules – the best known is B2/S34H: birth with 2, survival with 3 or 4 neighbours. The “H” stands for hexagonal.", "Altıgenler üzerinde Life: Her hücrenin yalnızca 6 komşusu vardır ve hepsi eşit uzaklıktadır. Bunun için kendine özgü kurallar gerekir – en bilineni B2/S34H'dir: 2 komşuyla doğum, 3 ya da 4 komşuyla hayatta kalma. „H“ altıgen (hexagonal) anlamına gelir."],
+  "Bekannte Sechseck-Regeln": ["Known hex rules", "Bilinen altıgen kuralları"], "Eigene Regel": ["Custom rule", "Özel kural"],
+  "Ziffern 0–6 = Anzahl lebender Nachbarn (jede Zelle hat hier nur 6).": ["Digits 0–6 = number of living neighbours (every cell has only 6 here).", "0–6 arası rakamlar = canlı komşu sayısı (burada her hücrenin yalnızca 6 komşusu var)."],
+  "Standard B2/S34H": ["Default B2/S34H", "Standart B2/S34H"], "z. B. 2": ["e.g. 2", "örn. 2"], "z. B. 34": ["e.g. 34", "örn. 34"],
+  "Im Sechseck-Gitter gibt es höchstens 6 Nachbarn – bitte nur Ziffern 0 bis 6.": ["The hex grid has at most 6 neighbours – please use only digits 0 to 6.", "Altıgen ızgarada en fazla 6 komşu vardır – lütfen yalnızca 0–6 arası rakam kullan."],
+  "Dieses Muster ist für das Sechseck-Gitter gebaut – wähle unter „Regeln“ den Automaten „Sechseck-Life“.": ["This pattern is built for the hex grid – choose the “Hex Life” automaton under “Rules”.", "Bu desen altıgen ızgara için yapıldı – „Kurallar“da „Altıgen Life“ otomatını seç."],
+  "Dieses Muster ist für quadratische Zellen gebaut und passt nicht ins Sechseck-Gitter.": ["This pattern is built for square cells and doesn't fit the hex grid.", "Bu desen kare hücreler için yapıldı ve altıgen ızgaraya uymaz."],
+  "Muster für das Sechseck-Gitter. Jedes gehört zu einer Regel (siehe Beschreibung) – beim Auswählen wird sie automatisch eingestellt. Drehen (R) dreht hier um 60°.": ["Patterns for the hex grid. Each belongs to a rule (see heading) – it is set automatically when you select the pattern. Rotate (R) turns by 60° here.", "Altıgen ızgara desenleri. Her biri bir kurala aittir (başlığa bak) – desen seçilince otomatik ayarlanır. Döndür (R) burada 60° çevirir."],
+  "Zufällige Zellen in der Mitte. Beobachte, wie sie zu kleinen schwingenden Objekten zerfallen – Stillleben gibt es in B2/S34H nicht.": ["Random cells in the middle. Watch them break up into small oscillating objects – B2/S34H has no still lifes.", "Ortada rastgele hücreler. Küçük salınan nesnelere nasıl dağıldıklarını izle – B2/S34H'de durağan desen yoktur."],
+  "Zwilling": ["Twin", "İkiz"], "Dreieck": ["Triangle", "Üçgen"], "Sechserring": ["Six-ring", "Altılı halka"], "Propeller": ["Propeller", "Pervane"],
+  "Sakas Oszillator": ["Saka's oscillator", "Saka'nın osilatörü"], "Fünfer-Pendel": ["Five-pendulum", "Beşli sarkaç"], "Zwölfer": ["Twelver", "On ikili"],
+  "Langer Atem": ["Long breath", "Uzun nefes"], "Oszillatoren · B2/S34H": ["Oscillators · B2/S34H", "Osilatörler · B2/S34H"], "Oszillatoren · B25/S34H": ["Oscillators · B25/S34H", "Osilatörler · B25/S34H"], "Raumschiffe · B2/S34H": ["Spaceships · B2/S34H", "Uzay gemileri · B2/S34H"], "Blume": ["Flower", "Çiçek"], "Stern": ["Star", "Yıldız"]
+});
+I18N_PAT_EXTRA.push(
+  ["^Oszillatoren · (B\\d*/S\\d*H) \\((\\d+)\\)$", "Oscillators · {=1} ({=2})", "Osilatörler · {=1} ({=2})"],
+  ["^Raumschiffe · (B\\d*/S\\d*H) \\((\\d+)\\)$", "Spaceships · {=1} ({=2})", "Uzay gemileri · {=1} ({=2})"],
+  ["^Periode (\\d+) · (\\d+) Zellen$", "Period {=1} · {=2} cells", "Periyot {=1} · {=2} hücre"],
+  ["^Regel (B\\d*/S\\d*H) eingestellt – für dieses Muster nötig$", "Rule {=1} set – needed for this pattern", "{=1} kuralı ayarlandı – bu desen için gerekli"]
+);
+Object.assign(I18N_EXACT, {
+  "Alles ist ausgestorben – setze neue Zellen oder geh mit „◀ Zurück“ in der Zeit zurück.": ["Everything has died out – place new cells or go back in time with “◀ Back”.", "Her şey yok oldu – yeni hücreler yerleştir ya da „◀ Geri“ ile zamanda geri git."],
+  "Das Feld ist leer – setze zuerst Zellen, wähle ein Muster oder drücke „Zufall“.": ["The field is empty – place some cells first, pick a pattern or press “Random”.", "Alan boş – önce hücre yerleştir, bir desen seç ya da „Rastgele“ye bas."],
+  "Alles ist ausgestorben – die Simulation wurde angehalten.": ["Everything has died out – the simulation was stopped.", "Her şey yok oldu – simülasyon durduruldu."]
+});
 const I18N_PAT = [["^Max ([\\d.,  ]+)\\s+Min ([\\d.,  ]+)$","Max {=1}\nMin {=2}","Maks {=1}\nMin {=2}"],["^Gen ([\\d.,  ]+) / ([\\d.,  ]+)$","Gen {=1} / {=2}","Nesil {=1} / {=2}"],["^Gen ([\\d.,  ]+)$","Gen {=1}","Nesil {=1}"],["^(\\d+) Gen/s$","{=1} gen/s","{=1} nesil/sn"],["^Gespeichert: Generation ([\\d.,  ]+) bis ([\\d.,  ]+)$","Stored: generation {=1} to {=2}","Kayıtlı: {=1}. nesilden {=2}. nesle"],["^Population der letzten (\\d+) Generationen$","Population over the last {=1} generations","Son {=1} nesildeki nüfus"],["^Zustand (\\d+)$","State {=1}","Durum {=1}"],["^Zyklisch (\\d+)$","Cyclic {=1}","Döngüsel {=1}"],["^(\\d+) von (\\d+) Missionen geschafft$","{=1} of {=2} missions completed","{=2} görevden {=1} tanesi tamamlandı"],["^Entdeckt am (.+)$","Discovered on {=1}","Keşif tarihi: {=1}"],["^(\\d+) – 🎆 alle gefunden, Respekt!$","{=1} – 🎆 all found, respect!","{=1} – 🎆 hepsi bulundu, saygılar!"],["^: (.+)$",": {1}",": {1}"],["^✓ (.+)$","✓ {1}","✓ {1}"],["^✗ (.+?)( \\(geprüft mit B3/S23\\))?$","✗ {1}{2}","✗ {1}{2}"],["^ \\(geprüft mit B3/S23\\)$"," (checked with B3/S23)"," (B3/S23 ile kontrol edildi)"],["^(.+?) \\(geprüft mit B3/S23\\)$","{1} (checked with B3/S23)","{1} (B3/S23 ile kontrol edildi)"],["^Stillleben \\((\\d+)\\)$","Still lifes ({=1})","Durağan yaşamlar ({=1})"],["^Periode (\\d+)$","Period {=1}","Periyot {=1}"],["^(.+) \\((\\d+)\\)$","{1} ({=2})","{1} ({=2})"],["^(.*) \\((\\d+) Zellen( · .+)?\\)$","{1} ({=2} cells{=3})","{1} ({=2} hücre{=3})"],["^(.+): (\\d) lebende Nachbarn – (.+)$","{1}: {=2} living neighbours – {3}","{1}: {=2} canlı komşu – {3}"],["^Kein Muster zu „(.*)“ gefunden\\.$","No pattern found for “{=1}”.","„{=1}“ için desen bulunamadı."],["^Farbschema (.+) löschen$","Delete colour scheme {=1}","{=1} renk şemasını sil"],["^Farbschema „(.+)“ gespeichert$","Colour scheme “{=1}” saved","„{=1}“ renk şeması kaydedildi"],["^Farbschema „(.+)“ aktiv$","Colour scheme “{=1}” active","„{=1}“ renk şeması etkin"],["^„(.+)“ gibt es schon – nochmal klicken zum Überschreiben\\.$","“{=1}” already exists – click again to overwrite.","„{=1}“ zaten var – üzerine yazmak için tekrar tıkla."],["^Maximal (\\d+) eigene Schemata – lösche zuerst eins oder überschreibe eins mit gleichem Namen\\.$","At most {=1} custom schemes – delete one first or overwrite one with the same name.","En fazla {=1} özel şema – önce birini sil ya da aynı adla birinin üzerine yaz."],["^(.+) · 🛡️ Unsterblichkeits-Modus$","{1} · 🛡️ Immortality mode","{1} · 🛡️ Ölümsüzlük modu"],["^Oszillator · Periode (\\d+)$","Oscillator · period {=1}","Osilatör · periyot {=1}"],["^Raumschiff · Periode (\\d+) · (.+)$","Spaceship · period {=1} · {=2}","Uzay gemisi · periyot {=1} · {=2}"],["^(.+) – automatisch pausiert$","{1} – paused automatically","{1} – otomatik duraklatıldı"],["^♪ Läuft gerade: (.+)$","♪ Now playing: {1}","♪ Şu an çalıyor: {1}"],["^Automat gewechselt: (.+?) – drück „▶ Demo starten“, um ihn in Aktion zu sehen\\.$","Automaton switched: {1} – press “▶ Start demo” to see it in action.","Otomat değiştirildi: {1} – iş başında görmek için „▶ Demoyu başlat“a bas."],["^Automat gewechselt: (.+)$","Automaton switched: {1}","Otomat değiştirildi: {1}"],["^🥚 Geheimnis gefunden! \\((\\d+) von (\\d+)\\)$","🥚 Secret found! ({=1} of {=2})","🥚 Sır bulundu! ({=1} / {=2})"],["^Ausgewählt: (.+) – klicke aufs Spielfeld, um es zu platzieren$","Selected: {1} – click on the field to place it","Seçildi: {1} – yerleştirmek için alana tıkla"],["^Ausgewählt: (.+) – nochmal antippen springt zum Spielfeld$","Selected: {1} – tap again to jump to the field","Seçildi: {1} – alana gitmek için tekrar dokun"],["^Klicke aufs Feld, um (.+) zu platzieren \\(✕ hebt die Auswahl auf\\)$","Click on the field to place {1} (✕ deselects)","{1} yerleştirmek için alana tıkla (✕ seçimi kaldırır)"],["^(.+) platziert – (\\d+) Zellen lagen außerhalb des Felds$","{1} placed – {=2} cells were outside the field","{1} yerleştirildi – {=2} hücre alanın dışında kaldı"],["^(.+) platziert$","{1} placed","{1} yerleştirildi"],["^Mission geschafft: (.+)$","Mission complete: {1}","Görev tamamlandı: {1}"],["^Regel (.+) aktiv$","Rule {=1} active","{=1} kuralı etkin"],["^Zyklisch: (\\d+) Zustände, Schwelle (\\d+)$","Cyclic: {=1} states, threshold {=2}","Döngüsel: {=1} durum, eşik {=2}"],["^„(.+)“ geladen \\((\\d+) Zellen\\)(?: · Regel (.+) übernommen)? – klicke aufs Feld$","“{1}” loaded ({=2} cells) – click on the field","„{1}“ yüklendi ({=2} hücre) – alana tıkla"],["^Feldgröße: (\\d+) × (\\d+)$","Field size: {=1} × {=2}","Alan boyutu: {=1} × {=2}"],["^Zurück zum Startzustand \\(Generation (\\d+)\\)$","Back to start state (generation {=1})","Başlangıç durumuna dönüldü ({=1}. nesil)"],["^Zeitleiste: Generation (\\d+) – „Start“ oder „Schritt“ spielt die gespeicherte Zukunft ab\\. Jede Änderung beginnt eine neue\\.$","Timeline: generation {=1} – “Start” or “Step” plays the stored future. Any change starts a new one.","Zaman çizelgesi: {=1}. nesil – „Başlat“ veya „Adım“ kaydedilmiş geleceği oynatır. Her değişiklik yeni bir gelecek başlatır."],["^Unbekannte Regel: (.+)$","Unknown rule: {=1}","Bilinmeyen kural: {=1}"],["^Unbekanntes Zeichen im RLE: (.+)$","Unknown character in RLE: {=1}","RLE'de bilinmeyen karakter: {=1}"],["^Link konnte nicht gelesen werden: (.+)$","Couldn't read the link: {1}","Bağlantı okunamadı: {1}"],["^Fehler: (.+)$","Error: {1}","Hata: {1}"],["^Berechne Bild (\\d+) von (\\d+) …$","Computing frame {=1} of {=2} …","{=2} kareden {=1}. kare hesaplanıyor …"],["^Fertig: (\\d+) Generationen, (\\d+)×(\\d+) px, (\\d+) KB\\. Download gestartet – Vorschau unten\\.$","Done: {=1} generations, {=2}×{=3} px, {=4} KB. Download started – preview below.","Tamam: {=1} nesil, {=2}×{=3} px, {=4} KB. İndirme başladı – önizleme aşağıda."],["^Nur (\\d+) Zellen – mindestens 8 nötig\\.$","Only {=1} cells – at least 8 needed.","Yalnızca {=1} hücre – en az 8 gerekli."],["^Nach (\\d+) Generationen ausgestorben\\.$","Died out after {=1} generations.","{=1} nesil sonra yok oldu."],["^Oszillator mit Periode (\\d+)!$","Oscillator with period {=1}!","Periyodu {=1} olan osilatör!"],["^Raumschiff! Periode (\\d+), verschiebt sich um \\((-?\\d+), (-?\\d+)\\)\\.$","Spaceship! Period {=1}, shifts by ({=2}, {=3}).","Uzay gemisi! Periyot {=1}, ({=2}, {=3}) kadar kayar."],["^(\\d+) Startzellen – höchstens (\\d+) erlaubt\\.$","{=1} starting cells – at most {=2} allowed.","{=1} başlangıç hücresi – en fazla {=2} izinli."],["^(\\d+) Startzellen – erlaubt sind 6 bis 10\\.$","{=1} starting cells – 6 to 10 allowed.","{=1} başlangıç hücresi – 6 ile 10 arası izinli."],["^Kommt erst nach (\\d+) Generationen zur Ruhe\\.$","Only settles down after {=1} generations.","Ancak {=1} nesil sonra durulur."],["^Schon nach (\\d+) Generationen ruhig – Ziel: 200\\.$","Already calm after {=1} generations – goal: 200.","{=1} nesil sonra durgunlaştı bile – hedef: 200."],["^Über 150 Zellen in Generation (\\d+)!$","Over 150 cells in generation {=1}!","{=1}. nesilde 150'den fazla hücre!"],["^Maximum: (\\d+) Zellen\\.$","Maximum: {=1} cells.","En fazla: {=1} hücre."],["^Komplett ausgelöscht in Generation (\\d+)\\.$","Completely wiped out in generation {=1}.","{=1}. nesilde tamamen silindi."],["^Schon nach (\\d+) Generationen weg – das zählt nicht als Kollision\\.$","Gone after just {=1} generations – that doesn't count as a collision.","Yalnızca {=1} nesilde yok oldu – bu çarpışma sayılmaz."],["^Population wächst dauerhaft: ca\\. (\\d+) → (\\d+) Zellen\\.$","Population keeps growing: approx. {=1} → {=2} cells.","Nüfus sürekli büyüyor: yaklaşık {=1} → {=2} hücre."],["^Kein dauerhaftes Wachstum: ca\\. (\\d+) → (\\d+) Zellen\\.$","No lasting growth: approx. {=1} → {=2} cells.","Kalıcı büyüme yok: yaklaşık {=1} → {=2} hücre."],["^🌳 5\\.206 Generationen geschafft – Respekt für die Geduld! Hier war Acorn schon ab ca\\. Generation (\\d+) ruhig, weil die Ränder bremsen\\. Auf einer unendlichen Ebene braucht es genau 5\\.206\\.$","🌳 5,206 generations done – respect for your patience! Here Acorn was already calm from about generation {=1}, because the edges slow it down. On an infinite plane it needs exactly 5,206.","🌳 5.206 nesil tamamlandı – sabrına saygı! Burada Acorn kenarlar frenlediği için yaklaşık {=1}. nesilden itibaren sakindi. Sonsuz bir düzlemde tam 5.206 nesil gerekir."]].concat(I18N_PAT_EXTRA).map(([re, en, tr]) => [new RegExp(re), en, tr]);
 const LOCALES = { de: "de-DE", en: "en-GB", tr: "tr-TR" };
 const LOC = () => LOCALES[S.lang] || "de-DE";
@@ -1250,7 +1527,12 @@ const AUTOMATA = {
   life:   { info: "Zwei Zustände: lebendig oder tot. Die Regel legt fest, bei wie vielen lebenden Nachbarn eine Zelle geboren wird (B) oder überlebt (S)." },
   brain:  { info: "Drei Zustände: an → sterbend → aus. Eine ausgeschaltete Zelle geht an, wenn genau 2 Nachbarn an sind. Erzeugt fast immer wimmelnde Raumschiffe – am besten mit „Zufall“ starten." },
   wire:   { info: "Vier Zustände: leer, Elektronenkopf, Elektronenschwanz, Leiter. Ein Leiter wird zum Kopf, wenn 1 oder 2 Nachbarn Köpfe sind. Zeichne Leitungen und setze Elektronen (Kopf + Schwanz) – oder nimm ein Beispiel aus der Bibliothek." },
-  cyclic: { info: "Jede Zelle hat einen von N Zuständen. Sie springt zum nächsten Zustand, sobald genug Nachbarn schon dort sind. Aus Zufallsrauschen entstehen Spiralwellen – wie bei der Belousov-Zhabotinsky-Reaktion. Mit „Zufall“ starten." }
+  cyclic: { info: "Jede Zelle hat einen von N Zuständen. Sie springt zum nächsten Zustand, sobald genug Nachbarn schon dort sind. Aus Zufallsrauschen entstehen Spiralwellen – wie bei der Belousov-Zhabotinsky-Reaktion. Mit „Zufall“ starten." },
+  hex: { info: "Life auf Sechsecken: Jede Zelle hat nur 6 Nachbarn, alle gleich weit entfernt. Dafür braucht es eigene Regeln – die bekannteste ist B2/S34H: Geburt bei 2, Überleben bei 3 oder 4 Nachbarn. Das „H“ steht für hexagonal." },
+  duel: { info: "Conways Regeln mit zwei Farben: Eine neue Zelle bekommt die Farbe, die unter ihren drei Eltern in der Mehrheit ist. Die Grundlage für das Zwei-Spieler-Duell im Tab „Spiele“." },
+  rd: { info: "Zwei Stoffe A und B breiten sich aus und reagieren: A + 2B → 3B. A wird ständig nachgefüllt (F), B zerfällt langsam (k). So entstehen Muster wie auf Zebras, Korallen oder Fingerabdrücken – Alan Turing hat das 1952 vorhergesagt." },
+  dla: { info: "Teilchen irren zufällig umher (Brownsche Bewegung). Berühren sie den Kristall, bleiben sie kleben. So wachsen verästelte Strukturen wie Eisblumen, Blitze, Korallen oder Mineral-Dendriten." },
+  wolfram: { info: "Die einfachsten Automaten überhaupt: eine Zeile Zellen, jede Zelle schaut nur auf sich und ihre zwei Nachbarn. Es gibt genau 256 Regeln. Stephen Wolfram hat sie in den 1980ern systematisch untersucht." }
 };
 const RULE_PRESETS = [
   { name: "Conway's Life (B3/S23)", b: "3", s: "23" },
@@ -1267,7 +1549,12 @@ const RULE_PRESETS = [
 const DRAW_STATES = {
   life: [[1, "Lebendig"]],
   brain: [[1, "An"], [2, "Sterbend"]],
-  wire: [[3, "Leiter"], [1, "Elektronenkopf"], [2, "Elektronenschwanz"]]
+  wire: [[3, "Leiter"], [1, "Elektronenkopf"], [2, "Elektronenschwanz"]],
+  duel: [[1, "Rot"], [2, "Blau"]],
+  hex: [[1, "Lebendig"]],
+  rd: [[40, "Stoff B"]],
+  dla: [[1, "Kristallkeim"]],
+  wolfram: [[1, "An"]]
 };
 
 /* =====================================================================
@@ -1277,12 +1564,17 @@ const DEFAULTS = {
   theme: "modern", custom: null, showGrid: true, roundCells: true,
   wrap: false, autoExpand: false, autoPause: true, density: 25, speed: 10,
   displayMode: "normal", automaton: "life", birth: [3], survive: [2, 3],
-  cyclic: { states: 14, threshold: 1, moore: false }, cols: 120, rows: 80, adoptRule: true, pen: 1, userScheme: null,
+  cyclic: { states: 14, threshold: 1, moore: false }, rd: { preset: "coral", F: 0.0545, k: 0.062 }, hexB: [2], hexS: [3, 4], dla: { walkers: 150 }, wolf: { rule: 30 },
+  duelCfg: { cells: 40, gens: 200 }, cols: 120, rows: 80, adoptRule: true, pen: 1, userScheme: null,
   sound: false, soundSim: true, volume: 60, musicModes: true, musicCalm: false, lang: null
 };
 const saved = loadJSON(KEYS.settings, {});
 const S = Object.assign(structuredClone(DEFAULTS), saved, {
-  cyclic: Object.assign({}, DEFAULTS.cyclic, saved.cyclic || {})
+  cyclic: Object.assign({}, DEFAULTS.cyclic, saved.cyclic || {}),
+  rd: Object.assign({}, DEFAULTS.rd, saved.rd || {}),
+  dla: Object.assign({}, DEFAULTS.dla, saved.dla || {}),
+  wolf: Object.assign({}, DEFAULTS.wolf, saved.wolf || {}),
+  duelCfg: Object.assign({}, DEFAULTS.duelCfg, saved.duelCfg || {})
 });
 S.cols = clamp(S.cols | 0 || DEFAULTS.cols, MIN_SIZE, MAX_COLS);
 S.rows = clamp(S.rows | 0 || DEFAULTS.rows, MIN_SIZE, MAX_ROWS);
@@ -1291,33 +1583,42 @@ if (!AUTOMATA[S.automaton]) S.automaton = "life";
 let grid, nextBuf, age, heat, maxHeat = 1;
 let generation = 0, running = false;
 let tool = "draw", drawState = 1, selectedPattern = null;
-let lifeTable = new Uint8Array(18);
+let lifeTable = new Uint8Array(18), hexTable = new Uint8Array(14);
 let dirty = true, startSnap = null;
 let runGens = 0, acornRun = null; // für Rekorde und das Acorn-Geheimnis
 const history = []; let historyBytes = 0;
 const undoStack = [], redoStack = [];
-let popHist = [];
+let popHist = [], statHist = [];
+const duel = { phase: null, left: 0, start: null, wins: { 1: 0, 2: 0 }, warnAt: 0, last: null };
 let needsRender = true, chartDirty = true;
 
 function saveSettings() {
   const keys = ["theme", "custom", "showGrid", "roundCells", "wrap", "autoExpand", "autoPause", "density", "speed",
-    "displayMode", "automaton", "birth", "survive", "cyclic", "cols", "rows", "adoptRule", "pen", "userScheme", "sound", "soundSim", "volume", "musicModes", "musicCalm", "lang"];
+    "displayMode", "automaton", "birth", "survive", "hexB", "hexS", "cyclic", "rd", "dla", "wolf", "duelCfg", "cols", "rows", "adoptRule", "pen", "userScheme", "sound", "soundSim", "volume", "musicModes", "musicCalm", "lang"];
   const o = {}; keys.forEach(k => o[k] = S[k]);
   saveJSON(KEYS.settings, o);
 }
 
 function maxState(a = S.automaton) {
-  return a === "life" ? 1 : a === "brain" ? 2 : a === "wire" ? 3 : S.cyclic.states - 1;
+  return a === "life" || a === "hex" ? 1 : a === "brain" || a === "duel" ? 2 : a === "wire" ? 3 : a === "wolfram" ? 1 : a === "rd" || a === "dla" ? 63 : S.cyclic.states - 1;
 }
 function buildLifeTable() {
   lifeTable.fill(0);
   for (const n of S.birth) lifeTable[n] = 1;
   for (const n of S.survive) lifeTable[9 + n] = 1;
+  hexTable.fill(0);
+  for (const n of S.hexB) if (n <= 6) hexTable[n] = 1;
+  for (const n of S.hexS) if (n <= 6) hexTable[7 + n] = 1;
 }
 function ruleString() {
   if (S.automaton === "life") return `B${S.birth.join("")}/S${S.survive.join("")}`;
+  if (S.automaton === "hex") return `B${S.hexB.join("")}/S${S.hexS.join("")}H`;
   if (S.automaton === "brain") return "BriansBrain";
   if (S.automaton === "wire") return "WireWorld";
+  if (S.automaton === "duel") return "Immigration";
+  if (S.automaton === "rd") return `GrayScott/F${S.rd.F}/k${S.rd.k}`;
+  if (S.automaton === "dla") return "DLA";
+  if (S.automaton === "wolfram") return "W" + S.wolf.rule;
   return `Cyclic/N${S.cyclic.states}/T${S.cyclic.threshold}/${S.cyclic.moore ? "M" : "N"}`;
 }
 function parseDigits(v) {
@@ -1328,11 +1629,16 @@ function parseDigits(v) {
 function parseRule(str) {
   const r = String(str).trim().replace(/\s+/g, "");
   let m;
+  if ((m = r.match(/^B([0-6]*)\/S([0-6]*)H$/i))) return { automaton: "hex", hexB: parseDigits(m[1]), hexS: parseDigits(m[2]) };
   if ((m = r.match(/^B([0-8]*)\/S([0-8]*)$/i))) return { automaton: "life", birth: parseDigits(m[1]), survive: parseDigits(m[2]) };
   if ((m = r.match(/^S([0-8]*)\/B([0-8]*)$/i))) return { automaton: "life", birth: parseDigits(m[2]), survive: parseDigits(m[1]) };
   if ((m = r.match(/^([0-8]*)\/([0-8]*)$/))) return { automaton: "life", birth: parseDigits(m[2]), survive: parseDigits(m[1]) };
   if (/^brian'?s?brain$/i.test(r)) return { automaton: "brain" };
   if (/^wire-?world$/i.test(r)) return { automaton: "wire" };
+  if (/^immigration$/i.test(r)) return { automaton: "duel" };
+  if (/^dla$/i.test(r)) return { automaton: "dla" };
+  if ((m = r.match(/^W(\d{1,3})$/i)) && +m[1] < 256) return { automaton: "wolfram", wolf: { rule: +m[1] } };
+  if ((m = r.match(/^GrayScott\/F([\d.]+)\/k([\d.]+)$/i))) return { automaton: "rd", rd: { preset: "custom", F: +m[1], k: +m[2] } };
   if ((m = r.match(/^cyclic\D*(\d+)\D+(\d+)(?:\D*?([MN]))?$/i))) {
     return { automaton: "cyclic", cyclic: { states: clamp(+m[1], 3, 24), threshold: clamp(+m[2], 1, 8), moore: (m[3] || "N").toUpperCase() === "M" } };
   }
@@ -1355,6 +1661,17 @@ function stepGrid(src, dst, cols, rows, cfg) {
       if (wrap) { if (xl < 0) xl = cols - 1; if (xr >= cols) xr = 0; }
       else if (xr >= cols) xr = -1;
       const i = rc + x, s = src[i];
+      if (auto === "hex") {
+        // Sechseck-Gitter: ungerade Zeilen sind um eine halbe Zelle nach rechts versetzt
+        const odd = y & 1, a = odd ? x : xl, b = odd ? xr : x;
+        let n = 0;
+        if (xl >= 0 && src[rc + xl] === 1) n++;
+        if (xr >= 0 && src[rc + xr] === 1) n++;
+        if (ru >= 0) { if (a >= 0 && src[ru + a] === 1) n++; if (b >= 0 && src[ru + b] === 1) n++; }
+        if (rd >= 0) { if (a >= 0 && src[rd + a] === 1) n++; if (b >= 0 && src[rd + b] === 1) n++; }
+        dst[i] = table[(s === 1 ? 7 : 0) + n];
+        continue;
+      }
       if (cyc) {
         const t = s + 1 === N ? 0 : s + 1;
         let n = 0;
@@ -1367,6 +1684,24 @@ function stepGrid(src, dst, cols, rows, cfg) {
           if (rd >= 0) { if (xl >= 0 && src[rd + xl] === t) n++; if (xr >= 0 && src[rd + xr] === t) n++; }
         }
         dst[i] = n >= T ? t : s;
+        continue;
+      }
+      if (auto === "duel") {
+        // Immigration: B3/S23 mit zwei Farben; Neugeborene erben die Mehrheitsfarbe ihrer 3 Eltern
+        let n = 0, red = 0, v;
+        if (ru >= 0) {
+          if (xl >= 0 && (v = src[ru + xl])) { n++; if (v === 1) red++; }
+          if ((v = src[ru + x])) { n++; if (v === 1) red++; }
+          if (xr >= 0 && (v = src[ru + xr])) { n++; if (v === 1) red++; }
+        }
+        if (xl >= 0 && (v = src[rc + xl])) { n++; if (v === 1) red++; }
+        if (xr >= 0 && (v = src[rc + xr])) { n++; if (v === 1) red++; }
+        if (rd >= 0) {
+          if (xl >= 0 && (v = src[rd + xl])) { n++; if (v === 1) red++; }
+          if ((v = src[rd + x])) { n++; if (v === 1) red++; }
+          if (xr >= 0 && (v = src[rd + xr])) { n++; if (v === 1) red++; }
+        }
+        dst[i] = s ? (n === 2 || n === 3 ? s : 0) : (n === 3 ? (red >= 2 ? 1 : 2) : 0);
         continue;
       }
       // Anzahl der Nachbarn im Zustand 1 (lebendig / an / Elektronenkopf)
@@ -1394,7 +1729,130 @@ const godTable = new Uint8Array(18);
 function simConfig() {
   const god = performance.now() < godUntil && S.automaton === "life";
   if (god) { godTable.set(lifeTable); for (let n = 0; n <= 8; n++) godTable[9 + n] = 1; }
-  return { wrap: S.wrap, automaton: S.automaton, table: god ? godTable : lifeTable, states: S.cyclic.states, threshold: S.cyclic.threshold, moore: S.cyclic.moore };
+  return { wrap: S.wrap, automaton: S.automaton, table: S.automaton === "hex" ? hexTable : god ? godTable : lifeTable, states: S.cyclic.states, threshold: S.cyclic.threshold, moore: S.cyclic.moore };
+}
+
+/* ---------- Wissenschafts-Automaten: Reaktion-Diffusion, Kristallwachstum, Wolfram 1D ---------- */
+const CUSTOM = new Set(["rd", "dla", "wolfram"]);          // eigene Schrittfunktion
+const FULLFIELD = a => a === "cyclic" || a === "rd";        // jede Zelle hat eine Farbe (auch Zustand 0)
+const NO_DETECT = a => a === "cyclic" || CUSTOM.has(a);    // keine Stillleben-/Oszillator-Erkennung
+const isLifeLike = a => a === "life" || a === "duel" || a === "hex";
+const RD_PRESETS = {
+  coral: { F: 0.0545, k: 0.062, name: "Korallen" },
+  mitosis: { F: 0.0367, k: 0.0649, name: "Zellteilung" },
+  maze: { F: 0.029, k: 0.057, name: "Labyrinth" },
+  worms: { F: 0.058, k: 0.065, name: "Würmer" },
+  holes: { F: 0.039, k: 0.058, name: "Löcher" },
+  rings: { F: 0.046, k: 0.063, name: "Wachsende Schleifen" }
+};
+const WOLF_PRESETS = [[30, "30 – Chaos aus Ordnung"], [90, "90 – Sierpinski-Dreieck"], [110, "110 – kann alles berechnen"], [184, "184 – Verkehrsfluss"], [150, "150 – Fraktal"], [54, "54 – Teilchen"]];
+let rdU = null, rdV = null, rdU2 = null, rdV2 = null;
+let dlaWalkers = [], dlaCount = 0, dlaR = 0;
+const RD_SCALE = 150;
+/** Reaktion-Diffusion: Felder passend zum Gitter halten. Was der Nutzer geändert hat (Zeichnen, Leeren, Zeitleiste),
+ *  erkennt man daran, dass die angezeigte Stufe nicht mehr zur Konzentration passt – diese Zellen werden neu abgeleitet. */
+function syncRD(src) {
+  const n = S.cols * S.rows;
+  if (!rdU || rdU.length !== n) { rdU = new Float32Array(n).fill(1); rdV = new Float32Array(n); rdU2 = new Float32Array(n); rdV2 = new Float32Array(n); }
+  for (let i = 0; i < n; i++) {
+    const l = (rdV[i] * RD_SCALE) | 0, lv = l < 0 ? 0 : l > 63 ? 63 : l;
+    if (lv !== src[i]) { const v = src[i] ? (src[i] + 0.5) / RD_SCALE : 0; rdV[i] = v; rdU[i] = v ? Math.max(0, 1 - 2 * v) : 1; }
+  }
+}
+function stepRD(src, dst) {
+  syncRD(src);
+  const { cols, rows } = S, F = S.rd.F, k = S.rd.k, Du = 1, Dv = 0.5, wr = S.wrap;
+  // Torus: Ränder verbunden. Sonst „geschlossene Wand“: über den Rand fließt nichts (Nachbar außerhalb = Zelle selbst)
+  for (let it = 0; it < 16; it++) {
+    for (let y = 0; y < rows; y++) {
+      const yu = (y ? y - 1 : wr ? rows - 1 : 0) * cols, yc = y * cols, yd = (y + 1 < rows ? y + 1 : wr ? 0 : y) * cols;
+      for (let x = 0; x < cols; x++) {
+        const xl = x ? x - 1 : wr ? cols - 1 : 0, xr = x + 1 < cols ? x + 1 : wr ? 0 : x, i = yc + x;
+        const u = rdU[i], v = rdV[i];
+        const lu = 0.2 * (rdU[yu + x] + rdU[yd + x] + rdU[yc + xl] + rdU[yc + xr]) + 0.05 * (rdU[yu + xl] + rdU[yu + xr] + rdU[yd + xl] + rdU[yd + xr]) - u;
+        const lv = 0.2 * (rdV[yu + x] + rdV[yd + x] + rdV[yc + xl] + rdV[yc + xr]) + 0.05 * (rdV[yu + xl] + rdV[yu + xr] + rdV[yd + xl] + rdV[yd + xr]) - v;
+        const uvv = u * v * v;
+        rdU2[i] = u + Du * lu - uvv + F * (1 - u);
+        rdV2[i] = v + Dv * lv + uvv - (F + k) * v;
+      }
+    }
+    [rdU, rdU2] = [rdU2, rdU]; [rdV, rdV2] = [rdV2, rdV];
+  }
+  for (let i = 0; i < dst.length; i++) { const l = (rdV[i] * RD_SCALE) | 0; dst[i] = l < 0 ? 0 : l > 63 ? 63 : l; }
+}
+function rdBlob(x, y, r) {
+  for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+    let xx = x + dx, yy = y + dy;
+    if (S.wrap) { xx = (xx + S.cols) % S.cols; yy = (yy + S.rows) % S.rows; }
+    else if (xx < 0 || yy < 0 || xx >= S.cols || yy >= S.rows) continue;
+    grid[yy * S.cols + xx] = 38 + ((Math.random() * 6) | 0);
+  }
+}
+const isCrystal = s => s >= 1 && s <= 62;
+function dlaInfo(g) {
+  // Mittelpunkt und Radius des Kristalls bestimmen
+  const { cols, rows } = S; let n = 0, sx = 0, sy = 0;
+  for (let i = 0; i < g.length; i++) if (isCrystal(g[i])) { n++; sx += i % cols; sy += (i / cols) | 0; }
+  if (!n) return null;
+  const cx = sx / n, cy = sy / n; let r = 0;
+  for (let i = 0; i < g.length; i++) if (isCrystal(g[i])) { const d = Math.hypot(i % cols - cx, ((i / cols) | 0) - cy); if (d > r) r = d; }
+  return { cx, cy, r, n };
+}
+function stepDLA(src, dst) {
+  const { cols, rows } = S;
+  dst.set(src);
+  for (let i = 0; i < dst.length; i++) if (dst[i] === 63) dst[i] = 0;
+  let info = dlaInfo(dst);
+  if (!info) { const c = ((rows / 2) | 0) * cols + ((cols / 2) | 0); dst[c] = 1; dlaCount = 1; info = dlaInfo(dst); }
+  const target = S.dla.walkers, spawnR = () => Math.min(info.r + 8, Math.max(cols, rows));
+  const spawn = () => {
+    for (let t = 0; t < 20; t++) {
+      const a = Math.random() * Math.PI * 2, rr = spawnR(), x = Math.round(info.cx + Math.cos(a) * rr), y = Math.round(info.cy + Math.sin(a) * rr);
+      if (x >= 0 && y >= 0 && x < cols && y < rows && !dst[y * cols + x]) return [x, y];
+    }
+    return [(Math.random() * cols) | 0, (Math.random() * rows) | 0];
+  };
+  while (dlaWalkers.length < target) dlaWalkers.push(spawn());
+  if (dlaWalkers.length > target) dlaWalkers.length = target;
+  const touches = (x, y) => {
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      if (!dx && !dy) continue;
+      const xx = x + dx, yy = y + dy;
+      if (xx >= 0 && yy >= 0 && xx < cols && yy < rows && isCrystal(dst[yy * cols + xx])) return true;
+    }
+    return false;
+  };
+  for (let w = 0; w < dlaWalkers.length; w++) {
+    let [x, y] = dlaWalkers[w];
+    for (let m = 0; m < 30; m++) {
+      const d = (Math.random() * 4) | 0;
+      x += d === 0 ? 1 : d === 1 ? -1 : 0; y += d === 2 ? 1 : d === 3 ? -1 : 0;
+      if (x < 0 || y < 0 || x >= cols || y >= rows || Math.hypot(x - info.cx, y - info.cy) > info.r + 40) { [x, y] = spawn(); continue; }
+      if (isCrystal(dst[y * cols + x])) { [x, y] = spawn(); continue; }
+      if (touches(x, y)) {
+        dst[y * cols + x] = 1 + ((dlaCount++ / 15) | 0) % 62;
+        const dd = Math.hypot(x - info.cx, y - info.cy); if (dd > info.r) info.r = dd;
+        [x, y] = spawn();
+      }
+    }
+    dlaWalkers[w] = [x, y];
+  }
+  for (const [x, y] of dlaWalkers) { const i = y * cols + x; if (!dst[i]) dst[i] = 63; }
+}
+/** Wolfram: die unterste belegte Zeile erzeugt die nächste darunter (am Ende rückt alles nach oben). */
+function stepWolfram(src, dst) {
+  const { cols, rows } = S, rule = S.wolf.rule;
+  dst.set(src);
+  let row = -1;
+  for (let y = rows - 1; y >= 0 && row < 0; y--) for (let x = 0; x < cols; x++) if (src[y * cols + x]) { row = y; break; }
+  if (row < 0) return;
+  let from = row * cols;
+  if (row === rows - 1) { dst.copyWithin(0, cols); dst.fill(0, (rows - 1) * cols); from = (rows - 2) * cols; row = rows - 2; }
+  const to = (row + 1) * cols;
+  for (let x = 0; x < cols; x++) {
+    const l = (x ? dst[from + x - 1] : S.wrap && dst[from + cols - 1]) ? 4 : 0, c = dst[from + x] ? 2 : 0, r = (x + 1 < cols ? dst[from + x + 1] : S.wrap && dst[from]) ? 1 : 0;
+    dst[to + x] = (rule >> (l | c | r)) & 1;
+  }
 }
 
 /** Population, Begrenzungsrahmen und zwei Hash-Schlüssel (absolut / formnormiert). */
@@ -1443,7 +1901,9 @@ function resizeGrid(newCols, newRows, { keepView = false } = {}) {
   newCols = clamp(newCols | 0, MIN_SIZE, MAX_COLS);
   newRows = clamp(newRows | 0, MIN_SIZE, MAX_ROWS);
   const oc = S.cols, or = S.rows, og = grid, oa = age, oh = heat;
-  const ox = Math.floor((newCols - oc) / 2), oy = Math.floor((newRows - or) / 2);
+  if (isHex() && newRows % 2) newRows = newRows + 1 <= MAX_ROWS ? newRows + 1 : newRows - 1;   // Sechseck-Torus braucht gerade Zeilenzahl
+  let ox = Math.floor((newCols - oc) / 2), oy = Math.floor((newRows - or) / 2);
+  if (isHex() && oy % 2) oy -= 1;   // Versatz der Zeilen erhalten, sonst verformen sich die Muster
   allocGrid(newCols, newRows);
   for (let y = 0; y < or; y++) {
     const ny = y + oy;
@@ -1523,6 +1983,7 @@ function beginEdit() {
   updateButtons();
 }
 function undo() {
+  if (duelBusy()) { sfx("deny"); toast("Während des Duells nicht möglich – erst „Abbrechen“ oder „Beenden“."); return; }
   if (undoStack.length) sfx("undo");
   if (!undoStack.length) { toast("Nichts zum Rückgängigmachen"); return; }
   redoStack.push(snapshot());
@@ -1530,6 +1991,7 @@ function undo() {
   afterBigChange();
 }
 function redo() {
+  if (duelBusy()) { sfx("deny"); toast("Während des Duells nicht möglich – erst „Abbrechen“ oder „Beenden“."); return; }
   if (redoStack.length) sfx("redo");
   if (!redoStack.length) { toast("Nichts zum Wiederholen"); return; }
   undoStack.push(snapshot());
@@ -1541,10 +2003,11 @@ function afterBigChange() {
   resetPopHist();
   updateButtons();
 }
-function resetPopHist() { popHist = [analyze(grid, S.cols, S.rows).pop]; chartDirty = true; }
+function resetPopHist() { popHist = [analyze(grid, S.cols, S.rows).pop]; statHist = []; chartDirty = true; }
 
 /* ---------- Ein Schritt ---------- */
 function step() {
+  if (duelPlacing()) { sfx("deny"); toast("Erst setzen beide ihre Zellen – dann „Fertig ✓“ drücken."); return; }
   if (dirty) { startSnap = snapshot(); dirty = false; }
   if (future.length) {
     // Vorwärts durch bereits berechnete (zurückgespulte) Generationen
@@ -1553,11 +2016,21 @@ function step() {
   }
   pushHistory();
   const prev = grid;
-  stepGrid(prev, nextBuf, S.cols, S.rows, simConfig());
+  if (S.automaton === "rd") stepRD(prev, nextBuf);
+  else if (S.automaton === "dla") stepDLA(prev, nextBuf);
+  else if (S.automaton === "wolfram") stepWolfram(prev, nextBuf);
+  else stepGrid(prev, nextBuf, S.cols, S.rows, simConfig());
   grid = nextBuf; nextBuf = prev;
-  let births = 0, sumX = 0;
-  if (S.automaton !== "cyclic") {
-    const trackAge = S.automaton === "life", cols = S.cols;
+  let births = 0, sumX = 0, sb = 0, sd = 0, red = 0, blue = 0;
+  for (let i = 0; i < grid.length; i++) {
+    const a = prev[i], b = grid[i];
+    if (!a && b) sb++; else if (a && !b) sd++;
+    if (b === 1) red++; else if (b === 2) blue++;
+  }
+  statHist.push({ g: generation + 1, b: sb, d: sd, red, blue });
+  if (statHist.length > 2000) statHist.splice(0, statHist.length - 2000);
+  if (!FULLFIELD(S.automaton) && S.automaton !== "dla") {
+    const trackAge = S.automaton === "life" || S.automaton === "hex", cols = S.cols;
     for (let i = 0; i < grid.length; i++) {
       const s = grid[i];
       if (s) {
@@ -1576,6 +2049,8 @@ function step() {
   simNote(births, sumX);
   checkRecords(a);
   runDetection(a);
+  if (running && !a.pop && !duel.phase && fieldIsDead()) { pause(); toast("Alles ist ausgestorben – die Simulation wurde angehalten."); }
+  if (duel.phase === "run") { const r = statHist[statHist.length - 1]; if (generation >= S.duelCfg.gens || !r.red || !r.blue || (detect.result && detect.result.type === "still")) finishDuel(); }
   requestRender();
 }
 function stepBack() {
@@ -1585,6 +2060,8 @@ function stepBack() {
   scrubTo(generation - 1);
 }
 function restoreStart() {
+  if (duel.phase === "over") { sfx("rewind"); duelReplay(); return; }
+  if (duelPlacing()) { sfx("deny"); toast("Erst setzen beide ihre Zellen – dann „Fertig ✓“ drücken."); return; }
   if (startSnap && !dirty) sfx("rewind");
   if (!startSnap || dirty) { toast("Startzustand = aktueller Zustand (noch nicht gestartet)"); return; }
   pause();
@@ -1598,7 +2075,7 @@ function restoreStart() {
 
 /** Erweitert das Feld, wenn Zellen dem Rand nahe kommen. */
 function maybeExpand() {
-  if (!S.autoExpand || S.wrap || S.automaton === "cyclic") return;
+  if (!S.autoExpand || S.wrap || NO_DETECT(S.automaton)) return;
   const { cols, rows } = S, m = 2;
   let near = false;
   for (let k = 0; k < m && !near; k++) {
@@ -1626,6 +2103,7 @@ function resetDetection() {
   updateStatus();
 }
 function runDetection(a) {
+  if (NO_DETECT(S.automaton)) { detect.result = null; updateStatus(); return; }
   if (a.pop === 0 && S.automaton !== "cyclic") {
     detect.result = { type: "extinct", lastHit: generation };
   } else {
@@ -1648,7 +2126,7 @@ function runDetection(a) {
   if (r && r.type !== detect.lastSoundType && running) sfx(r.type);
   detect.lastSoundType = r ? r.type : null;
   if (r && acornRun && !acornRun.done && !acornRun.calmAt && r.type !== "ship") acornRun.calmAt = generation;
-  if (r && S.autoPause && running && !detect.handled && S.automaton !== "cyclic" && r.type !== "ship" && !(acornRun && !acornRun.done)) {
+  if (r && S.autoPause && running && !detect.handled && !NO_DETECT(S.automaton) && duel.phase !== "run" && r.type !== "ship" && !(acornRun && !acornRun.done)) {
     detect.handled = true;
     pause();
     toast(describeDetection(r) + " – automatisch pausiert");
@@ -1671,6 +2149,68 @@ function gcd(a, b) { return b ? gcd(b, a % b) : a; }
    Ansicht (Kamera) & Zeichnen
    ===================================================================== */
 const view = { cx: 0, cy: 0, cs: 10, fitted: true };
+/* ---------- Sechseck-Gitter: Geometrie ----------
+   Gespeichert wird wie gewohnt ein Rechteck aus Zellen; ungerade Zeilen sind um eine halbe Zelle nach rechts versetzt.
+   Muster (und RLE-Dateien) nutzen die Golly-Koordinaten (c, r): Nachbarn sind (±1,0), (0,±1), (1,1) und (−1,−1). */
+const HEX_RH = Math.sqrt(3) / 2, HEX_R = 1 / Math.sqrt(3);
+const isHex = (a = S.automaton) => a === "hex";
+const rowH = () => isHex() ? HEX_RH : 1;
+const HEX_NB = [[[-1, -1], [0, -1], [-1, 0], [1, 0], [-1, 1], [0, 1]], [[0, -1], [1, -1], [-1, 0], [1, 0], [0, 1], [1, 1]]];
+const toGolly = (x, y) => [x + Math.ceil(y / 2), y];
+const fromGolly = (c, r) => [c - Math.ceil(r / 2), r];
+function wrapCell(x, y) {
+  if (S.wrap) return [((x % S.cols) + S.cols) % S.cols, ((y % S.rows) + S.rows) % S.rows];
+  return x < 0 || y < 0 || x >= S.cols || y >= S.rows ? null : [x, y];
+}
+/** Alle Zellen mit Sechseck-Abstand ≤ d um (x, y) – für Stifte. */
+function hexDisk(x, y, d) {
+  const [c0, r0] = toGolly(x, y), out = [];
+  for (let dr = -d; dr <= d; dr++) for (let dc = -d; dc <= d; dc++) {
+    if (Math.max(Math.abs(dc), Math.abs(dr), Math.abs(dc - dr)) > d) continue;
+    out.push(fromGolly(c0 + dc, r0 + dr));
+  }
+  return out;
+}
+/** Zellen eines Sechseck-Musters, zentriert auf (x, y), im versetzten Gitter (ohne Wrap). */
+function hexPlace(p, x, y) {
+  const ay = y - Math.floor(p.h / 2);
+  let lo = Infinity, hi = -Infinity;
+  for (const [c, r] of p.cells) { const X = c - r / 2; if (X < lo) lo = X; if (X > hi) hi = X; }
+  // Ankerzelle so wählen, dass die Mustermitte unter dem Zeiger liegt
+  const [ac] = toGolly(Math.round(x + (y & 1) / 2 - (ay & 1) / 2 - (lo + hi) / 2), ay);
+  return p.cells.map(([c, r, st]) => { const [X, Y] = fromGolly(ac + c, ay + r); return [X, Y, st]; });
+}
+/** Pixel-Position (linke obere Ecke der Zellen-Box) einer Zelle. */
+function cellPx(x, y, v = lastView) {
+  return isHex() ? [v.ox + (x + (y & 1) * 0.5) * v.cs, v.oy + y * v.cs * HEX_RH] : [v.ox + x * v.cs, v.oy + y * v.cs];
+}
+function hexPath(c, cx, cy, r) {
+  for (let k = 0; k < 6; k++) { const a = Math.PI / 3 * k - Math.PI / 6, px = cx + r * Math.cos(a), py = cy + r * Math.sin(a); k ? c.lineTo(px, py) : c.moveTo(px, py); }
+  c.closePath();
+}
+/* Schnelles Zeichnen: Ein Sechseck pro Farbe und Größe wird einmal vorgezeichnet und dann nur noch kopiert
+   (viele tausend Pfade pro Bild wären sehr langsam). */
+const hexSprites = new Map();
+function hexSprite(color, cs, inset = 0, stroke = false) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2), key = `${color}|${cs}|${inset}|${stroke}|${dpr}`;
+  let sp = hexSprites.get(key);
+  if (sp) return sp;
+  if (hexSprites.size > 300) hexSprites.clear();
+  const r = cs * HEX_R, pad = 1, w = cs + 2 * pad, h = 2 * r + 2 * pad;
+  const c = document.createElement("canvas"); c.width = Math.ceil(w * dpr); c.height = Math.ceil(h * dpr);
+  const x = c.getContext("2d"); x.scale(dpr, dpr); x.beginPath(); hexPath(x, pad + cs / 2, pad + r, r - inset);
+  if (stroke) { x.strokeStyle = color; x.lineWidth = 1; x.stroke(); } else { x.fillStyle = color; x.fill(); }
+  sp = { c, dx: -pad, dy: cs * HEX_RH / 2 - r - pad, w: c.width / dpr, h: c.height / dpr };
+  hexSprites.set(key, sp);
+  return sp;
+}
+const hexGridCache = { key: "", canvas: document.createElement("canvas") };
+/** Form einer Zelle dem aktuellen Pfad hinzufügen (Quadrat oder Sechseck), optional nach innen versetzt. */
+function cellPath(c, x, y, inset = 0, v = lastView) {
+  const [px, py] = cellPx(x, y, v), cs = v.cs;
+  if (isHex()) hexPath(c, px + cs / 2, py + cs * HEX_RH / 2, cs * HEX_R - inset);
+  else c.rect(px + inset, py + inset, cs - 2 * inset, cs - 2 * inset);
+}
 let lastView = null, hoverCell = null;
 const off = document.createElement("canvas"), offCtx = off.getContext("2d");
 let colors = {}, palCss = [], palU32 = [], AGE0 = 0, HEAT0 = 0, PARTY0 = 0, party = false;
@@ -1678,15 +2218,16 @@ let colors = {}, palCss = [], palU32 = [], AGE0 = 0, HEAT0 = 0, PARTY0 = 0, part
 function boardSize() { const r = boardWrap.getBoundingClientRect(); return { w: Math.max(1, r.width), h: Math.max(1, r.height) }; }
 function fitView() {
   const { w, h } = boardSize();
-  let cs = Math.min((w - 12) / S.cols, (h - 12) / S.rows);
+  const hx = isHex();
+  let cs = Math.min((w - 12) / (S.cols + (hx ? 0.5 : 0)), (h - 12) / (S.rows * rowH() + (hx ? 0.3 : 0)));
   cs = cs >= 7 ? Math.floor(cs) : Math.max(0.25, cs);
   view.cs = Math.min(cs, 48);
-  view.cx = S.cols / 2; view.cy = S.rows / 2; view.fitted = true;
+  view.cx = S.cols / 2 + (hx ? 0.25 : 0); view.cy = S.rows / 2; view.fitted = true;
   requestRender();
 }
 function zoomAt(px, py, factor) {
   const { w, h } = boardSize();
-  const wx = (px - w / 2) / view.cs + view.cx, wy = (py - h / 2) / view.cs + view.cy;
+  const k = rowH(), wx = (px - w / 2) / view.cs + view.cx, wy = (py - h / 2) / (view.cs * k) + view.cy;
   let cs = view.cs * factor;
   if (cs >= 3) {
     const r = Math.round(cs);
@@ -1694,7 +2235,7 @@ function zoomAt(px, py, factor) {
   }
   cs = clamp(cs, 0.25, 64);
   view.cs = cs;
-  view.cx = wx - (px - w / 2) / cs; view.cy = wy - (py - h / 2) / cs;
+  view.cx = wx - (px - w / 2) / cs; view.cy = wy - (py - h / 2) / (cs * k);
   clampView();
   view.fitted = false;
   requestRender();
@@ -1706,6 +2247,21 @@ function clampView() {
 function cellAt(px, py) {
   const v = lastView;
   if (!v) return null;
+  if (isHex()) {
+    // nächstgelegenen Sechseck-Mittelpunkt suchen
+    const ry = Math.floor((py - v.oy) / (v.cs * HEX_RH));
+    let best = null, bd = Infinity;
+    for (let y = ry - 1; y <= ry + 1; y++) {
+      if (y < 0 || y >= S.rows) continue;
+      const x = Math.floor((px - v.ox) / v.cs - (y & 1) * 0.5);
+      for (const xx of [x - 1, x, x + 1]) {
+        if (xx < 0 || xx >= S.cols) continue;
+        const [cx, cy] = cellPx(xx, y, v), d = (cx + v.cs / 2 - px) ** 2 + (cy + v.cs * HEX_RH / 2 - py) ** 2;
+        if (d < bd) { bd = d; best = { x: xx, y }; }
+      }
+    }
+    return best && bd <= (v.cs * 0.62) ** 2 ? best : null;
+  }
   const x = Math.floor((px - v.ox) / v.cs), y = Math.floor((py - v.oy) / v.cs);
   if (x < 0 || y < 0 || x >= S.cols || y >= S.rows) return null;
   return { x, y };
@@ -1715,6 +2271,8 @@ function setCell(x, y, v) {
   if (S.wrap) { x = ((x % S.cols) + S.cols) % S.cols; y = ((y % S.rows) + S.rows) % S.rows; }
   else if (x < 0 || y < 0 || x >= S.cols || y >= S.rows) return false;
   const i = y * S.cols + x;
+  if (duelPlacing()) { v = duelGuard(x, i, v); if (v < 0) return false; }
+  else if (duelBusy()) { if (performance.now() - duel.warnAt > 1800) { duel.warnAt = performance.now(); sfx("deny"); toast("Während des Duells kann nichts gesetzt werden."); } return false; }
   grid[i] = v; age[i] = 0;
   return true;
 }
@@ -1725,9 +2283,13 @@ function refreshColors() {
   const dark = t.scheme === "dark";
   colors = { outside: t.bg, dead: t.dead, cell: t.cell, grid: t.grid, accent: t.accent, text: t.text, scheme: t.scheme };
   let states;
-  if (S.automaton === "life") states = [t.dead, t.cell];
+  if (S.automaton === "life" || S.automaton === "hex") states = [t.dead, t.cell];
   else if (S.automaton === "brain") states = [t.dead, t.cell, mix(t.cell, t.dead, 0.6)];
   else if (S.automaton === "wire") states = [t.dead, dark ? "#56b4ff" : "#1f6fd1", dark ? "#ff6f5e" : "#d0402c", dark ? "#e8c552" : "#b88a12"];
+  else if (S.automaton === "duel") states = [t.dead, dark ? "#ff6b78" : "#d63447", dark ? "#5aa8ff" : "#1f6fd1"];
+  else if (S.automaton === "wolfram") states = [t.dead, t.cell];
+  else if (S.automaton === "rd") states = Array.from({ length: 64 }, (_, l) => l < 32 ? mix(t.dead, t.cell, Math.pow(l / 31, 0.85)) : mix(t.cell, dark ? "#ffffff" : t.accent, Math.min(1, (l - 31) / 40)));
+  else if (S.automaton === "dla") states = Array.from({ length: 64 }, (_, l) => l === 0 ? t.dead : l === 63 ? mix(t.text, t.dead, 0.55) : hslToHex((190 + l * 6) % 360, 70, dark ? 60 : 44));
   else states = Array.from({ length: S.cyclic.states }, (_, i) => hslToHex(i * 360 / S.cyclic.states, 72, dark ? 58 : 46));
   const young = mix(t.cell, dark ? "#ffffff" : "#000000", 0.45), old = mix(t.cell, t.dead, 0.62);
   const ages = Array.from({ length: 64 }, (_, a) => a <= 8 ? mix(young, t.cell, a / 8) : mix(t.cell, old, Math.min(1, (a - 8) / 50)));
@@ -1741,8 +2303,8 @@ function refreshColors() {
   requestRender();
 }
 function colorIdForCell(i, s, mode) {
-  if (party && s === 1 && S.automaton === "life") return PARTY0 + (((i % S.cols) + Math.floor(i / S.cols) + generation) % 24);
-  if (mode === "age" && s === 1 && S.automaton === "life") return AGE0 + Math.min(63, age[i]);
+  if (party && s === 1 && (S.automaton === "life" || S.automaton === "hex")) return PARTY0 + (((i % S.cols) + Math.floor(i / S.cols) + generation) % 24);
+  if (mode === "age" && s === 1 && (S.automaton === "life" || S.automaton === "hex")) return AGE0 + Math.min(63, age[i]);
   return s;
 }
 function heatLevel(v) { return Math.min(31, Math.floor(Math.log1p(v) / Math.log1p(maxHeat) * 31.999)); }
@@ -1754,54 +2316,62 @@ function render() {
   const W = Math.round(w * dpr), H = Math.round(h * dpr);
   if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const cs = view.cs, cols = S.cols, rows = S.rows;
-  const ox = Math.round(w / 2 - view.cx * cs), oy = Math.round(h / 2 - view.cy * cs);
-  const bw = cols * cs, bh = rows * cs;
+  const cs = view.cs, cols = S.cols, rows = S.rows, HX = isHex(), csY = cs * (HX ? HEX_RH : 1);
+  const ox = Math.round(w / 2 - view.cx * cs), oy = Math.round(h / 2 - view.cy * csY);
+  const bw = cols * cs, bh = rows * csY;
   lastView = { cs, ox, oy, w, h };
   ctx.fillStyle = colors.outside; ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = colors.dead; ctx.fillRect(ox, oy, bw, bh);
+  // Sechsecke ragen oben und unten etwas über die Zeilen hinaus, ungerade Zeilen um eine halbe Zelle nach rechts
+  const bt = HX ? cs * (HEX_R - HEX_RH / 2) : 0, bwx = HX ? cs / 2 : 0;
+  ctx.fillStyle = colors.dead; ctx.fillRect(ox, oy - bt, bw + bwx, bh + 2 * bt);
 
-  const x0 = Math.max(0, Math.floor(-ox / cs)), x1 = Math.min(cols - 1, Math.floor((w - ox) / cs));
-  const y0 = Math.max(0, Math.floor(-oy / cs)), y1 = Math.min(rows - 1, Math.floor((h - oy) / cs));
-  const mode = S.automaton === "cyclic" ? "normal" : S.displayMode;
-  const cyc = S.automaton === "cyclic";
+  const x0 = Math.max(0, Math.floor(-ox / cs) - 1), x1 = Math.min(cols - 1, Math.floor((w - ox) / cs));
+  const y0 = Math.max(0, Math.floor(-oy / csY) - 1), y1 = Math.min(rows - 1, Math.floor((h - oy) / csY) + 1);
+  const A = S.automaton, mode = ["life", "brain", "wire", "hex"].includes(A) ? S.displayMode : "normal";
+  const cyc = FULLFIELD(A), solid = cyc || A === "dla", hideRed = duel.phase === "blue" && $("duelHide").checked;
 
   if (x1 >= x0 && y1 >= y0) {
-    if (cs < 4) {
+    if ((cs < 4 && !(HX && cs >= 2.5)) || solid) {
       // Kleine Zellen: als Bild rendern (1 Pixel pro Zelle), dann skalieren
       if (off.width !== cols || off.height !== rows) { off.width = cols; off.height = rows; }
       const img = offCtx.createImageData(cols, rows), u32 = new Uint32Array(img.data.buffer);
       for (let i = 0; i < grid.length; i++) {
-        const s = grid[i];
+        let s = grid[i]; if (hideRed && s === 1) s = 0;
         if (s || cyc) u32[i] = palU32[colorIdForCell(i, s, mode)];
         else if (mode === "heat" && heat[i]) u32[i] = palU32[HEAT0 + heatLevel(heat[i])];
       }
       offCtx.putImageData(img, 0, 0);
       ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(off, ox, oy, bw, bh);
+      ctx.drawImage(off, ox, oy, bw, bh);   // bei sehr kleinen Sechsecken reicht die Rechteck-Näherung
     } else {
       for (const b of buckets) if (b) b.length = 0;
       const heatB = [];
       for (let y = y0; y <= y1; y++) {
-        const r = y * cols, py = oy + y * cs;
+        const r = y * cols, py = oy + y * csY;
         for (let x = x0; x <= x1; x++) {
-          const i = r + x, s = grid[i];
-          if (mode === "heat" && heat[i]) (heatB[heatLevel(heat[i])] ||= []).push(ox + x * cs, py);
-          if (s || cyc) (buckets[colorIdForCell(i, s, mode)] ||= []).push(ox + x * cs, py);
+          const i = r + x; let s = grid[i]; if (hideRed && s === 1) s = 0;
+          const px = ox + (HX && (y & 1) ? x + 0.5 : x) * cs;
+          if (mode === "heat" && heat[i]) (heatB[heatLevel(heat[i])] ||= []).push(px, py);
+          if (s || cyc) (buckets[colorIdForCell(i, s, mode)] ||= []).push(px, py);
         }
       }
       heatB.forEach((arr, l) => {
         if (!arr) return;
         ctx.fillStyle = palCss[HEAT0 + l];
-        for (let k = 0; k < arr.length; k += 2) ctx.fillRect(arr[k], arr[k + 1], cs, cs);
+        if (HX) { const sp = hexSprite(palCss[HEAT0 + l], cs); for (let k = 0; k < arr.length; k += 2) ctx.drawImage(sp.c, arr[k] + sp.dx, arr[k + 1] + sp.dy, sp.w, sp.h); }
+        else for (let k = 0; k < arr.length; k += 2) ctx.fillRect(arr[k], arr[k + 1], cs, cs);
       });
-      const gap = cyc ? 0 : cs >= 6 ? 1 : 0.5;
-      const round = S.roundCells && !document.body.classList.contains("retro") && cs >= 6 && !cyc && typeof ctx.roundRect === "function";
+      const gap = solid ? 0 : cs >= 6 ? 1 : 0.5;
+      const round = S.roundCells && !document.body.classList.contains("retro") && cs >= 6 && !solid && typeof ctx.roundRect === "function";
       const rad = cs * 0.18, size = cs - 2 * gap;
       buckets.forEach((arr, id) => {
         if (!arr || !arr.length) return;
-        ctx.fillStyle = mode === "heat" && id === 1 && S.automaton === "life" ? colors.text : palCss[id];
-        if (round) {
+        ctx.fillStyle = mode === "heat" && id === 1 && (A === "life" || HX) ? colors.text : palCss[id];
+        if (HX) {
+          // Sechsecke mit kleinem Abstand (wie die Lücke bei Quadraten)
+          const sp = hexSprite(ctx.fillStyle, cs, cs >= 6 ? 0.9 : 0.4);
+          for (let k = 0; k < arr.length; k += 2) ctx.drawImage(sp.c, arr[k] + sp.dx, arr[k + 1] + sp.dy, sp.w, sp.h);
+        } else if (round) {
           ctx.beginPath();
           for (let k = 0; k < arr.length; k += 2) ctx.roundRect(arr[k] + gap, arr[k + 1] + gap, size, size, rad);
           ctx.fill();
@@ -1809,7 +2379,27 @@ function render() {
       });
     }
 
-    if (S.showGrid && cs >= 7) {
+    if (S.showGrid && cs >= 7 && HX) {
+      // Raster: Umrisse der Sechsecke einmal vorzeichnen und wiederverwenden.
+      // Passt das ganze Feld in ein Bild, wird es nur beim Zoomen neu gezeichnet (Verschieben kostet dann fast nichts).
+      const dpr2 = Math.min(window.devicePixelRatio || 1, 2), fullW = (cols + 0.5) * cs + 2, fullH = rows * csY + 2 * bt + 2;
+      const whole = fullW * dpr2 <= 4096 && fullH * dpr2 <= 4096;
+      const key = whole ? ["all", cs, cols, rows, colors.grid, dpr2].join() : [cs, ox, oy, w, h, x0, x1, y0, y1, colors.grid, dpr2].join();
+      const gc = hexGridCache.canvas;
+      if (hexGridCache.key !== key) {
+        hexGridCache.key = key;
+        const cw = whole ? fullW : w, ch = whole ? fullH : h;
+        gc.width = Math.round(cw * dpr2); gc.height = Math.round(ch * dpr2);
+        const g2 = gc.getContext("2d"); g2.setTransform(dpr2, 0, 0, dpr2, 0, 0); g2.clearRect(0, 0, cw, ch);
+        const sp = hexSprite(colors.grid, cs, 0, true), v2 = whole ? { cs, ox: 1, oy: 1 + bt } : lastView;
+        const ya = whole ? 0 : y0, yb = whole ? rows - 1 : y1, xa = whole ? 0 : x0, xb = whole ? cols - 1 : x1;
+        for (let y = ya; y <= yb; y++) for (let x = xa; x <= xb; x++) { const [px, py] = cellPx(x, y, v2); g2.drawImage(sp.c, px + sp.dx, py + sp.dy, sp.w, sp.h); }
+        hexGridCache.w = cw; hexGridCache.h = ch;
+      }
+      ctx.globalAlpha = 0.75;
+      if (whole) ctx.drawImage(gc, ox - 1, oy - bt - 1, hexGridCache.w, hexGridCache.h); else ctx.drawImage(gc, 0, 0, w, h);
+      ctx.globalAlpha = 1;
+    } else if (S.showGrid && cs >= 7 && A !== "rd") {
       ctx.strokeStyle = colors.grid; ctx.lineWidth = 1; ctx.globalAlpha = 0.75;
       ctx.beginPath();
       const top = Math.max(oy, 0), bottom = Math.min(oy + bh, h), left = Math.max(ox, 0), right = Math.min(ox + bw, w);
@@ -1818,43 +2408,49 @@ function render() {
       ctx.stroke(); ctx.globalAlpha = 1;
     }
   }
+  // Duell: fremde Hälfte abdunkeln, Mittellinie
+  if (duel.phase === "red" || duel.phase === "blue") {
+    const half = Math.ceil(cols / 2) * cs, red = duel.phase === "red";
+    ctx.globalAlpha = colors.scheme === "dark" ? 0.32 : 0.12; ctx.fillStyle = "#000";
+    ctx.fillRect(red ? ox + half : ox, oy, red ? bw - half : half, bh);
+    ctx.globalAlpha = 0.9; ctx.strokeStyle = red ? "#ff6b78" : "#5aa8ff"; ctx.lineWidth = 2; ctx.setLineDash([6, 5]);
+    ctx.beginPath(); ctx.moveTo(ox + half, oy); ctx.lineTo(ox + half, oy + bh); ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+  }
   // Rand des Spielfelds (gestrichelt = Torus)
   ctx.strokeStyle = colors.accent; ctx.globalAlpha = 0.55; ctx.lineWidth = 1.5;
   ctx.setLineDash(S.wrap ? [6, 5] : []);
-  ctx.strokeRect(ox - 0.75, oy - 0.75, bw + 1.5, bh + 1.5);
+  ctx.strokeRect(ox - 0.75, oy - bt - 0.75, bw + bwx + 1.5, bh + 2 * bt + 1.5);
   ctx.setLineDash([]); ctx.globalAlpha = 1;
 
   if (S.displayMode === "neighbors" && x1 >= x0 && y1 >= y0) drawNeighborNumbers(ox, oy, cs, x0, x1, y0, y1);
   drawExplain(ox, oy, cs);
   // Vorschau des Stifts
   if (!selectedPattern && hoverCell && !stroke && tool !== "pan" && tool !== "explain" && S.pen !== 1) {
-    ctx.globalAlpha = 0.22; ctx.fillStyle = colors.accent;
-    for (const [dx, dy] of brush) {
-      const x = hoverCell.x + dx, y = hoverCell.y + dy;
-      if (!S.wrap && (x < 0 || y < 0 || x >= cols || y >= rows)) continue;
-      const X = ((x % cols) + cols) % cols, Y = ((y % rows) + rows) % rows;
-      ctx.fillRect(ox + X * cs, oy + Y * cs, cs, cs);
-    }
-    ctx.globalAlpha = 1;
+    ctx.globalAlpha = 0.22; ctx.fillStyle = colors.accent; ctx.beginPath();
+    for (const [x, y] of brushCells(hoverCell.x, hoverCell.y)) { const c = wrapCell(x, y); if (c) cellPath(ctx, c[0], c[1]); }
+    ctx.fill(); ctx.globalAlpha = 1;
   }
   // Vorschau des ausgewählten Musters
   if (selectedPattern && hoverCell) {
-    const { ax, ay } = patternAnchor(selectedPattern, hoverCell.x, hoverCell.y);
+    const placed = patternCells(selectedPattern, hoverCell.x, hoverCell.y);
     ctx.globalAlpha = 0.55;
-    ctx.fillStyle = colors.accent;
-    for (const [dx, dy] of selectedPattern.cells) {
-      let x = ax + dx, y = ay + dy;
-      if (S.wrap) { x = ((x % cols) + cols) % cols; y = ((y % rows) + rows) % rows; }
-      ctx.fillRect(ox + x * cs + 1, oy + y * cs + 1, Math.max(1, cs - 2), Math.max(1, cs - 2));
+    ctx.fillStyle = colors.accent; ctx.beginPath();
+    let l = Infinity, t = Infinity, rr = -Infinity, bb = -Infinity;
+    for (const [x0c, y0c] of placed) {
+      const [px, py] = cellPx(x0c, y0c); l = Math.min(l, px); t = Math.min(t, py); rr = Math.max(rr, px + cs); bb = Math.max(bb, py + csY);
+      const c = wrapCell(x0c, y0c); if (c) cellPath(ctx, c[0], c[1], Math.min(1, cs * 0.1));
     }
+    ctx.fill();
     ctx.globalAlpha = 0.9; ctx.strokeStyle = colors.accent; ctx.setLineDash([4, 4]);
-    ctx.strokeRect(ox + ax * cs - 0.5, oy + ay * cs - 0.5, selectedPattern.w * cs + 1, selectedPattern.h * cs + 1);
+    ctx.strokeRect(l - 0.5, t - 0.5, rr - l + 1, bb - t + 1);
     ctx.setLineDash([]); ctx.globalAlpha = 1;
   }
   updateStats();
+  if (duel.phase) updateDuelUI();
   updateTimeline();
   if (explainCell) updateExplain();
-  if (chartDirty) drawChart();
+  if (chartDirty) { drawChart(); if ($("statsDialog").open && performance.now() - statLast > 250) drawStats(); }
 }
 function requestRender() { needsRender = true; }
 
@@ -1868,6 +2464,7 @@ function drawChart() {
   }
   chartCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   chartCtx.clearRect(0, 0, w, h);
+  if (duel.phase === "blue" && $("duelHide").checked) { $("chartInfo").textContent = ""; return; }
   const n = Math.min(popHist.length, Math.max(50, Math.floor(w)));
   const data = popHist.slice(-n);
   if (!data.length) return;
@@ -1887,12 +2484,21 @@ const lastText = {};
 function setText(id, text) { if (lastText[id] !== text) { lastText[id] = text; $(id).textContent = text; } }
 function updateStats() {
   setText("generation", generation.toLocaleString(LOC()));
-  setText("population", (popHist.length ? popHist[popHist.length - 1] : 0).toLocaleString(LOC()));
-  setText("popLabel", S.automaton === "cyclic" ? "Zellen ≠ 0" : S.automaton === "life" ? "Lebende Zellen" : "Aktive Zellen");
-  setText("ruleBadge", S.automaton === "cyclic" ? `Zyklisch ${S.cyclic.states}` : ruleString());
+  setText("population", duel.phase === "blue" && $("duelHide").checked ? "?" : (popHist.length ? popHist[popHist.length - 1] : 0).toLocaleString(LOC()));
+  const A = S.automaton;
+  setText("popLabel", A === "cyclic" ? "Zellen ≠ 0" : A === "life" || A === "duel" || A === "hex" ? "Lebende Zellen" : A === "rd" ? "Zellen mit Stoff B" : A === "dla" ? "Kristall + Teilchen" : "Aktive Zellen");
+  setText("ruleBadge", A === "cyclic" ? `Zyklisch ${S.cyclic.states}` : A === "rd" ? "Gray-Scott" : A === "wolfram" ? `Nr. ${S.wolf.rule}` : ruleString());
   setText("sizeBadge", `${S.cols}×${S.rows}`);
   const empty = !popHist[popHist.length - 1];
-  $("overlay").hidden = !(empty && !running && S.automaton !== "cyclic");
+  // Leeres Feld: Start und Schritt sind sinnlos (außer bei Regeln mit B0 und beim Kristallwachstum)
+  const stuck = empty && !running && !emptyCanChange();
+  for (const id of ["playBtn", "stepBtn"]) {
+    const b = $(id); if (b.disabled === stuck) continue;
+    b.disabled = stuck;
+    b.dataset.title ||= b.title;
+    b.title = stuck ? (generation ? "Alles ist ausgestorben – setze neue Zellen oder geh mit „◀ Zurück“ in der Zeit zurück." : "Das Feld ist leer – setze zuerst Zellen, wähle ein Muster oder drücke „Zufall“.") : b.dataset.title;
+  }
+  $("overlay").hidden = !(empty && !running && S.automaton !== "cyclic" && !duel.phase);
 }
 function updateStatus() {
   $("runState").textContent = (running ? "Simulation läuft" : "Pausiert") + (performance.now() < godUntil ? " · 🛡️ Unsterblichkeits-Modus" : "");
@@ -1934,8 +2540,24 @@ function frame(t) {
   if (needsRender) { needsRender = false; render(); }
   requestAnimationFrame(frame);
 }
+/** Kann sich ein leeres Feld überhaupt verändern? (Regeln mit B0 und das Kristallwachstum schon) */
+function emptyCanChange() {
+  const A = S.automaton;
+  return A === "dla" || (A === "life" && S.birth.includes(0)) || (A === "hex" && S.hexB.includes(0));
+}
+function fieldIsDead() {
+  if (emptyCanChange()) return false;
+  for (let i = 0; i < grid.length; i++) if (grid[i]) return false;
+  return true;
+}
+function deadToast() {
+  sfx("deny");
+  toast(generation ? "Alles ist ausgestorben – setze neue Zellen oder geh mit „◀ Zurück“ in der Zeit zurück." : "Das Feld ist leer – setze zuerst Zellen, wähle ein Muster oder drücke „Zufall“.");
+}
 function play() {
   if (running) { pause(); return; }
+  if (!duel.phase && fieldIsDead()) { deadToast(); return; }
+  if (duel.phase === "red" || duel.phase === "blue") { sfx("deny"); toast("Erst setzen beide ihre Zellen – dann „Fertig ✓“ drücken."); return; }
   running = true; acc = 1000 / S.speed; detect.handled = !!detect.result; sfx("play");
   updateStatus(); requestRender();
 }
@@ -1944,7 +2566,158 @@ function pause() { if (!running) return; running = false; sfx("pause"); updateSt
 /* =====================================================================
    Bearbeiten: Leeren, Zufall, Muster
    ===================================================================== */
+/* ---------- Zwei-Spieler-Duell ---------- */
+const DUEL_NAME = { 1: "Rot", 2: "Blau" };
+function duelCount() { let r = 0, b = 0; for (let i = 0; i < grid.length; i++) { const v = grid[i]; if (v === 1) r++; else if (v === 2) b++; } return [r, b]; }
+function startDuel() {
+  pause();
+  if (S.automaton !== "duel") setAutomaton("duel", { silent: true });
+  if (S.cols < 60 || S.rows < 40) resizeGrid(Math.max(S.cols, 60), Math.max(S.rows, 40));
+  S.duelCfg = { cells: +$("duelCells").value, gens: +$("duelGens").value }; saveSettings();
+  if (duel.prevWrap == null) duel.prevWrap = S.wrap;
+  duel.phase = null; clearBoard(); selectPattern(null); setTool("draw");
+  setWrap(true, true);
+  undoStack.length = 0; redoStack.length = 0; updateButtons();
+  duel.phase = "red"; duel.left = S.duelCfg.cells; drawState = 1; duel.last = null; duel.start = null;
+  fitView(); sfx("open");
+  toast(`Rot beginnt: Setze ${S.duelCfg.cells} Zellen auf die linke Hälfte. Muster aus der Bibliothek gehen auch.`);
+  jumpTo(boardWrap, $("duelBtn"));
+  updateDuelUI();
+}
+function duelDone() {
+  if (duel.phase === "red") {
+    duel.phase = "blue"; drawState = 2; duel.left = S.duelCfg.cells - duelCount()[1];
+    undoStack.length = 0; redoStack.length = 0; updateButtons();   // Blau darf Rots Züge nicht rückgängig machen
+    sfx("next"); toast(`Blau ist dran: Setze ${S.duelCfg.cells} Zellen auf die rechte Hälfte.` + ($("duelHide").checked ? " Die roten Zellen sind so lange verdeckt." : ""));
+  } else if (duel.phase === "blue") {
+    const [r, b] = duelCount();
+    if (!r || !b) { toast(!r ? "Rot hat noch keine Zelle gesetzt." : "Blau hat noch keine Zelle gesetzt."); return; }
+    duel.phase = "run"; duel.replay = false; duel.start = snapshot(); startSnap = duel.start; dirty = false; clearHistory(); popHist = [r + b]; statHist = [];
+    undoStack.length = 0; redoStack.length = 0; updateButtons();
+    sfx("next"); toast("Los geht's!");
+    play();
+  }
+  updateDuelUI(); requestRender();
+}
+function finishDuel() {
+  pause();
+  const [r, b] = duelCount(), w = r > b ? 1 : b > r ? 2 : 0;
+  duel.phase = "over"; duel.last = { r, b, w, g: generation };
+  if (w && !duel.replay) duel.wins[w]++;
+  sfx(w ? "mission" : "still");
+  toast(w ? `🏆 ${DUEL_NAME[w]} gewinnt mit ${Math.max(r, b)} zu ${Math.min(r, b)} Zellen!` : `Unentschieden: ${r} zu ${b} Zellen.`);
+  updateDuelUI();
+}
+/** Duell-Zustand beenden (ohne das Feld anzufassen) und den Torus wie vorher einstellen. */
+function endDuelState() {
+  if (!duel.phase && duel.prevWrap == null) return;
+  duel.phase = null; duel.last = null; duel.start = null;
+  if (duel.prevWrap != null) { setWrap(duel.prevWrap, true); duel.prevWrap = null; }
+  updateDuelUI(); requestRender();
+}
+/** Abbrechen/Beenden: Feld leeren, zurück zum Life-artigen Automaten. */
+function cancelDuel(msg) {
+  if (!duel.phase) return;
+  pause();
+  endDuelState();
+  grid.fill(0); age.fill(0); heat.fill(0); maxHeat = 1; generation = 0;
+  if (S.automaton !== "life") setAutomaton("life", { silent: true });
+  undoStack.length = 0; redoStack.length = 0;
+  clearHistory(); afterBigChange(); dirty = true;
+  if (msg) toast(msg);
+  updateDuelUI(); requestRender();
+}
+const duelPlacing = () => duel.phase === "red" || duel.phase === "blue";
+const duelBusy = () => duel.phase === "run" || duel.phase === "over";
+/** Zufall während des Setzens: die eigenen Zellen zufällig neu verteilen (genau so viele wie erlaubt). */
+function duelRandom() {
+  beginEdit();
+  const own = duel.phase === "red" ? 1 : 2, { cols, rows } = S, half = Math.ceil(cols / 2);
+  for (let i = 0; i < grid.length; i++) if (grid[i] === own) grid[i] = 0;
+  const x0 = own === 1 ? 0 : half, w = own === 1 ? half : cols - half;
+  const bw = Math.min(w - 4, Math.max(4, Math.round(Math.sqrt(S.duelCfg.cells * 2.5)))), bh = Math.min(rows - 4, bw);
+  const bx = x0 + ((w - bw) / 2 | 0), by = (rows - bh) / 2 | 0;
+  let placed = 0, guard = 0;
+  while (placed < S.duelCfg.cells && guard++ < 100000) {
+    const i = (by + ((Math.random() * bh) | 0)) * cols + bx + ((Math.random() * bw) | 0);
+    if (!grid[i]) { grid[i] = own; placed++; }
+  }
+  resetPopHist(); sfx("random"); requestRender();
+  toast(`${DUEL_NAME[own]}: ${placed} Zellen zufällig verteilt`);
+}
+/** Leeren während des Setzens: nur die eigenen Zellen entfernen. */
+function duelClearOwn() {
+  beginEdit();
+  const own = duel.phase === "red" ? 1 : 2;
+  for (let i = 0; i < grid.length; i++) if (grid[i] === own) grid[i] = 0;
+  resetPopHist(); sfx("clear"); requestRender();
+  toast(`Die Zellen von ${DUEL_NAME[own]} wurden entfernt`);
+}
+function duelReplay() {
+  if (!duel.start) return;
+  setWrap(true, true);
+  pause(); beginEdit(); restore(duel.start); clearHistory(); popHist = [duelCount().reduce((a, b) => a + b)]; statHist = [];
+  duel.phase = "run"; duel.replay = true; dirty = false; startSnap = duel.start;
+  updateDuelUI(); play();
+}
+/** Wird von setCell aufgerufen, solange ein Spieler setzt: eigene Hälfte, eigene Farbe, begrenzte Anzahl. */
+function duelGuard(x, i, v) {
+  const own = duel.phase === "red" ? 1 : 2, mine = own === 1 ? x < S.cols / 2 : x >= S.cols / 2, cur = grid[i];
+  const warn = m => { if (performance.now() - duel.warnAt > 1800) { duel.warnAt = performance.now(); sfx("deny"); toast(m); } };
+  if (!mine) { warn(`Das ist die Hälfte von ${DUEL_NAME[3 - own]}.`); return -1; }
+  if (cur && cur !== own) return -1;
+  if (v) {
+    if (cur === own) return own;
+    if (duel.left <= 0) { warn("Alle Zellen gesetzt – entferne eine oder drücke „Fertig ✓“."); return -1; }
+    duel.left--; return own;
+  }
+  if (cur === own) duel.left++;
+  return 0;
+}
+function updateDuelUI() {
+  const ph = duel.phase, hud = $("duelHud"), st = $("duelStatus");
+  hud.hidden = !ph; st.hidden = !ph && !duel.last;
+  $("duelCancel").hidden = !ph; $("duelCancel").textContent = ph === "over" ? "Beenden" : "Abbrechen";
+  $("duelReplay").hidden = !duel.start || (ph !== "over" && ph !== null) || S.automaton !== "duel";
+  $("duelBtn").textContent = ph && ph !== "over" ? "Neu starten" : duel.last ? "Neues Duell" : "Duell starten";
+  if (!ph) { if (!duel.last) st.textContent = ""; return; }
+  let [r, b] = duelCount();
+  if (ph === "red" || ph === "blue") {
+    const own = ph === "red" ? 1 : 2;
+    duel.left = S.duelCfg.cells - (own === 1 ? r : b);
+    setText("duelHudText", `${own === 1 ? "🔴 Rot" : "🔵 Blau"} setzt · noch ${duel.left}`);
+    $("duelDone").hidden = false; $("duelHud").classList.add("placing");
+    st.innerHTML = ""; st.append(`${own === 1 ? "Rot" : "Blau"} setzt (${S.duelCfg.cells - duel.left}/${S.duelCfg.cells}).`);
+    if (ph === "blue" && $("duelHide").checked) r = 0;
+  } else if (ph === "run") {
+    setText("duelHudText", `🔴 ${r} : ${b} 🔵 · ${generation}/${S.duelCfg.gens}`); $("duelHud").classList.remove("placing");
+    $("duelDone").hidden = true;
+    st.textContent = "Das Duell läuft …";
+  } else {
+    const L = duel.last;
+    $("duelHud").classList.remove("placing");
+    setText("duelHudText", L.w ? `🏆 ${DUEL_NAME[L.w]} gewinnt · ${L.r} : ${L.b}` : `Unentschieden · ${L.r} : ${L.b}`);
+    $("duelDone").hidden = true;
+    st.innerHTML = "";
+    const line = document.createElement("div");
+    line.append(L.w ? `🏆 ${DUEL_NAME[L.w]} gewinnt mit ${Math.max(L.r, L.b)} zu ${Math.min(L.r, L.b)} Zellen.` : `Unentschieden: ${L.r} zu ${L.b} Zellen.`);
+    const tally = document.createElement("div"); tally.className = "small";
+    tally.append(`Stand: Rot ${duel.wins[1]} : ${duel.wins[2]} Blau`);
+    st.append(line, tally);
+  }
+  const tot = r + b || 1;
+  $("duelBarRed").style.width = (r / tot * 100) + "%"; $("duelBarBlue").style.width = (b / tot * 100) + "%";
+}
+$("duelBtn").onclick = startDuel;
+$("duelDone").onclick = duelDone;
+$("duelCancel").onclick = () => { sfx("back"); cancelDuel(duel.phase === "over" ? "Duell beendet" : "Duell abgebrochen"); };
+$("duelReplay").onclick = () => { sfx("rewind"); duelReplay(); };
+$("duelHide").onchange = () => requestRender();
+$("duelCells").value = S.duelCfg.cells; $("duelGens").value = S.duelCfg.gens;
+
 function clearBoard() {
+  if (duelPlacing()) { duelClearOwn(); return; }
+  if (duelBusy()) { cancelDuel(duel.phase === "over" ? "Duell beendet" : "Duell abgebrochen"); return; }
   pause(); beginEdit();
   grid.fill(0); age.fill(0); heat.fill(0); maxHeat = 1;
   generation = 0; clearHistory(); afterBigChange(); sfx("clear");
@@ -1952,9 +2725,15 @@ function clearBoard() {
   requestRender();
 }
 function randomize() {
+  if (duelPlacing()) { duelRandom(); return; }
+  if (duelBusy()) { sfx("deny"); toast("Während des Duells nicht möglich – erst „Abbrechen“ oder „Beenden“."); return; }
   pause(); beginEdit();
   const d = S.density / 100, n = grid.length;
   if (S.automaton === "cyclic") for (let i = 0; i < n; i++) grid[i] = (Math.random() * S.cyclic.states) | 0;
+  else if (S.automaton === "duel") for (let i = 0; i < n; i++) grid[i] = Math.random() < d ? (i % S.cols < S.cols / 2 ? 1 : 2) : 0;
+  else if (S.automaton === "rd") { grid.fill(0); const k = Math.max(3, Math.round(n * d / 900)); for (let j = 0; j < k; j++) rdBlob((Math.random() * S.cols) | 0, (Math.random() * S.rows) | 0, 1 + ((Math.random() * 3) | 0)); }
+  else if (S.automaton === "dla") { grid.fill(0); dlaWalkers = []; const k = Math.max(2, Math.round(d * 12)); for (let j = 0; j < k; j++) grid[((Math.random() * S.rows) | 0) * S.cols + ((Math.random() * S.cols) | 0)] = 1 + j % 62; }
+  else if (S.automaton === "wolfram") { grid.fill(0); for (let x = 0; x < S.cols; x++) grid[x] = Math.random() < Math.max(0.1, d * 2) ? 1 : 0; }
   else if (S.automaton === "wire") for (let i = 0; i < n; i++) { const r = Math.random(); grid[i] = r < d ? (Math.random() < 0.04 ? 1 : 3) : 0; }
   else for (let i = 0; i < n; i++) grid[i] = Math.random() < d ? 1 : 0;
   age.fill(0); heat.fill(0); maxHeat = 1; sfx("random");
@@ -1963,31 +2742,45 @@ function randomize() {
 }
 
 /** Muster in einheitliches Format bringen: Zellen ab (0,0), [x, y, zustand]. */
-function makePattern({ id, name, desc = "", cells, rule = null }) {
+function makePattern({ id, name, desc = "", cells, rule = null, hex = false }) {
   const list = cells.map(c => [c[0], c[1], c[2] || 1]);
   const minX = Math.min(...list.map(c => c[0])), minY = Math.min(...list.map(c => c[1]));
   const norm = list.map(([x, y, s]) => [x - minX, y - minY, s]);
   return {
-    id, name, desc, rule, cells: norm,
+    id, name, desc, rule, cells: norm, hex: !!hex,
     w: Math.max(...norm.map(c => c[0])) + 1, h: Math.max(...norm.map(c => c[1])) + 1
   };
 }
-function rotatePattern(p) { return { ...makePattern({ ...p, cells: p.cells.map(([x, y, s]) => [p.h - 1 - y, x, s]) }), placeMsg: p.placeMsg }; }
-function flipPattern(p) { return { ...makePattern({ ...p, cells: p.cells.map(([x, y, s]) => [p.w - 1 - x, y, s]) }), placeMsg: p.placeMsg }; }
+function rotatePattern(p) {
+  if (p.hex) return { ...makePattern({ ...p, cells: p.cells.map(([c, r, s]) => [c - r, c, s]) }), placeMsg: p.placeMsg };   // 60°
+  return { ...makePattern({ ...p, cells: p.cells.map(([x, y, s]) => [p.h - 1 - y, x, s]) }), placeMsg: p.placeMsg }; }
+function flipPattern(p) {
+  if (p.hex) return { ...makePattern({ ...p, cells: p.cells.map(([c, r, s]) => [r - c, r, s]) }), placeMsg: p.placeMsg };
+  return { ...makePattern({ ...p, cells: p.cells.map(([x, y, s]) => [p.w - 1 - x, y, s]) }), placeMsg: p.placeMsg }; }
 function patternAnchor(p, x, y) { return { ax: x - Math.floor(p.w / 2), ay: y - Math.floor(p.h / 2) }; }
+/** Absolute Zellen eines Musters, zentriert auf (x, y) – Sechseck-Muster werden umgerechnet. */
+function patternCells(p, x, y) {
+  if (p.hex) return hexPlace(p, x, y);
+  const { ax, ay } = patternAnchor(p, x, y);
+  return p.cells.map(([dx, dy, s]) => [ax + dx, ay + dy, s]);
+}
 function placePattern(p, x, y) {
+  if (duelBusy()) { sfx("deny"); toast("Während des Duells kann nichts gesetzt werden."); return; }
   beginEdit();
-  const { ax, ay } = patternAnchor(p, x, y), max = maxState();
+  const max = maxState();
+  if (p.hex && !isHex()) { sfx("deny"); toast("Dieses Muster ist für das Sechseck-Gitter gebaut – wähle unter „Regeln“ den Automaten „Sechseck-Life“."); return; }
+  if (!p.hex && isHex()) { sfx("deny"); toast("Dieses Muster ist für quadratische Zellen gebaut und passt nicht ins Sechseck-Gitter."); return; }
   let lost = 0;
-  for (const [dx, dy, s] of p.cells) {
+  for (const [x0c, y0c, s] of patternCells(p, x, y)) {
     const v = s > max ? (S.automaton === "wire" ? 3 : 1) : s;
-    if (!setCell(ax + dx, ay + dy, v)) lost++;
+    if (!setCell(x0c, y0c, v)) lost++;
   }
   resetPopHist();
   requestRender();
   if (p.id === "acorn" && S.automaton === "life") acornRun = { done: false, calmAt: 0 };
   sfx("place");
-  const acornTip = p.id === "acorn" && !S.autoExpand && !S.wrap ? "Acorn platziert. Tipp: Für den echten Verlauf über 5.206 Generationen unter „Feld“ → „automatisch erweitern“ einschalten – sonst bremsen die Ränder." : null;
+  const acornTip = p.id === "acorn" && S.automaton === "life" && !S.autoExpand && !S.wrap ? "Acorn platziert. Tipp: Für den echten Verlauf über 5.206 Generationen unter „Feld“ → „automatisch erweitern“ einschalten – sonst bremsen die Ränder." : null;
+  if (lost && (duel.phase === "red" || duel.phase === "blue")) { toast(`${p.name} platziert – ${lost} Zellen passten nicht (fremde Hälfte oder keine Zellen mehr übrig)`); return; }
   toast(lost ? `${p.name} platziert – ${lost} Zellen lagen außerhalb des Felds` : (acornTip || p.placeMsg || `${p.name} platziert`));
 }
 function selectPattern(p) {
@@ -2073,20 +2866,51 @@ const LIBRARY = {
       { id: "ww-diode", name: "Diode (Durchlass)", desc: "Elektronen kommen durch", rows: [".CCCC.............CC........", "C....CCCCCCCCCCCCCC.CCCCC...", ".THCC.............CC........"], map: WIRE_MAP },
       { id: "ww-diode-rev", name: "Diode (Sperrrichtung)", desc: "Elektronen werden blockiert", rows: [".CCCC..............CC.......", "C....CCCCCCCCCCCCCC.CCCCC...", ".THCC..............CC......."], map: WIRE_MAP }
     ]}
+  ],
+  hex: [
+    { group: "Oszillatoren · B2/S34H", items: [
+      { id: "hx-domino", name: "Zwilling", desc: "Periode 2 · 2 Zellen", rule: "B2/S34H", cells: [[0,0],[1,1]] },
+      { id: "hx-triangle", name: "Dreieck", desc: "Periode 2 · 3 Zellen", rule: "B2/S34H", cells: [[0,0],[1,0],[1,1]] },
+      { id: "hx-ring", name: "Sechserring", desc: "Periode 3", rule: "B2/S34H", cells: [[0,0],[0,1],[1,0],[1,2],[2,1],[2,2]] },
+      { id: "hx-p4", name: "Propeller", desc: "Periode 4", rule: "B2/S34H", cells: [[0,0],[1,1],[2,0],[2,1]] },
+      { id: "hx-p4saka", name: "Sakas Oszillator", desc: "Periode 4", rule: "B2/S34H", cells: [[0,0],[1,1],[2,1],[3,1],[4,1],[4,3],[5,0],[5,1]] },
+      { id: "hx-p5", name: "Fünfer-Pendel", desc: "Periode 5", rule: "B2/S34H", cells: [[0,0],[2,1],[3,1],[3,2],[4,2],[5,1],[5,2],[5,3],[5,4],[6,3],[7,3],[7,4]] },
+      { id: "hx-p12", name: "Zwölfer", desc: "Periode 12", rule: "B2/S34H", cells: [[0,0],[1,1],[2,0],[2,1],[3,2],[3,3],[4,2],[5,4]] },
+      { id: "hx-p48", name: "Langer Atem", desc: "Periode 48", rule: "B2/S34H", cells: [[0,1],[1,1],[1,2],[2,0],[2,1],[2,2],[2,3],[3,1]] }
+    ]},
+    { group: "Oszillatoren · B25/S34H", items: [
+      { id: "hh-p33", name: "Blume", desc: "Periode 33", rule: "B25/S34H", cells: [[0,0],[1,0],[1,1],[2,0],[2,2],[3,1],[3,2],[4,2]] },
+      { id: "hh-p16", name: "Stern", desc: "Periode 16", rule: "B25/S34H", cells: [[0,2],[1,1],[1,2],[2,0],[2,3],[2,4],[3,2],[3,3],[4,1],[4,2],[4,5],[5,3],[5,4],[6,3]] }
+    ]}
   ]
 };
-function libraryPattern(def) {
+function libraryPattern(def, hex = false) {
   let cells = def.cells;
   if (def.rows) cells = rowsToCells(def.rows, def.map);
   if (def.rle) cells = parseRleBody(def.rle);
-  return makePattern({ id: def.id, name: def.name, desc: def.desc, cells });
+  return makePattern({ id: def.id, name: def.name, desc: def.desc, cells, rule: def.rule || null, hex });
 }
 const libraryCache = {};
-for (const key of Object.keys(LIBRARY)) libraryCache[key] = LIBRARY[key].map(g => ({ group: g.group, items: g.items.map(libraryPattern) }));
+for (const key of Object.keys(LIBRARY)) libraryCache[key] = LIBRARY[key].map(g => ({ group: g.group, note: g.note, items: g.items.map(d => libraryPattern(d, key === "hex")) }));
+/** Sechseck-Muster gehören zu einer bestimmten Regel – beim Auswählen wird sie bei Bedarf eingestellt. */
+function ensurePatternRule(p) {
+  if (!p.hex) return;
+  if (!isHex()) setAutomaton("hex", { silent: true });
+  if (p.rule && p.rule !== ruleString()) { adoptRule(p.rule); toast(`Regel ${p.rule} eingestellt – für dieses Muster nötig`); return true; }
+}
 
 function drawPreview(c, p) {
   const cx = c.getContext("2d");
   cx.fillStyle = colors.dead; cx.fillRect(0, 0, 42, 42);
+  if (p.hex) {
+    const pts = p.cells.map(([q, r]) => [q - r / 2, r * HEX_RH]);
+    const x0 = Math.min(...pts.map(a => a[0])), x1 = Math.max(...pts.map(a => a[0])), y1 = Math.max(...pts.map(a => a[1]));
+    const sc = Math.min(8, 34 / Math.max(x1 - x0 + 1, y1 + 1.15)), ox = (42 - (x1 - x0) * sc) / 2, oy = (42 - y1 * sc) / 2;
+    cx.fillStyle = colors.cell; cx.beginPath();
+    for (const [X, Y] of pts) hexPath(cx, ox + (X - x0) * sc, oy + Y * sc, sc * HEX_R * 0.92);
+    cx.fill();
+    return;
+  }
   const s = Math.max(1, Math.min(7, 38 / Math.max(p.w, p.h))), ox = (42 - p.w * s) / 2, oy = (42 - p.h * s) / 2;
   for (const [x, y, st] of p.cells) {
     cx.fillStyle = palCss[Math.min(st, AGE0 - 1)] || colors.cell;
@@ -2270,12 +3094,16 @@ function renderLibrary() {
     foundEgg(secret.egg);
     groups = [{ group: "🥚 Geheimnis", items: [secret.pattern], secret: true }];
   }
+  if (!groups && S.automaton === "duel") groups = libraryCache.life;
   if (!groups) {
-    note(S.automaton === "cyclic"
-      ? "Zyklische Automaten startet man mit Zufallsrauschen: Drücke „Zufall“ und dann „Start“."
-      : "Brian's Brain startet man am besten mit „Zufall“ (Dichte ca. 20–30 %).");
+    note({ cyclic: "Zyklische Automaten startet man mit Zufallsrauschen: Drücke „Zufall“ und dann „Start“.",
+      brain: "Brian's Brain startet man am besten mit „Zufall“ (Dichte ca. 20–30 %).",
+      rd: "Hier gibt es keine Muster zum Platzieren: Wähle oben bei „Regeln“ einen Muster-Typ, zeichne ein paar Flecken Stoff B und drücke „Start“ – oder nimm „Demo starten“.",
+      dla: "Zeichne einen oder mehrere Kristallkeime und drücke „Start“. Freie Teilchen fliegen von selbst heran.",
+      wolfram: "Setze ein paar Zellen in die oberste Zeile (oder nur eine einzige in die Mitte) und drücke „Start“. Die Regel wählst du bei „Regeln“." }[S.automaton] || "");
     return;
   }
+  if (isHex() && !secret && !q) note("Muster für das Sechseck-Gitter. Jedes gehört zu einer Regel (siehe Beschreibung) – beim Auswählen wird sie automatisch eingestellt. Drehen (R) dreht hier um 60°.");
   if (S.automaton === "life" && ruleString() !== "B3/S23" && !secret) note("Diese Muster sind für B3/S23 gebaut – mit der aktuellen Regel verhalten sie sich anders.");
   let shown = 0;
   for (const g of groups) {
@@ -2302,6 +3130,13 @@ function renderLibrary() {
       const small = document.createElement("small"); small.textContent = p.desc; lbl.append(small);
       b.append(c, lbl);
       drawPreview(c, p);
+      const cell = document.createElement("div"); cell.className = "pcard"; cell.append(b);
+      if (!g.secret) {
+        const info = document.createElement("button"); info.type = "button"; info.className = "pinfo"; info.textContent = "i";
+        info.title = "Steckbrief: " + p.name; info.setAttribute("aria-label", "Steckbrief: " + p.name);
+        info.onclick = e => { e.stopPropagation(); openPatternInfo(p, g.group, libraryCache[S.automaton] ? S.automaton : "life"); };
+        cell.append(info);
+      }
       b.onclick = () => {
         if (selectedPattern && selectedPattern.id === p.id) {
           // Schon ausgewählt: zum Spielfeld scrollen, Pfeil führt zurück
@@ -2309,10 +3144,12 @@ function renderLibrary() {
           toast(`Klicke aufs Feld, um ${p.name} zu platzieren (✕ hebt die Auswahl auf)`);
           return;
         }
+        const switched = ensurePatternRule(p);
         selectPattern(secret ? { ...p, placeMsg: secret.msg } : p);
+        if (switched) return;
         toast(inView(boardWrap) ? `Ausgewählt: ${p.name} – klicke aufs Spielfeld, um es zu platzieren` : `Ausgewählt: ${p.name} – nochmal antippen springt zum Spielfeld`);
       };
-      wrap.append(b);
+      wrap.append(cell);
     }
     det.append(sum, wrap);
     box.append(det);
@@ -2390,7 +3227,7 @@ function renderSaved() {
     const load = document.createElement("button"); load.textContent = "Wählen";
     load.onclick = () => {
       if (p.rule && S.adoptRule) adoptRule(p.rule);
-      selectPattern(makePattern({ id: "saved-" + (p.id || i), name: p.name, desc: "Gespeichertes Muster", cells: p.cells }));
+      selectPattern(makePattern({ id: "saved-" + (p.id || i), name: p.name, desc: "Gespeichertes Muster", cells: p.cells, hex: !!p.hex || /H$/i.test(p.rule || "") }));
       toast("Muster ausgewählt – klicke aufs Feld");
     };
     const del = document.createElement("button"); del.textContent = "Löschen";
@@ -2404,8 +3241,9 @@ function renderSaved() {
   });
 }
 function liveCells() {
-  const a = [];
-  for (let y = 0; y < S.rows; y++) for (let x = 0; x < S.cols; x++) { const s = grid[y * S.cols + x]; if (s) a.push([x, y, s]); }
+  // Im Sechseck-Gitter in Golly-Koordinaten (so verstehen es auch Golly und das LifeWiki)
+  const a = [], hx = isHex();
+  for (let y = 0; y < S.rows; y++) for (let x = 0; x < S.cols; x++) { const s = grid[y * S.cols + x]; if (s) a.push(hx ? [...toGolly(x, y), s] : [x, y, s]); }
   return a;
 }
 
@@ -2461,7 +3299,7 @@ function parsePatternText(text) {
 }
 function exportRLE(cells = liveCells(), name = "Life Lab Export") {
   if (!cells.length) return "#N Leeres Spielfeld\n#O Life Lab (Kerem)\nx = 0, y = 0, rule = " + ruleString() + "\n!";
-  const twoState = S.automaton === "life";
+  const twoState = S.automaton === "life" || S.automaton === "hex";
   const minX = Math.min(...cells.map(c => c[0])), maxX = Math.max(...cells.map(c => c[0]));
   const minY = Math.min(...cells.map(c => c[1])), maxY = Math.max(...cells.map(c => c[1]));
   const w = maxX - minX + 1, map = new Map(cells.map(([x, y, s]) => [(y - minY) * w + (x - minX), s]));
@@ -2489,7 +3327,10 @@ function adoptRule(rule) {
     const cfg = parseRule(rule);
     if (cfg.automaton !== S.automaton) setAutomaton(cfg.automaton, { silent: true });
     if (cfg.automaton === "life") { S.birth = cfg.birth; S.survive = cfg.survive; buildLifeTable(); }
+    if (cfg.automaton === "hex") { S.hexB = cfg.hexB; S.hexS = cfg.hexS; buildLifeTable(); }
     if (cfg.cyclic) { S.cyclic = cfg.cyclic; refreshColors(); }
+    if (cfg.rd) Object.assign(S.rd, cfg.rd);
+    if (cfg.wolf) S.wolf = cfg.wolf;
     syncRuleInputs(); resetDetection(); saveSettings(); renderLibrary();
     return true;
   } catch (e) { toast(e.message); return false; }
@@ -2501,17 +3342,23 @@ function adoptRule(rule) {
 function setAutomaton(a, { silent = false } = {}) {
   if (a === S.automaton) return;
   pause(); beginEdit();
+  const from = S.automaton;
+  if (a !== "duel") endDuelState();
   S.automaton = a;
   for (let i = 0; i < grid.length; i++) {
     if (!grid[i]) continue;
-    grid[i] = a === "cyclic" ? grid[i] % S.cyclic.states : a === "wire" ? 3 : 1;
+    if ((from === "rd" && grid[i] < 20) || (from === "dla" && grid[i] === 63)) { grid[i] = 0; continue; }
+    grid[i] = a === "cyclic" ? grid[i] % S.cyclic.states : a === "wire" ? 3 : a === "rd" ? 40 : a === "duel" && from === "duel" ? grid[i] : 1;
   }
+  dlaWalkers = []; rdU = null;
+  if (a === "hex" && S.rows % 2) resizeGrid(S.cols, S.rows);
+  if (a === "hex" || from === "hex") fitView();
   age.fill(0); heat.fill(0); maxHeat = 1;
   drawState = DRAW_STATES[a] ? DRAW_STATES[a][0][0] : 1;
   clearHistory(); afterBigChange();
   refreshColors(); syncRuleInputs(); renderLibrary(); saveSettings();
   const empty = !analyze(grid, S.cols, S.rows).pop;
-  if (!silent) toast("Automat gewechselt: " + $("automatonSelect").selectedOptions[0].textContent + (empty || a === "cyclic" ? " – drück „▶ Demo starten“, um ihn in Aktion zu sehen." : ""));
+  if (!silent) toast("Automat gewechselt: " + $("automatonSelect").selectedOptions[0].textContent + (empty || a === "cyclic" || a === "rd" ? " – drück „▶ Demo starten“, um ihn in Aktion zu sehen." : ""));
 }
 function syncRuleInputs() {
   $("automatonSelect").value = S.automaton;
@@ -2519,6 +3366,16 @@ function syncRuleInputs() {
   $("lifeRuleBox").hidden = S.automaton !== "life";
   $("ruleCardsTab").hidden = S.automaton !== "life";
   $("cyclicBox").hidden = S.automaton !== "cyclic";
+  $("hexRuleBox").hidden = S.automaton !== "hex";
+  $("hexBirth").value = S.hexB.join(""); $("hexSurvive").value = S.hexS.join("");
+  $("hexRulePreview").textContent = `B${S.hexB.join("")}/S${S.hexS.join("")}H`;
+  $("hexPreset").value = String(HEX_PRESETS.findIndex(p => p.b === S.hexB.join("") && p.s === S.hexS.join("")));
+  $("rdBox").hidden = S.automaton !== "rd"; $("dlaBox").hidden = S.automaton !== "dla"; $("wolfBox").hidden = S.automaton !== "wolfram";
+  $("rdPreset").value = S.rd.preset in RD_PRESETS ? S.rd.preset : "custom";
+  $("rdF").value = S.rd.F; $("rdK").value = S.rd.k; $("rdFLabel").textContent = S.rd.F.toFixed(4); $("rdKLabel").textContent = S.rd.k.toFixed(4);
+  $("dlaWalkers").value = S.dla.walkers; $("dlaWalkersLabel").textContent = S.dla.walkers;
+  $("wolfRule").value = S.wolf.rule; $("wolfPreset").value = WOLF_PRESETS.some(p => p[0] === S.wolf.rule) ? S.wolf.rule : "";
+  renderWolfBits();
   $("birthRule").value = S.birth.join(""); $("surviveRule").value = S.survive.join("");
   $("rulePreview").textContent = ruleString();
   const idx = RULE_PRESETS.findIndex(p => p.b === S.birth.join("") && p.s === S.survive.join(""));
@@ -2534,13 +3391,14 @@ function syncRuleInputs() {
   for (const [v, label] of opts) { const o = document.createElement("option"); o.value = v; o.textContent = label; sel.append(o); }
   if (!opts.some(o => o[0] === drawState)) drawState = opts[Math.min(1, opts.length - 1)][0];
   sel.value = drawState;
-  $("drawStateField").hidden = S.automaton === "life";
+  $("drawStateField").hidden = opts.length < 2;
   const dm = $("displayMode");
-  dm.querySelector('[value="age"]').disabled = S.automaton !== "life";
-  dm.querySelector('[value="heat"]').disabled = S.automaton === "cyclic";
-  dm.querySelector('[value="neighbors"]').disabled = S.automaton !== "life";
+  dm.querySelector('[value="age"]').disabled = S.automaton !== "life" && S.automaton !== "hex";
+  dm.querySelector('[value="heat"]').disabled = !["life", "brain", "wire", "hex"].includes(S.automaton);
+  dm.querySelector('[value="neighbors"]').disabled = S.automaton !== "life" && S.automaton !== "hex";
   if (dm.querySelector(`[value="${S.displayMode}"]`).disabled) S.displayMode = "normal";
   dm.value = S.displayMode;
+  $("ruleNote").hidden = CUSTOM.has(S.automaton);
   $("ruleNote").innerHTML = S.automaton === "life"
     ? "<b>Hinweis:</b> Regeln wirken ab der nächsten Generation. Regeln mit B0 lassen leere Flächen aufblinken."
     : "<b>Hinweis:</b> Beim Wechsel des Automaten werden vorhandene Zellen umgewandelt (Rückgängig mit Strg+Z).";
@@ -2796,13 +3654,26 @@ async function copyText(text, okMsg) {
 function exportScale(limit) { return clamp(Math.floor(limit / Math.max(S.cols, S.rows)), 1, 16); }
 function exportPNG() {
   const s = exportScale(1600), c = document.createElement("canvas");
+  if (isHex()) {
+    // Sechsecke als Vektoren zeichnen
+    const v = { ox: 0, oy: Math.ceil(s * (HEX_R - HEX_RH / 2)), cs: s };
+    c.width = Math.ceil((S.cols + 0.5) * s); c.height = Math.ceil(S.rows * s * HEX_RH + 2 * v.oy);
+    const x = c.getContext("2d");
+    x.fillStyle = colors.dead; x.fillRect(0, 0, c.width, c.height);
+    x.fillStyle = palCss[1];
+    x.beginPath();
+    for (let i = 0; i < grid.length; i++) if (grid[i]) cellPath(x, i % S.cols, Math.floor(i / S.cols), s >= 6 ? 0.6 : 0, v);
+    x.fill();
+    c.toBlob(b => { if (b) { download(b, "life-lab.png"); toast("PNG gespeichert"); } else toast("PNG konnte nicht erstellt werden."); }, "image/png");
+    return;
+  }
   c.width = S.cols * s; c.height = S.rows * s;
   const x = c.getContext("2d");
   x.fillStyle = colors.dead; x.fillRect(0, 0, c.width, c.height);
-  const gap = s >= 4 && S.automaton !== "cyclic" ? 1 : 0;
+  const gap = s >= 4 && !FULLFIELD(S.automaton) && S.automaton !== "dla" ? 1 : 0;
   for (let i = 0; i < grid.length; i++) {
     const st = grid[i];
-    if (!st && S.automaton !== "cyclic") continue;
+    if (!st && !FULLFIELD(S.automaton)) continue;
     x.fillStyle = palCss[st];
     x.fillRect((i % S.cols) * s + gap, Math.floor(i / S.cols) * s + gap, s - 2 * gap, s - 2 * gap);
   }
@@ -2864,24 +3735,31 @@ async function exportGIF() {
   const btn = $("gifExport"), status = $("gifStatus");
   const frames = clamp(parseInt($("gifFrames").value, 10) || 60, 5, 300);
   $("gifFrames").value = frames;
-  const s = exportScale(640), W = S.cols * s, H = S.rows * s;
+  const s = exportScale(640), hx = isHex(), half = hx ? Math.floor(s / 2) : 0, W = S.cols * s + half, H = S.rows * s;
   const nStates = S.automaton === "cyclic" ? S.cyclic.states : maxState() + 1;
   const palette = palCss.slice(0, nStates).map(hexToRgb);
-  const gap = s >= 4 && S.automaton !== "cyclic" ? 1 : 0;
+  const gap = s >= 4 && !FULLFIELD(S.automaton) && S.automaton !== "dla" ? 1 : 0;
   btn.disabled = true;
   let g = grid.slice(), n = new Uint8Array(g.length);
   const cfg = simConfig(), out = [];
+  // Eigene Automaten haben inneren Zustand – sichern und danach wiederherstellen
+  const keep = { u: rdU && rdU.slice(), v: rdV && rdV.slice(), w: dlaWalkers.map(p => p.slice()), c: dlaCount };
   for (let f = 0; f < frames; f++) {
     const px = new Uint8Array(W * H);
     for (let y = 0; y < S.rows; y++) for (let x = 0; x < S.cols; x++) {
       const st = g[y * S.cols + x];
       if (!st) continue;
-      for (let yy = gap; yy < s - gap; yy++) px.fill(st, (y * s + yy) * W + x * s + gap, (y * s + yy) * W + x * s + s - gap);
+      const xo = x * s + (y & 1 ? half : 0);   // Sechseck-Gitter: als versetzte „Ziegel“ (GIF kennt keine Vektoren)
+      for (let yy = gap; yy < s - gap; yy++) px.fill(st, (y * s + yy) * W + xo + gap, (y * s + yy) * W + xo + s - gap);
     }
     out.push(px);
-    stepGrid(g, n, S.cols, S.rows, cfg); [g, n] = [n, g];
+    if (S.automaton === "rd") stepRD(g, n); else if (S.automaton === "dla") stepDLA(g, n); else if (S.automaton === "wolfram") stepWolfram(g, n);
+    else stepGrid(g, n, S.cols, S.rows, cfg);
+    [g, n] = [n, g];
     if (f % 5 === 0) { status.textContent = `Berechne Bild ${f + 1} von ${frames} …`; await new Promise(r => setTimeout(r)); }
   }
+  if (keep.u) { rdU.set(keep.u); rdV.set(keep.v); }
+  dlaWalkers = keep.w; dlaCount = keep.c;
   status.textContent = "Kodiere GIF …";
   await new Promise(r => setTimeout(r));
   const bytes = encodeGIF(out, W, H, palette, Math.max(2, Math.round(100 / S.speed)));
@@ -2910,7 +3788,7 @@ function loadFromHash() {
     const p = params.get("p"); if (!p) return false;
     const rule = params.get("rule");
     if (rule) adoptRule(rule);
-    const pat = makePattern({ id: "link", name: "Muster aus Link", cells: parseRleBody(p) });
+    const pat = makePattern({ id: "link", name: "Muster aus Link", cells: parseRleBody(p), hex: isHex() });
     placePattern(pat, Math.floor(S.cols / 2), Math.floor(S.rows / 2));
     undoStack.length = 0; updateButtons();
     toast("Muster aus dem Link geladen");
@@ -2941,9 +3819,14 @@ function setPen(p, silent = false) {
   saveSettings(); requestRender();
   if (!silent) sfx("penSelect");
 }
+/** Zellen des aktuellen Stifts um (x, y); im Sechseck-Gitter als Sechseck-Scheibe. */
+function brushCells(x, y) {
+  if (isHex()) return hexDisk(x, y, S.pen === "spray" ? 5 : S.pen === 1 ? 0 : S.pen === 2 || S.pen === 3 ? 1 : S.pen === 5 ? 2 : 4);
+  return brush.map(([dx, dy]) => [x + dx, y + dy]);
+}
 function stamp(x, y, v) {
-  if (S.pen === "spray") { for (const [dx, dy] of brush) if (Math.random() < 0.12) setCell(x + dx, y + dy, v); }
-  else for (const [dx, dy] of brush) setCell(x + dx, y + dy, v);
+  if (S.pen === "spray") { for (const [cx, cy] of brushCells(x, y)) if (Math.random() < 0.12) setCell(cx, cy, v); }
+  else for (const [cx, cy] of brushCells(x, y)) setCell(cx, cy, v);
 }
 function paintLine(a, b, v) {
   let x0 = a.x, y0 = a.y; const x1 = b.x, y1 = b.y;
@@ -3010,14 +3893,14 @@ canvas.addEventListener("pointermove", e => {
   if (pinch && pointers.size >= 2) {
     const [a, b] = [...pointers.values()];
     const dist = Math.hypot(a.x - b.x, a.y - b.y), mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-    view.cx -= (mid.x - pinch.mid.x) / view.cs; view.cy -= (mid.y - pinch.mid.y) / view.cs;
+    view.cx -= (mid.x - pinch.mid.x) / view.cs; view.cy -= (mid.y - pinch.mid.y) / (view.cs * rowH());
     if (pinch.dist > 0 && Math.abs(dist / pinch.dist - 1) > 0.04) { zoomAt(mid.x, mid.y, dist / pinch.dist); pinch.dist = dist; }
     pinch.mid = mid; clampView(); view.fitted = false; requestRender();
     return;
   }
   if (panStart) {
     view.cx = panStart.cx - (p.x - panStart.x) / view.cs;
-    view.cy = panStart.cy - (p.y - panStart.y) / view.cs;
+    view.cy = panStart.cy - (p.y - panStart.y) / (view.cs * rowH());
     clampView(); view.fitted = false; requestRender();
     return;
   }
@@ -3060,6 +3943,7 @@ canvas.addEventListener("wheel", e => {
   zoomAt(p.x, p.y, Math.exp(-e.deltaY * unit * 0.0015));
 }, { passive: false });
 
+function openTab(name) { const b = $("tab-" + name); if (b.getAttribute("aria-selected") !== "true") b.click(); }
 function setTool(t) {
   tool = t;
   for (const [id, v] of [["drawBtn", "draw"], ["eraseBtn", "erase"], ["panBtn", "pan"], ["explainBtn", "explain"]]) $(id).classList.toggle("active", tool === v);
@@ -3075,7 +3959,7 @@ let explainCell = null;
 /** Nachbarn (mit Wrap) einer Zelle: Liste [x, y, zustand]. */
 function neighborsOf(x, y, moore = true) {
   const out = [], { cols, rows } = S;
-  const offs = moore ? [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]] : [[0, -1], [-1, 0], [1, 0], [0, 1]];
+  const offs = isHex() ? HEX_NB[y & 1] : moore ? [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]] : [[0, -1], [-1, 0], [1, 0], [0, 1]];
   for (const [dx, dy] of offs) {
     let nx = x + dx, ny = y + dy;
     if (S.wrap) { nx = (nx + cols) % cols; ny = (ny + rows) % rows; }
@@ -3094,8 +3978,49 @@ function explainInfo(x, y) {
       outcome: go ? `wechselt zu Zustand ${t}` : `bleibt im Zustand ${s}`, rule: go ? "Weiterspringen" : "Warten", tone: go ? "birth" : "none",
       why: `Eine Zelle springt zum nächsten Zustand, sobald mindestens ${S.cyclic.threshold} ${S.cyclic.threshold === 1 ? "Nachbar" : "Nachbarn"} schon dort ${S.cyclic.threshold === 1 ? "ist" : "sind"}.` };
   }
+  const title = `Zelle (${x}, ${y})`;
+  if (A === "wolfram") {
+    if (y === 0) return { title, nb: [], mark: () => false, state: s ? "an" : "aus", count: "oberste Zeile", outcome: s ? "ist an" : "ist aus", rule: "Startzeile", tone: s ? "birth" : "none",
+      why: "Die oberste Zeile ist der Anfang. Jede Zeile darunter ist eine Generation später." };
+    const nb = [-1, 0, 1].map(d => { const nx = x + d; if (nx < 0 || nx >= S.cols) { if (!S.wrap) return [nx, y - 1, -1]; } const wx = (nx + S.cols) % S.cols; return [wx, y - 1, grid[(y - 1) * S.cols + wx]]; });
+    const pat = (nb[0][2] > 0 ? 4 : 0) | (nb[1][2] > 0 ? 2 : 0) | (nb[2][2] > 0 ? 1 : 0), out = (S.wolf.rule >> pat) & 1, sym = nb.map(c => c[2] > 0 ? "■" : "□").join("");
+    const bin = S.wolf.rule.toString(2).padStart(8, "0");
+    return { title, nb, mark: c => c[2] === 1, state: s ? "an" : "aus", count: "Darüber: " + sym, outcome: out ? "ist an" : "ist aus", rule: `Regel ${S.wolf.rule}`, tone: out ? "birth" : "none",
+      why: `Für jedes der 8 möglichen Dreier-Muster legt die Regel fest, ob die Zelle darunter an ist. ${sym} ist Muster Nr. ${pat}, und Stelle ${pat} der Binärzahl ${bin} ist ${out}.` };
+  }
+  if (A === "rd") {
+    syncRD(grid);
+    const i = y * S.cols + x, u = rdU[i], v = rdV[i], nbv = neighborsOf(x, y, true);
+    const lap = nbv.reduce((acc, c, k) => acc + (k === 1 || k === 3 || k === 4 || k === 6 ? 0.2 : 0.05) * (c[2] < 0 ? v : rdV[c[1] * S.cols + c[0]]), 0) - v;
+    const react = u * v * v, decay = (S.rd.F + S.rd.k) * v, dv = 0.5 * lap + react - decay, pc = q => Math.round(q * 100) + " %";
+    const up = dv > 0.0004, down = dv < -0.0004;
+    return { title, nb: nbv, mark: c => c[2] > s, state: "Stoff B: " + pc(v), count: "Stoff A: " + pc(u),
+      outcome: up ? "B nimmt zu" : down ? "B nimmt ab" : "bleibt fast gleich", rule: react > decay ? "Reaktion A + 2B → 3B" : v > 0.01 ? "Zerfall von B" : "Nachschub von A",
+      tone: up ? "birth" : down ? "die" : "none",
+      why: "Wo B ist, verbraucht es A und vermehrt sich (A + 2B → 3B). Gleichzeitig zerfällt B langsam, A fließt nach, und beide verteilen sich auf die Nachbarn. Markiert: Nachbarn mit mehr B." };
+  }
+  if (A === "dla") {
+    const nbv = neighborsOf(x, y, true), n = nbv.filter(c => isCrystal(c[2])).length, cnt = n === 1 ? "1 Kristall-Nachbar" : `${n} Kristall-Nachbarn`;
+    if (isCrystal(s)) return { title, nb: nbv, mark: c => isCrystal(c[2]), state: "Kristall", count: cnt, outcome: "bleibt für immer", rule: "Erstarrt", tone: "live",
+      why: "Ein Teilchen, das einmal angedockt hat, löst sich nie wieder. Die Farbe zeigt, wann es angedockt hat." };
+    if (s === 63) return { title, nb: nbv, mark: c => isCrystal(c[2]), state: "freies Teilchen", count: cnt, outcome: n ? "dockt an" : "irrt weiter", rule: n ? "Andocken" : "Zufallsbewegung", tone: n ? "birth" : "none",
+      why: n ? "Das Teilchen berührt den Kristall und bleibt kleben." : "Freie Teilchen springen zufällig hin und her, bis sie den Kristall berühren." };
+    return { title, nb: nbv, mark: c => isCrystal(c[2]), state: "leer", count: cnt, outcome: "wartet auf ein Teilchen", rule: "Leer", tone: "none",
+      why: "Äste, die weit herausragen, fangen die meisten Teilchen ab. Deshalb wachsen sie schneller als die Lücken dazwischen – so entstehen die Verästelungen." };
+  }
+  if (A === "duel") {
+    const nbv = neighborsOf(x, y), alive = nbv.filter(c => c[2] > 0), n = alive.length, r = alive.filter(c => c[2] === 1).length;
+    const cnt = n === 1 ? "1 lebender Nachbar" : `${n} lebende Nachbarn`, col = ["", "rot", "blau"];
+    const b = { title, nb: nbv, mark: c => c[2] > 0, count: cnt };
+    if (s) return n === 2 || n === 3
+      ? { ...b, state: col[s], outcome: "bleibt am Leben", rule: "Überleben", tone: "live", why: "Eine lebende Zelle mit 2 oder 3 lebenden Nachbarn bleibt am Leben und behält ihre Farbe." }
+      : { ...b, state: col[s], outcome: "stirbt", rule: n < 2 ? "Einsamkeit" : "Zu eng", tone: "die", why: n < 2 ? "Eine lebende Zelle mit 0 oder 1 lebenden Nachbarn stirbt." : "Eine lebende Zelle mit 4 oder mehr lebenden Nachbarn stirbt an Überbevölkerung." };
+    return n === 3
+      ? { ...b, state: "tot", outcome: r >= 2 ? "wird rot geboren" : "wird blau geboren", rule: "Geburt", tone: "birth", why: "Eine tote Zelle mit genau 3 lebenden Nachbarn wird geboren – in der Farbe, die unter den dreien in der Mehrheit ist." }
+      : { ...b, state: "tot", outcome: "bleibt tot", rule: "Keine Geburt", tone: "none", why: "Zum Geborenwerden braucht eine tote Zelle genau 3 lebende Nachbarn." };
+  }
   const nb = neighborsOf(x, y), n = nb.filter(c => c[2] === 1).length;
-  const base = { title: `Zelle (${x}, ${y})`, nb, mark: c => c[2] === 1 };
+  const base = { title, nb, mark: c => c[2] === 1 };
   if (A === "brain") {
     const st = ["aus", "an", "sterbend"][s], an = n === 1 ? "1 Nachbar an" : `${n} Nachbarn an`;
     if (s === 1) return { ...base, state: st, count: an, outcome: "wird „sterbend“", rule: "Erschöpfung", tone: "die", why: "In Brian's Brain bleibt eine Zelle nie länger als eine Generation an." };
@@ -3113,33 +4038,34 @@ function explainInfo(x, y) {
       ? { ...base, state: st, count: cnt, outcome: "wird Elektronenkopf", rule: "Strom fließt", tone: "birth", why: "Ein Leiter wird zum Kopf, wenn 1 oder 2 Nachbarn Köpfe sind." }
       : { ...base, state: st, count: cnt, outcome: "bleibt Leiter", rule: "Kein Strom", tone: "none", why: n ? "Bei mehr als 2 Köpfen daneben bleibt der Leiter ruhig." : "Kein Elektronenkopf in der Nähe." };
   }
-  // Life-artig
+  // Life-artig (auch Sechseck-Life mit eigener Regel)
+  const SB = A === "hex" ? S.hexB : S.birth, SS = A === "hex" ? S.hexS : S.survive;
   const alive = s === 1, classic = ruleString() === "B3/S23", cnt = n === 1 ? "1 lebender Nachbar" : `${n} lebende Nachbarn`;
   if (alive) {
-    if (S.survive.includes(n)) return { ...base, state: "lebendig", count: cnt, outcome: "bleibt am Leben", rule: "Überleben", tone: "live",
-      why: classic ? "Eine lebende Zelle mit 2 oder 3 lebenden Nachbarn bleibt am Leben." : `Die Regel ${ruleString()} lässt lebende Zellen bei ${S.survive.join(", ") || "–"} Nachbarn überleben.` };
-    const lonely = S.survive.length ? n < Math.min(...S.survive) : n < 2;
+    if (SS.includes(n)) return { ...base, state: "lebendig", count: cnt, outcome: "bleibt am Leben", rule: "Überleben", tone: "live",
+      why: classic ? "Eine lebende Zelle mit 2 oder 3 lebenden Nachbarn bleibt am Leben." : `Die Regel ${ruleString()} lässt lebende Zellen bei ${SS.join(", ") || "–"} Nachbarn überleben.` };
+    const lonely = SS.length ? n < Math.min(...SS) : n < 2;
     return { ...base, state: "lebendig", count: cnt, outcome: "stirbt", rule: lonely ? "Einsamkeit" : "Zu eng", tone: "die",
       why: classic ? (lonely ? "Eine lebende Zelle mit 0 oder 1 lebenden Nachbarn stirbt." : "Eine lebende Zelle mit 4 oder mehr lebenden Nachbarn stirbt an Überbevölkerung.")
-                   : `Die Regel ${ruleString()} lässt lebende Zellen nur bei ${S.survive.join(", ") || "–"} Nachbarn überleben.` };
+                   : `Die Regel ${ruleString()} lässt lebende Zellen nur bei ${SS.join(", ") || "–"} Nachbarn überleben.` };
   }
-  if (S.birth.includes(n)) return { ...base, state: "tot", count: cnt, outcome: "wird geboren", rule: "Geburt", tone: "birth",
-    why: classic ? "Eine tote Zelle mit genau 3 lebenden Nachbarn wird lebendig." : `Die Regel ${ruleString()} lässt tote Zellen bei ${S.birth.join(", ")} Nachbarn geboren werden.` };
+  if (SB.includes(n)) return { ...base, state: "tot", count: cnt, outcome: "wird geboren", rule: "Geburt", tone: "birth",
+    why: classic ? "Eine tote Zelle mit genau 3 lebenden Nachbarn wird lebendig." : `Die Regel ${ruleString()} lässt tote Zellen bei ${SB.join(", ")} Nachbarn geboren werden.` };
   return { ...base, state: "tot", count: cnt, outcome: "bleibt tot", rule: "Keine Geburt", tone: "none",
-    why: classic ? "Zum Geborenwerden braucht eine tote Zelle genau 3 lebende Nachbarn." : `Die Regel ${ruleString()} braucht für eine Geburt ${S.birth.join(", ") || "–"} Nachbarn.` };
+    why: classic ? "Zum Geborenwerden braucht eine tote Zelle genau 3 lebende Nachbarn." : `Die Regel ${ruleString()} braucht für eine Geburt ${SB.join(", ") || "–"} Nachbarn.` };
 }
 /** Verdeckt die Erklär-Karte die Zelle, wird die Ansicht so verschoben, dass Zelle und Nachbarn frei sichtbar sind. */
 function revealExplainCell(c) {
   const card = $("explainCard"); if (card.hidden || !lastView) return;
-  const { w, h } = boardSize(), cs = view.cs;
-  const ox = Math.round(w / 2 - view.cx * cs), oy = Math.round(h / 2 - view.cy * cs);
-  const cx = ox + (c.x + 0.5) * cs, cy = oy + (c.y + 0.5) * cs, pad = cs * 1.8;
+  const { w, h } = boardSize(), cs = view.cs, k = rowH();
+  const ox = Math.round(w / 2 - view.cx * cs), oy = Math.round(h / 2 - view.cy * cs * k);
+  const [px, py] = cellPx(c.x, c.y, { ox, oy, cs }), cx = px + cs / 2, cy = py + cs * k / 2, pad = cs * 1.8;
   const cr = { l: card.offsetLeft, t: card.offsetTop, r: card.offsetLeft + card.offsetWidth, b: card.offsetTop + card.offsetHeight };
   const covered = cx + pad > cr.l && cx - pad < cr.r && cy + pad > cr.t && cy - pad < cr.b;
   if (!covered && cy + pad < h && cx + pad < w) return;
   const freeTop = cr.b, targetY = freeTop + (h - freeTop) / 2, targetX = cr.r + pad < w - 50 && h - freeTop < 3 * pad ? (cr.r + w) / 2 : w / 2;
-  view.cx = c.x + 0.5 - (targetX - w / 2) / cs;
-  view.cy = c.y + 0.5 - (targetY - h / 2) / cs;
+  view.cx = c.x + 0.5 + (isHex() && c.y & 1 ? 0.5 : 0) - (targetX - w / 2) / cs;
+  view.cy = c.y + 0.5 - (targetY - h / 2) / (cs * k);
   view.fitted = false; requestRender();
 }
 function setExplain(c) {
@@ -3163,45 +4089,47 @@ function drawExplain(ox, oy, cs) {
   ctx.save();
   let k = 0;
   ctx.font = `bold ${Math.max(9, Math.floor(cs * 0.55))}px system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const ch = cs * rowH();
   for (const c of info.nb) {
     if (c[2] < 0) continue;
-    const px = ox + c[0] * cs, py = oy + c[1] * cs;
+    const [px, py] = cellPx(c[0], c[1]);
     ctx.globalAlpha = 0.9; ctx.lineWidth = Math.max(1, cs * 0.08); ctx.strokeStyle = colors.accent;
     ctx.setLineDash([Math.max(2, cs * 0.18), Math.max(2, cs * 0.12)]);
-    ctx.strokeRect(px + 1, py + 1, cs - 2, cs - 2);
+    ctx.beginPath(); cellPath(ctx, c[0], c[1], 1); ctx.stroke();
     ctx.setLineDash([]);
     if (info.mark(c)) {
       k++;
-      ctx.fillStyle = "#f6b443"; ctx.globalAlpha = 0.95; ctx.fillRect(px + 1, py + 1, cs - 2, cs - 2);
-      if (cs >= 9) { ctx.fillStyle = "#24170a"; ctx.fillText(String(k), px + cs / 2, py + cs / 2 + 0.5); }
+      ctx.fillStyle = "#f6b443"; ctx.globalAlpha = 0.95; ctx.beginPath(); cellPath(ctx, c[0], c[1], 1); ctx.fill();
+      if (cs >= 9) { ctx.fillStyle = "#24170a"; ctx.fillText(String(k), px + cs / 2, py + ch / 2 + 0.5); }
     }
   }
-  const px = ox + explainCell.x * cs, py = oy + explainCell.y * cs;
   ctx.globalAlpha = 1; ctx.lineWidth = Math.max(2, cs * 0.14); ctx.strokeStyle = col;
-  ctx.strokeRect(px - 1, py - 1, cs + 2, cs + 2);
+  ctx.beginPath(); cellPath(ctx, explainCell.x, explainCell.y, -1); ctx.stroke();
   ctx.restore();
 }
 /** Ansicht „Nachbarzahlen“: Zahl in jeder Zelle, farbig nach dem, was als Nächstes passiert. */
+const MOORE8 = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]];
 function drawNeighborNumbers(ox, oy, cs, x0, x1, y0, y1) {
-  if (S.automaton !== "life") return;
+  const HX = isHex();
+  if (S.automaton !== "life" && !HX) return;
   if (cs < 11) { if (!drawNeighborNumbers.hinted) { drawNeighborNumbers.hinted = true; toast("Nachbarzahlen: Zum Lesen etwas hineinzoomen (Mausrad, Pinch oder +)."); } return; }
   ctx.save();
   ctx.font = `600 ${Math.floor(cs * 0.5)}px system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
   for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
     let n = 0;
-    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-      if (!dx && !dy) continue;
+    for (const [dx, dy] of HX ? HEX_NB[y & 1] : MOORE8) {
       let nx = x + dx, ny = y + dy;
       if (S.wrap) { nx = (nx + S.cols) % S.cols; ny = (ny + S.rows) % S.rows; } else if (nx < 0 || ny < 0 || nx >= S.cols || ny >= S.rows) continue;
       if (grid[ny * S.cols + nx] === 1) n++;
     }
     const alive = grid[y * S.cols + x] === 1;
     if (!n && !alive) continue;
-    const next = alive ? S.survive.includes(n) : S.birth.includes(n);
+    const next = HX ? (alive ? S.hexS.includes(n) : S.hexB.includes(n)) : alive ? S.survive.includes(n) : S.birth.includes(n);
     ctx.fillStyle = alive ? (next ? "#0d2b22" : "#b8321b") : (next ? "#33d1b2" : colors.text);
     ctx.globalAlpha = alive ? 1 : next ? 1 : 0.45;
     if (alive && !next) { ctx.globalAlpha = 1; }
-    ctx.fillText(String(n), ox + x * cs + cs / 2, oy + y * cs + cs / 2 + 0.5);
+    const [px, py] = cellPx(x, y);
+    ctx.fillText(String(n), px + cs / 2, py + cs * rowH() / 2 + 0.5);
   }
   ctx.restore();
 }
@@ -3263,6 +4191,8 @@ function eggTyped() {
 function egg42() {
   const sec = SECRETS["42"];
   pause();
+  if (duel.phase) cancelDuel();
+  if (isHex()) setAutomaton("life", { silent: true });
   placePattern({ ...sec.pattern, placeMsg: sec.msg }, Math.floor(S.cols / 2), Math.floor(S.rows / 2));
   foundEgg("fortytwo");
 }
@@ -3426,6 +4356,262 @@ document.addEventListener("keydown", e => {
   if (deferThis) pending = { fn, t: setTimeout(() => { pending = null; fn(); }, 350) };
   else fn();
 });
+
+/* =====================================================================
+   Muster-Steckbriefe: Animation, Daten und Geschichte zu jedem Muster
+   ===================================================================== */
+// by = Entdecker, y = Jahr; Texte direkt in drei Sprachen (de, en, tr)
+const PATTERN_FACTS = {
+  glider: { by: "Richard K. Guy", y: 1970, de: "Das berühmteste Muster überhaupt. Der Gleiter wandert diagonal über das Feld und ist das Symbol der Hacker-Kultur. Mit Gleitern kann man Signale übertragen – sogar einen ganzen Computer bauen.", en: "The most famous pattern of all. The glider travels diagonally across the grid and has become the emblem of hacker culture. Gliders can carry signals – you can even build a whole computer out of them.", tr: "Tüm desenlerin en ünlüsü. Planör alanda çapraz ilerler ve hacker kültürünün simgesi olmuştur. Planörlerle sinyal taşınabilir – hatta koca bir bilgisayar bile kurulabilir." },
+  lwss: { by: "John H. Conway", y: 1970, de: "Das kleinste Raumschiff, das sich waagerecht oder senkrecht bewegt. Es fliegt mit halber Lichtgeschwindigkeit – dem Tempo-Limit für solche Raumschiffe in Life.", en: "The smallest spaceship that moves horizontally or vertically. It flies at half the speed of light – the speed limit for such ships in Life.", tr: "Yatay ya da dikey hareket eden en küçük uzay gemisi. Işık hızının yarısıyla uçar – Life'ta bu tür gemiler için hız sınırı budur." },
+  mwss: { by: "John H. Conway", y: 1970, de: "Der große Bruder des leichten Raumschiffs: eine Zelle länger, gleich schnell. Hinter ihm flackern kurz Funken auf, die sofort wieder verschwinden.", en: "The big brother of the lightweight spaceship: one cell longer, same speed. Short-lived sparks flicker behind it and vanish at once.", tr: "Hafif uzay gemisinin büyük kardeşi: bir hücre daha uzun, aynı hızda. Arkasında hemen kaybolan kısa kıvılcımlar parlar." },
+  hwss: { by: "John H. Conway", y: 1970, de: "Das größte der drei klassischen Raumschiffe. Noch längere Versionen funktionieren nicht mehr allein – sie brauchen Begleitschiffe, um nicht zu zerfallen.", en: "The largest of the three classic spaceships. Longer versions no longer work on their own – they need escort ships to keep from falling apart.", tr: "Üç klasik uzay gemisinin en büyüğü. Daha uzun sürümler tek başına işlemez – dağılmamak için eşlik eden gemilere ihtiyaç duyar." },
+  copperhead: { by: "„zdr“", y: 2016, de: "Ein Raumschiff, das 46 Jahre lang niemand gefunden hatte – entdeckt von einem Hobby-Forscher per Computersuche. Es kriecht mit c/10, also eine Zelle alle zehn Generationen.", en: "A spaceship nobody had found for 46 years – discovered by a hobbyist with a computer search. It crawls at c/10, one cell every ten generations.", tr: "46 yıl boyunca kimsenin bulamadığı bir uzay gemisi – bir amatör araştırmacı tarafından bilgisayar aramasıyla keşfedildi. c/10 hızıyla, her on nesilde bir hücre ilerler." },
+  loafer: { by: "Josh Ball", y: 2013, de: "Sieht aus wie ein Haufen Stillleben, bewegt sich aber langsam vorwärts: eine Zelle alle sieben Generationen. Ein Beweis, dass es in Life auch nach Jahrzehnten Neues gibt.", en: "Looks like a pile of still lifes but slowly moves forward: one cell every seven generations. Proof that Life still holds surprises after decades.", tr: "Bir yığın durağan desen gibi görünür ama yavaşça ilerler: her yedi nesilde bir hücre. Life'ın on yıllar sonra bile sürprizler sakladığının kanıtı." },
+  blinker: { by: "John H. Conway", y: 1970, de: "Der kleinste und häufigste Oszillator: drei Zellen, die zwischen waagerecht und senkrecht hin- und herkippen. Er taucht in fast jedem Zufallsfeld auf.", en: "The smallest and most common oscillator: three cells flipping between horizontal and vertical. It shows up in almost every random field.", tr: "En küçük ve en yaygın osilatör: yatay ile dikey arasında gidip gelen üç hücre. Neredeyse her rastgele alanda ortaya çıkar." },
+  toad: { by: "Simon Norton", y: 1970, de: "Zwei versetzte Dreierreihen, die abwechselnd ein- und ausatmen. Nach dem Blinker einer der häufigsten Oszillatoren.", en: "Two offset rows of three that breathe in and out. After the blinker one of the most common oscillators.", tr: "Dönüşümlü olarak nefes alıp veren iki kaydırılmış üçlü sıra. Yanıp sönenden sonra en yaygın osilatörlerden biri." },
+  beacon: { by: "John H. Conway", y: 1970, de: "Zwei Blöcke, die sich an einer Ecke berühren. Die beiden mittleren Zellen gehen abwechselnd an und aus – wie ein Leuchtfeuer.", en: "Two blocks touching at a corner. The two middle cells switch on and off in turn – like a lighthouse.", tr: "Bir köşeden birbirine değen iki blok. Ortadaki iki hücre sırayla yanıp söner – bir deniz feneri gibi." },
+  pulsar: { by: "John H. Conway", y: 1970, de: "Der bekannteste größere Oszillator: symmetrisch nach allen vier Seiten. Er entsteht erstaunlich oft von selbst, wenn man mit einfachen Mustern startet.", en: "The best-known larger oscillator, symmetric in all four directions. It forms surprisingly often on its own from simple starting patterns.", tr: "Dört yöne de simetrik, en bilinen büyük osilatör. Basit başlangıç desenlerinden şaşırtıcı sıklıkla kendiliğinden oluşur." },
+  clock: { by: "Simon Norton", y: 1970, de: "Ein kleiner Oszillator, dessen Mitte sich wie ein Uhrzeiger zu drehen scheint.", en: "A small oscillator whose centre seems to turn like the hand of a clock.", tr: "Ortası bir saat ibresi gibi dönüyormuş gibi görünen küçük bir osilatör." },
+  octagon: { by: "Sol Goodman & Arthur Taber", y: 1971, de: "Ein achteckiger Oszillator, der unabhängig voneinander von zwei Personen entdeckt wurde.", en: "An octagonal oscillator found independently by two different people.", tr: "Birbirinden bağımsız olarak iki farklı kişi tarafından bulunan sekizgen bir osilatör." },
+  figure8: { by: "Simon Norton", y: 1970, de: "Zwei Quadrate, die sich zu einer Acht verbinden und wieder trennen. Ein Oszillator mit Periode 8.", en: "Two squares that join into a figure eight and separate again. An oscillator with period 8.", tr: "Birleşip sekiz rakamı oluşturan ve tekrar ayrılan iki kare. Periyodu 8 olan bir osilatör." },
+  galaxy: { by: "Jan Kok", y: 1971, de: "Vier Arme, die sich wie eine Spiralgalaxie drehen. Eines der schönsten kleinen Muster.", en: "Four arms that rotate like a spiral galaxy. One of the most beautiful small patterns.", tr: "Sarmal bir galaksi gibi dönen dört kol. En güzel küçük desenlerden biri." },
+  tumbler: { by: "George Collins", y: 1970, de: "Zwei Hälften, die sich wie ein Turner nach links und rechts überschlagen. Periode 14.", en: "Two halves that tumble left and right like a gymnast. Period 14.", tr: "Bir jimnastikçi gibi sağa sola takla atan iki yarım. Periyot 14." },
+  pentadecathlon: { by: "John H. Conway", y: 1970, de: "Entsteht aus einer einfachen Reihe von zehn Zellen. Mit Periode 15 einer der wichtigsten Oszillatoren – er kann sogar Gleiter umlenken.", en: "Grows from a simple row of ten cells. With period 15 it is one of the most important oscillators – it can even reflect gliders.", tr: "Basit bir on hücrelik sıradan oluşur. Periyot 15 ile en önemli osilatörlerden biri – planörleri bile yansıtabilir." },
+  queenbee: { by: "Bill Gosper", y: 1970, de: "Die Bienenkönigin pendelt zwischen zwei Blöcken hin und her und legt dabei Bienenstöcke ab. Zwei davon, geschickt kombiniert, ergeben die Gosper-Gleiterkanone.", en: "The queen bee shuttles between two blocks, leaving beehives behind. Two of them, cleverly combined, make the Gosper glider gun.", tr: "Kraliçe arı iki blok arasında gidip gelir ve arkasında arı kovanları bırakır. Ustaca birleştirilen iki tanesi Gosper planör topunu oluşturur." },
+  block: { de: "Das häufigste Stillleben überhaupt: vier Zellen, jede hat genau drei Nachbarn. Es ändert sich nie – außer etwas stößt dagegen.", en: "The most common still life of all: four cells, each with exactly three neighbours. It never changes – unless something crashes into it.", tr: "En yaygın durağan desen: dört hücre, her birinin tam üç komşusu var. Bir şey çarpmadıkça asla değişmez." },
+  beehive: { de: "Das zweithäufigste Stillleben. Es entsteht ständig aus kleinen Zusammenstößen und erinnert an eine Bienenwabe.", en: "The second most common still life. It forms all the time from small collisions and looks like a honeycomb cell.", tr: "İkinci en yaygın durağan desen. Küçük çarpışmalardan sürekli oluşur ve bir bal peteğini andırır." },
+  boat: { de: "Das einzige Stillleben aus genau fünf Zellen.", en: "The only still life made of exactly five cells.", tr: "Tam beş hücreden oluşan tek durağan desen." },
+  tub: { de: "Vier Zellen um ein leeres Loch – das Loch bleibt für immer leer, weil es vier lebende Nachbarn hat.", en: "Four cells around an empty hole – the hole stays empty forever because it has four living neighbours.", tr: "Boş bir deliğin etrafında dört hücre – deliğin dört canlı komşusu olduğu için sonsuza dek boş kalır." },
+  ship: { de: "Ein Stillleben aus sechs Zellen, das wie ein kleines Schiff aussieht – fährt aber nirgendwohin.", en: "A six-cell still life that looks like a little ship – but it goes nowhere.", tr: "Küçük bir gemiye benzeyen altı hücrelik durağan desen – ama hiçbir yere gitmez." },
+  loaf: { de: "Ein Laib Brot aus sieben Zellen. Er taucht in Zufallsfeldern sehr häufig auf.", en: "A loaf of bread made of seven cells. It appears very often in random fields.", tr: "Yedi hücreden oluşan bir somun ekmek. Rastgele alanlarda çok sık görülür." },
+  pond: { de: "Ein Ring aus acht Zellen, der wie ein Teich aussieht.", en: "A ring of eight cells that looks like a pond.", tr: "Bir gölete benzeyen sekiz hücrelik bir halka." },
+  snake: { de: "Eine kleine, geschlängelte Form aus sechs Zellen, die sich nie bewegt.", en: "A small winding shape of six cells that never moves.", tr: "Hiç hareket etmeyen, altı hücrelik küçük kıvrımlı bir şekil." },
+  eater: { by: "Bill Gosper", y: 1971, de: "Ein Stillleben mit Appetit: Trifft ein Gleiter darauf, wird er gefressen und der Fresser repariert sich selbst. Unverzichtbar beim Bau von Schaltungen in Life.", en: "A still life with an appetite: when a glider hits it, the glider is eaten and the eater repairs itself. Essential for building circuits in Life.", tr: "İştahlı bir durağan desen: bir planör çarptığında yutulur ve yiyici kendini onarır. Life'ta devre kurmak için vazgeçilmez." },
+  gosper: { by: "Bill Gosper", y: 1970, de: "Die erste gefundene Gleiterkanone. Conway hatte 50 Dollar für den Beweis ausgesetzt, dass ein Muster unendlich wachsen kann – Gosper gewann das Preisgeld noch im selben Jahr.", en: "The first glider gun ever found. Conway had offered 50 dollars for proof that a pattern can grow forever – Gosper won the prize the same year.", tr: "Bulunan ilk planör topu. Conway, bir desenin sonsuza dek büyüyebileceğinin kanıtı için 50 dolar ödül koymuştu – Gosper ödülü aynı yıl kazandı." },
+  simkin: { by: "Michael Simkin", y: 2015, de: "Eine der kleinsten Gleiterkanonen: Sie kommt mit 36 Zellen aus, schießt aber nur alle 120 Generationen.", en: "One of the smallest glider guns: it needs only 36 cells but fires just once every 120 generations.", tr: "En küçük planör toplarından biri: yalnızca 36 hücreyle yetinir ama her 120 nesilde bir ateş eder." },
+  switch: { by: "Paul Callahan", y: 1998, de: "Nur eine einzige Zeile hoch – und wächst trotzdem endlos. Es hinterlässt eine Spur aus Blöcken, die immer länger wird.", en: "Only one single row high – and yet it grows forever, leaving behind an ever longer trail of blocks.", tr: "Yalnızca tek bir sıra yüksekliğinde – ama yine de sonsuza dek büyür ve ardında giderek uzayan bir blok izi bırakır." },
+  rpentomino: { by: "John H. Conway", y: 1970, de: "Nur fünf Zellen, aber 1103 Generationen Chaos, bevor Ruhe einkehrt. Am Ende bleiben 116 Zellen und sechs davongeflogene Gleiter. Hier wurde der Gleiter zum ersten Mal beobachtet.", en: "Just five cells, yet 1103 generations of chaos before things settle. In the end 116 cells remain, plus six gliders that flew away. This is where the glider was first observed.", tr: "Yalnızca beş hücre, ama ortalık durulmadan önce 1103 nesil süren kaos. Sonunda 116 hücre ve uçup giden altı planör kalır. Planör ilk kez burada gözlemlendi." },
+  acorn: { by: "Charles Corderman", y: 1971, de: "Aus sieben Zellen wird über 5206 Generationen ein riesiges Durcheinander, das am Ende 633 Zellen und 13 Gleiter hinterlässt.", en: "Seven cells turn into a huge mess over 5206 generations, leaving 633 cells and 13 gliders behind.", tr: "Yedi hücre 5206 nesil boyunca dev bir karmaşaya dönüşür ve geride 633 hücre ile 13 planör bırakır." },
+  diehard: { de: "Lebt erstaunlich lange und verschwindet dann komplett: nach genau 130 Generationen ist keine einzige Zelle mehr übrig.", en: "Lives surprisingly long and then disappears completely: after exactly 130 generations not a single cell is left.", tr: "Şaşırtıcı derecede uzun yaşar ve sonra tamamen kaybolur: tam 130 nesil sonra tek bir hücre bile kalmaz." },
+  piheptomino: { by: "John H. Conway", y: 1970, de: "Sieben Zellen in Form des griechischen Buchstabens π. Es entwickelt sich 173 Generationen lang, bevor es zur Ruhe kommt.", en: "Seven cells shaped like the Greek letter π. It evolves for 173 generations before it settles down.", tr: "Yunan harfi π şeklinde yedi hücre. Durulmadan önce 173 nesil boyunca gelişir." },
+  bheptomino: { de: "Sieben Zellen, die sich 148 Generationen lang entwickeln und dabei Gleiter ausstoßen. Taucht als Zwischenstufe in vielen anderen Mustern auf.", en: "Seven cells that evolve for 148 generations and shoot out gliders along the way. It appears as an intermediate stage in many other patterns.", tr: "148 nesil boyunca gelişen ve bu sırada planörler fırlatan yedi hücre. Birçok başka desende ara aşama olarak ortaya çıkar." },
+  thunderbird: { by: "Hugh Thompson", y: 1971, de: "Ein T aus sechs Zellen, das 243 Generationen lang wächst und dabei an einen Donnervogel erinnert.", en: "A T made of six cells that grows for 243 generations, looking a bit like a thunderbird.", tr: "243 nesil boyunca büyüyen ve bir gök gürültüsü kuşunu andıran altı hücrelik bir T." },
+  rabbits: { by: "Andrew Trevorrow", y: 1986, de: "Neun Zellen, die sich wie Kaninchen vermehren: Erst nach 17.331 Generationen ist alles stabil. Andrew Trevorrow hat später das bekannte Life-Programm Golly mitentwickelt.", en: "Nine cells that multiply like rabbits: only after 17,331 generations does everything settle. Andrew Trevorrow later co-created the well-known Life program Golly.", tr: "Tavşanlar gibi çoğalan dokuz hücre: her şey ancak 17.331 nesil sonra durulur. Andrew Trevorrow daha sonra ünlü Life programı Golly'nin geliştiricilerinden biri oldu." },
+  "bb-ship4": { de: "In Brian's Brain bewegen sich fast alle Muster. Dieses winzige Raumschiff braucht nur vier Zellen und fliegt ein Feld pro Generation.", en: "In Brian's Brain almost every pattern moves. This tiny spaceship needs only four cells and flies one cell per generation.", tr: "Brian's Brain'de neredeyse her desen hareket eder. Bu minik uzay gemisinin yalnızca dört hücreye ihtiyacı var ve her nesilde bir hücre uçar." },
+  "bb-ship6": { de: "Ein Raumschiff aus Brian's Brain: Die „sterbenden“ Zellen bilden den Schweif und schieben das Schiff vorwärts.", en: "A Brian's Brain spaceship: the “dying” cells form the tail and push the ship forward.", tr: "Bir Brian's Brain uzay gemisi: “ölmekte olan” hücreler kuyruğu oluşturur ve gemiyi ileri iter." },
+  "bb-diag": { de: "Fliegt schräg statt gerade – in Brian's Brain deutlich seltener als die geraden Raumschiffe.", en: "Flies diagonally instead of straight – much rarer in Brian's Brain than the straight ships.", tr: "Düz değil çapraz uçar – Brian's Brain'de düz gemilerden çok daha nadirdir." },
+  "ww-clock": { de: "Ein Elektron kreist in einer Schleife und gibt bei jeder Runde eine Kopie nach außen ab – der Takt eines Computers.", en: "An electron circles a loop and sends out a copy every lap – the clock of a computer.", tr: "Bir elektron bir döngüde döner ve her turda dışarıya bir kopyasını gönderir – bir bilgisayarın saati." },
+  "ww-diode": { de: "Die Leitung ist so geformt, dass Elektronen nur in eine Richtung durchkommen. In dieser Richtung fließt der Strom.", en: "The wire is shaped so electrons can only pass in one direction. In this direction current flows.", tr: "Tel, elektronların yalnızca tek yönde geçebileceği şekilde biçimlendirilmiştir. Bu yönde akım geçer." },
+  "hx-domino": { de: "Das häufigste Objekt in Hexagonal Life: zwei Zellen, die sich bei jedem Schritt um 60° weiterdrehen. Endliche Stillleben gibt es in dieser Regel nicht – fast alles, was übrig bleibt, schwingt.", en: "The most common object in Hexagonal Life: two cells that turn by 60° every step. This rule has no finite still lifes – almost everything left over oscillates.", tr: "Hexagonal Life'taki en yaygın nesne: her adımda 60° dönen iki hücre. Bu kuralda sonlu durağan desen yoktur – geriye kalan neredeyse her şey salınır." },
+  "hx-triangle": { de: "Drei Zellen im Dreieck, die zwischen zwei Formen hin- und herspringen. Entsteht oft, wenn sich ein Gewimmel beruhigt.", en: "Three cells in a triangle that flip between two shapes. Often forms when a messy region calms down.", tr: "İki biçim arasında gidip gelen üçgen şeklinde üç hücre. Karmaşık bir bölge durulduğunda sık oluşur." },
+  "hx-ring": { by: "drc", de: "Ein Ring aus sechs Zellen um ein leeres Feld. In der Life-Community als einer der ersten Oszillatoren dieser Regel geteilt.", en: "A ring of six cells around an empty one. Shared in the Life community as one of the first oscillators of this rule.", tr: "Boş bir hücrenin etrafında altı hücrelik bir halka. Life topluluğunda bu kuralın ilk osilatörlerinden biri olarak paylaşıldı." },
+  "hx-p4": { de: "Vier Zellen, die sich wie ein Propeller drehen. Taucht in Zufallsfeldern sehr häufig auf.", en: "Four cells that spin like a propeller. Appears very often in random fields.", tr: "Pervane gibi dönen dört hücre. Rastgele alanlarda çok sık görülür." },
+  "hx-p4saka": { by: "Saka", de: "Ein seltenerer Oszillator mit Periode 4, gefunden von einem Mitglied der Life-Community.", en: "A rarer period-4 oscillator, found by a member of the Life community.", tr: "Life topluluğunun bir üyesi tarafından bulunan, periyodu 4 olan daha nadir bir osilatör." },
+  "hx-p5": { by: "drc", de: "Ein Oszillator mit Periode 5 – ungerade Perioden sind in Hexagonal Life selten.", en: "An oscillator with period 5 – odd periods are rare in Hexagonal Life.", tr: "Periyodu 5 olan bir osilatör – Hexagonal Life'ta tek periyotlar nadirdir." },
+  "hx-p12": { de: "Acht Zellen, die erst nach zwölf Generationen wieder genau gleich aussehen. Von Life Lab in Zufallsfeldern gefunden.", en: "Eight cells that only look exactly the same again after twelve generations. Found by Life Lab in random fields.", tr: "Ancak on iki nesil sonra tamamen aynı görünen sekiz hücre. Life Lab tarafından rastgele alanlarda bulundu." },
+  "hx-p48": { de: "Nur acht Zellen, aber eine Periode von 48 Generationen – erstaunlich lang für so ein kleines Muster.", en: "Only eight cells, but a period of 48 generations – amazingly long for such a small pattern.", tr: "Yalnızca sekiz hücre, ama 48 nesillik bir periyot – bu kadar küçük bir desen için şaşırtıcı derecede uzun." },
+  "hh-p33": { de: "In HighHexLife (B25/S34H) können Zellen auch bei 5 Nachbarn geboren werden. Diese acht Zellen blühen 33 Generationen lang auf, bevor alles von vorn beginnt.", en: "In HighHexLife (B25/S34H) cells can also be born with 5 neighbours. These eight cells blossom for 33 generations before everything starts over.", tr: "HighHexLife'ta (B25/S34H) hücreler 5 komşuyla da doğabilir. Bu sekiz hücre her şey baştan başlamadan önce 33 nesil boyunca çiçek açar." },
+  "hh-p16": { de: "Ein sternförmiger Oszillator aus HighHexLife mit Periode 16.", en: "A star-shaped HighHexLife oscillator with period 16.", tr: "Periyodu 16 olan yıldız biçimli bir HighHexLife osilatörü." },
+  "ww-diode-rev": { de: "Dieselbe Diode, andersherum: Das Elektron prallt ab und verschwindet. So baut man in Wireworld Logikgatter.", en: "The same diode the other way round: the electron bounces off and disappears. This is how logic gates are built in Wireworld.", tr: "Aynı diyot ters yönde: elektron çarpıp kaybolur. Wireworld'de mantık kapıları böyle kurulur." }
+};
+const FACT_TYPE = { "Raumschiffe": "Raumschiff", "Oszillatoren": "Oszillator", "Oszillatoren · B2/S34H": "Oszillator", "Oszillatoren · B25/S34H": "Oszillator", "Raumschiffe · B2/S34H": "Raumschiff", "Stillleben": "Stillleben", "Methusalems": "Methusalem", "Schaltkreise": "Schaltkreis" };
+const pd = { p: null, lib: "life", grid: null, next: null, cols: 0, rows: 0, cfg: null, gen: 0, reset: 0, timer: 0, ox: 0, oy: 0 };
+const classicTable = (() => { const t = new Uint8Array(18); t[3] = 1; t[11] = 1; t[12] = 1; return t; })();
+function openPatternInfo(p, group, lib) {
+  pd.p = p; pd.lib = lib;
+  const id = p.id, f = PATTERN_FACTS[id] || {};
+  const kind = id === "gosper" || id === "simkin" ? "Kanone" : id === "switch" ? "Unendliches Wachstum" : FACT_TYPE[group] || group;
+  $("pdTitle").textContent = p.name;
+  const facts = [["Typ", kind], ["Eigenschaft", p.desc], ["Zellen", String(p.cells.length)]];
+  if (p.hex) facts.push(["Regel", p.rule || ruleString()]); else facts.push(["Größe", `${p.w} × ${p.h}`]);
+  if (f.by) facts.push(["Entdeckt von", f.by]);
+  if (f.y) facts.push(["Jahr", String(f.y)]);
+  const dl = $("pdFacts"); dl.replaceChildren();
+  for (const [k, v] of facts) { const dt = document.createElement("dt"), dd = document.createElement("dd"); dt.textContent = k; dd.textContent = v; dl.append(dt, dd); }
+  const txt = $("pdText"); txt.hidden = !f.de;
+  if (f.de) txt.textContent = f[S.lang] || f.de;
+  // Simulation vorbereiten
+  const ship = group.startsWith("Raumschiffe"), grow = ["Kanonen & Wachstum", "Methusalems"].includes(group);
+  const m = grow ? (id === "simkin" ? 44 : id === "gosper" ? 30 : 40) : ship ? 10 : lib === "hex" ? 9 : 4;
+  pd.cols = Math.max(p.w + 2 * m, ship ? 26 : 12); pd.rows = Math.max(p.h + 2 * m, ship ? 20 : 12);
+  if (group === "Methusalems") { pd.cols = Math.max(pd.cols, 96); pd.rows = Math.max(pd.rows, 72); }
+  pd.ox = ((pd.cols - p.w) / 2) | 0; pd.oy = ((pd.rows - p.h) / 2) | 0;
+  if (ship) { pd.ox = Math.min(pd.ox, 3); pd.oy = ((pd.rows - p.h) / 2) | 0; }
+  pd.reset = id === "simkin" ? 300 : grow ? (group === "Methusalems" ? 320 : 150) : 0;
+  pd.cfg = { wrap: ship || lib === "brain", automaton: lib, table: classicTable, states: 0, threshold: 0, moore: true };
+  if (lib === "hex") {
+    // Sechseck-Muster: in versetzte Koordinaten umrechnen, eigene Regel, gerade Zeilenzahl (Torus)
+    const t = new Uint8Array(14), m2 = String(p.rule || ruleString()).match(/^B(\d*)\/S(\d*)H$/i) || [0, "2", "34"];
+    for (const d of m2[1]) t[+d] = 1; for (const d of m2[2]) t[7 + +d] = 1;
+    pd.cfg.table = t;
+    const off = p.cells.map(([c, r, st]) => [...fromGolly(c, r), st]);
+    const mx = Math.min(...off.map(a => a[0])), wx = Math.max(...off.map(a => a[0])) - mx + 1;
+    pd.cols = Math.max(wx + 2 * m, ship ? 30 : 12); pd.rows = Math.max(p.h + 2 * m, ship ? 22 : 12); pd.rows += pd.rows % 2;
+    const dx = ((pd.cols - wx) / 2 | 0) - mx, dy = 2 * (((pd.rows - p.h) / 4) | 0);
+    pd.cells = off.map(([x, y, st]) => [x + dx, y + dy, st]);
+  } else pd.cells = p.cells.map(([x, y, st]) => [x + pd.ox, y + pd.oy, st]);
+  pdRestart();
+  $("patternDialog").showModal(); sfx("open");
+  clearInterval(pd.timer);
+  pd.timer = setInterval(pdTick, 1000 / (grow ? 14 : 7));
+}
+function pdRestart() {
+  const p = pd.p;
+  pd.grid = new Uint8Array(pd.cols * pd.rows); pd.next = new Uint8Array(pd.cols * pd.rows); pd.gen = 0;
+  for (const [x, y, s] of pd.cells) if (x >= 0 && y >= 0 && x < pd.cols && y < pd.rows) pd.grid[y * pd.cols + x] = s;
+  pdDraw();
+}
+function pdTick() {
+  if (!$("patternDialog").open) { clearInterval(pd.timer); return; }
+  if (pd.reset && pd.gen >= pd.reset) { pdRestart(); return; }
+  stepGrid(pd.grid, pd.next, pd.cols, pd.rows, pd.cfg);
+  [pd.grid, pd.next] = [pd.next, pd.grid]; pd.gen++;
+  pdDraw();
+}
+function pdDraw() {
+  const cv = $("pdCanvas"), dpr = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth || 240, H = cv.clientHeight || 180;
+  if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.fillStyle = colors.dead; c.fillRect(0, 0, W, H);
+  if (pd.lib === "hex") {
+    const cs = Math.min(W / (pd.cols + 0.5), H / (pd.rows * HEX_RH + 0.3)), v = { cs, ox: (W - (pd.cols + 0.5) * cs) / 2, oy: (H - pd.rows * cs * HEX_RH) / 2 };
+    c.fillStyle = colors.cell; c.beginPath();
+    for (let i = 0; i < pd.grid.length; i++) if (pd.grid[i]) { const x = i % pd.cols, y = (i / pd.cols) | 0; hexPath(c, v.ox + (x + (y & 1) * 0.5 + 0.5) * cs, v.oy + (y + 0.5) * cs * HEX_RH, cs * HEX_R - (cs >= 6 ? 0.8 : 0)); }
+    c.fill();
+    setText("pdGen", `Generation ${pd.gen}` + (pd.reset ? ` · startet nach ${pd.reset} neu` : ""));
+    return;
+  }
+  const cs = Math.min(W / pd.cols, H / pd.rows), ox = (W - pd.cols * cs) / 2, oy = (H - pd.rows * cs) / 2, gap = cs >= 5 ? 1 : 0;
+  const pal = pd.lib === "wire" ? [null, "#56b4ff", "#ff6f5e", "#e8c552"] : pd.lib === "brain" ? [null, colors.cell, mix(colors.cell, colors.dead, 0.6)] : [null, colors.cell];
+  for (let i = 0; i < pd.grid.length; i++) {
+    const s = pd.grid[i]; if (!s) continue;
+    c.fillStyle = pal[s] || colors.cell;
+    c.fillRect(ox + (i % pd.cols) * cs + gap / 2, oy + ((i / pd.cols) | 0) * cs + gap / 2, cs - gap, cs - gap);
+  }
+  setText("pdGen", `Generation ${pd.gen}` + (pd.reset ? ` · startet nach ${pd.reset} neu` : ""));
+}
+$("pdSelect").onclick = () => {
+  const p = pd.p; $("patternDialog").close();
+  ensurePatternRule(p);
+  selectPattern(p); sfx("tool");
+  toast(`Ausgewählt: ${p.name} – klicke aufs Spielfeld, um es zu platzieren`);
+};
+$("pdReplay").onclick = () => { sfx("rewind"); pdRestart(); };
+$("patternDialog").addEventListener("close", () => clearInterval(pd.timer));
+
+/* =====================================================================
+   Statistik-Fenster
+   ===================================================================== */
+let statRange = 500, statLast = 0, statSeries = null;
+/** Verläufe nach Generation zusammenführen: Population aus popHist, Geburten/Tode/Farben aus statHist. */
+function statData() {
+  const n = popHist.length, g0 = generation - n + 1, byGen = new Map();
+  for (const e of statHist) if (e.g <= generation) byGen.set(e.g, e);
+  let rows = popHist.map((p, i) => { const g = g0 + i, e = byGen.get(g); return { g, p, b: e ? e.b : null, d: e ? e.d : null, red: e ? e.red : null, blue: e ? e.blue : null }; });
+  if (statRange) rows = rows.slice(-statRange);
+  return rows;
+}
+const fmtN = v => v == null ? "–" : v.toLocaleString(LOC());
+function openStats() { sfx("open"); $("statsDialog").showModal(); drawStats(); }
+function drawStats() {
+  statLast = performance.now();
+  const rows = statData(), A = S.automaton, duelMode = A === "duel";
+  const pops = rows.map(r => r.p), cur = popHist[popHist.length - 1] || 0;
+  let max = -1, maxG = 0, min = Infinity, minG = 0, sum = 0;
+  rows.forEach(r => { if (r.p > max) { max = r.p; maxG = r.g; } if (r.p < min) { min = r.p; minG = r.g; } sum += r.p; });
+  const a = analyze(grid, S.cols, S.rows);
+  let oldest = 0;
+  if (A === "life" || A === "hex") for (let i = 0; i < grid.length; i++) if (grid[i] === 1 && age[i] > oldest) oldest = age[i];
+  const last = rows[rows.length - 1] || {}, prev10 = rows.length > 10 ? rows[rows.length - 11].p : null;
+  const delta = prev10 == null ? null : cur - prev10;
+  const ext = a.pop ? `${a.maxx - a.minx + 1} × ${a.maxy - a.miny + 1}` : "–";
+  const dc = duelMode ? duelCount() : null;
+  const tiles = [
+    ["Generation", fmtN(generation), ""],
+    [$("popLabel").textContent, fmtN(cur), ""],
+    ["Dichte", (cur / (S.cols * S.rows) * 100).toLocaleString(LOC(), { maximumFractionDigits: 1 }) + " %", `${S.cols} × ${S.rows}`],
+    ["Wachstum", delta == null ? "–" : (delta > 0 ? "+" : "") + fmtN(delta), "in 10 Generationen"],
+    ["Höchststand", fmtN(max < 0 ? null : max), max < 0 ? "" : `Generation ${fmtN(maxG)}`],
+    ["Tiefststand", fmtN(min === Infinity ? null : min), min === Infinity ? "" : `Generation ${fmtN(minG)}`],
+    ["Durchschnitt", rows.length ? fmtN(Math.round(sum / rows.length)) : "–", `${fmtN(rows.length)} Generationen`],
+    duelMode ? ["Rot : Blau", `${fmtN(dc[0])} : ${fmtN(dc[1])}`, ""]
+      : A === "life" || A === "hex" ? ["Älteste Zelle", cur ? fmtN(oldest + 1) : "–", "Generationen am Leben"]
+      : ["Regel", $("ruleBadge").textContent, ""],
+    ["Geburten", fmtN(last.b), "letzte Generation"],
+    ["Tode", fmtN(last.d), "letzte Generation"],
+    ["Ausdehnung", ext, "Zellen"],
+    ["Regel", $("ruleBadge").textContent, ""]
+  ].filter((t, i, arr) => arr.findIndex(u => u[0] === t[0]) === i).slice(0, 12);
+  const box = $("statTiles"); box.replaceChildren();
+  for (const [label, value, sub] of tiles) {
+    const d = document.createElement("div"), b = document.createElement("b");
+    d.append(label); b.textContent = value; d.append(b);
+    if (sub) { const sm = document.createElement("small"); sm.textContent = sub; d.append(sm); }
+    box.append(d);
+  }
+  statSeries = rows;
+  const red = "#ff6b78", blue = "#5aa8ff";
+  setText("statChartTitle", duelMode ? "Rot gegen Blau" : "Population");
+  const leg = $("statLegend"); leg.replaceChildren();
+  const legItem = (c, t) => { const sp = document.createElement("span"), i = document.createElement("i"); i.style.background = c; sp.append(i, t); leg.append(sp); };
+  if (duelMode) { legItem(red, "Rot"); legItem(blue, "Blau"); } else legItem(colors.accent, $("popLabel").textContent);
+  const series = duelMode ? [[rows.map(r => r.red), red], [rows.map(r => r.blue), blue]] : [[pops, colors.accent, true]];
+  plotLines($("statChart"), rows, series);
+  plotLines($("statFlow"), rows, [[rows.map(r => r.b), "#33d1b2"], [rows.map(r => r.d), "#f0765a"]]);
+}
+function plotLines(cv, rows, series) {
+  const dpr = Math.min(devicePixelRatio || 1, 2), w = Math.max(1, cv.clientWidth), h = +cv.dataset.h;
+  cv.style.height = h + "px";
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const c = cv.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+  const n = rows.length;
+  let max = 1; for (const [d] of series) for (const v of d) if (v != null && v > max) max = v;
+  const pl = 6, pr = 6, pt = 18, pb = 18;
+  const X = i => n <= 1 ? w - pr : pl + i / (n - 1) * (w - pl - pr), Y = v => h - pb - v / max * (h - pt - pb);
+  c.font = "11px system-ui, sans-serif"; c.fillStyle = colors.text; c.globalAlpha = 0.55;
+  c.textBaseline = "top"; c.textAlign = "left"; c.fillText(max.toLocaleString(LOC()), pl, 3);
+  c.textBaseline = "bottom";
+  if (n) { c.fillText(tr("Gen " + rows[0].g.toLocaleString(LOC())), pl, h - 2); c.textAlign = "right"; c.fillText(tr("Gen " + rows[n - 1].g.toLocaleString(LOC())), w - pr, h - 2); }
+  c.globalAlpha = 0.18; c.strokeStyle = colors.text; c.lineWidth = 1; c.beginPath();
+  for (const f of [0, 0.5, 1]) { const y = Math.round(Y(max * f)) + 0.5; c.moveTo(pl, y); c.lineTo(w - pr, y); }
+  c.stroke(); c.globalAlpha = 1;
+  for (const [d, col, fill] of series) {
+    c.beginPath(); let started = false, lastI = 0, firstI = 0;
+    d.forEach((v, i) => { if (v == null) return; if (!started) { c.moveTo(X(i), Y(v)); started = true; firstI = i; } else c.lineTo(X(i), Y(v)); lastI = i; });
+    if (!started) continue;
+    c.strokeStyle = col; c.lineWidth = 1.7; c.lineJoin = "round"; c.stroke();
+    if (fill) { c.lineTo(X(lastI), h - pb); c.lineTo(X(firstI), h - pb); c.closePath(); c.globalAlpha = 0.15; c.fillStyle = col; c.fill(); c.globalAlpha = 1; }
+  }
+  cv._plot = { X, n, pl, pr, w };
+}
+function statHover(e) {
+  const cv = $("statChart"), P = cv._plot, tip = $("statTip");
+  if (!P || !statSeries || !statSeries.length) return;
+  const r = cv.getBoundingClientRect(), x = e.clientX - r.left;
+  const i = clamp(Math.round((x - P.pl) / (P.w - P.pl - P.pr) * (P.n - 1)), 0, P.n - 1), row = statSeries[i];
+  tip.hidden = false;
+  tip.textContent = `Gen ${fmtN(row.g)} · ` + (S.automaton === "duel" && row.red != null ? `🔴 ${fmtN(row.red)} : ${fmtN(row.blue)} 🔵` : fmtN(row.p)) + (row.b != null ? ` · +${fmtN(row.b)} −${fmtN(row.d)}` : "");
+  tip.style.left = clamp(P.X(i) - tip.offsetWidth / 2, 0, r.width - tip.offsetWidth) + "px";
+}
+$("statChart").addEventListener("pointermove", statHover);
+$("statChart").addEventListener("pointerdown", statHover);
+$("statChart").addEventListener("pointerleave", () => { $("statTip").hidden = true; });
+$("statsBtn").onclick = openStats;
+chartCanvas.addEventListener("click", openStats);
+$("statRange").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  statRange = +b.dataset.n; sfx("toggle");
+  $("statRange").querySelectorAll("button").forEach(x => x.classList.toggle("active", x === b));
+  drawStats();
+});
+$("statCsv").onclick = () => {
+  const rows = statData(), duelMode = S.automaton === "duel";
+  const head = [tr("Generation"), tr("Population"), tr("Geburten"), tr("Tode")].concat(duelMode ? [tr("Rot"), tr("Blau")] : []);
+  const lines = [head.join(";")].concat(rows.map(r => [r.g, r.p, r.b ?? "", r.d ?? ""].concat(duelMode ? [r.red ?? "", r.blue ?? ""] : []).join(";")));
+  download(new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" }), "life-lab-statistik.csv");
+  sfx("copy"); toast(`CSV gespeichert (${fmtN(rows.length)} Generationen)`);
+};
 
 /* =====================================================================
    Bedienelemente verbinden
@@ -3654,7 +4840,11 @@ $("pngExport").onclick = exportPNG;
 $("gifExport").onclick = () => exportGIF().catch(err => { $("gifStatus").textContent = "Fehler: " + err.message; $("gifExport").disabled = false; });
 
 $("playBtn").onclick = play;
-function stepOnce() { pause(); step(); updateButtons(); sfx("pik"); }
+function stepOnce() {
+  pause();
+  if (!duel.phase && !future.length && fieldIsDead()) { deadToast(); return; }
+  step(); updateButtons(); sfx("pik");
+}
 $("stepBtn").onclick = stepOnce;
 $("backBtn").onclick = stepBack;
 $("randomBtn").onclick = randomize;
@@ -3688,12 +4878,32 @@ $("presetSelect").onchange = e => {
 };
 function applyLifeRule() {
   try {
-    S.birth = parseDigits($("birthRule").value.trim()); S.survive = parseDigits($("surviveRule").value.trim());
+    S.birth = parseDigits($("birthRule").value.trim()); S.survive = parseDigits($("surviveRule").value.trim()); sfx("toggle");
     buildLifeTable(); resetDetection(); syncRuleInputs(); renderLibrary(); saveSettings();
     toast("Regel " + ruleString() + " aktiv");
   } catch (e) { toast(e.message); }
 }
 $("applyRuleBtn").onclick = applyLifeRule;
+// Sechseck-Regeln
+const HEX_PRESETS = [
+  { name: "Hexagonal Life (B2/S34H)", b: "2", s: "34" },
+  { name: "HighHexLife (B25/S34H)", b: "25", s: "34" },
+  { name: "B25/S35H", b: "25", s: "35" }
+];
+$("hexPreset").replaceChildren(...HEX_PRESETS.map((p, i) => new Option(p.name, i)), new Option("Eigene Regel", "-1"));
+function applyHexRule() {
+  try {
+    const b = parseDigits($("hexBirth").value.trim()), sv = parseDigits($("hexSurvive").value.trim());
+    if ([...b, ...sv].some(n => n > 6)) throw Error("Im Sechseck-Gitter gibt es höchstens 6 Nachbarn – bitte nur Ziffern 0 bis 6.");
+    S.hexB = b; S.hexS = sv; sfx("toggle");
+    buildLifeTable(); resetDetection(); clearFuture(); syncRuleInputs(); renderLibrary(); saveSettings();
+    toast("Regel " + ruleString() + " aktiv");
+  } catch (e) { sfx("deny"); toast(e.message); }
+}
+$("hexPreset").onchange = e => { const p = HEX_PRESETS[+e.target.value]; if (!p) return; $("hexBirth").value = p.b; $("hexSurvive").value = p.s; sfx("toggle"); applyHexRule(); };
+$("applyHexBtn").onclick = applyHexRule;
+$("standardHexBtn").onclick = () => { $("hexBirth").value = "2"; $("hexSurvive").value = "34"; applyHexRule(); };
+["hexBirth", "hexSurvive"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter") applyHexRule(); }));
 $("standardRuleBtn").onclick = () => { $("birthRule").value = "3"; $("surviveRule").value = "23"; applyLifeRule(); };
 ["birthRule", "surviveRule"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter") applyLifeRule(); }));
 $("applyCyclicBtn").onclick = () => {
@@ -3702,9 +4912,40 @@ $("applyCyclicBtn").onclick = () => {
   if (n !== S.cyclic.states) { beginEdit(); for (let i = 0; i < grid.length; i++) grid[i] %= n; }
   S.cyclic = { states: n, threshold: t, moore };
   resetDetection(); refreshColors(); syncRuleInputs(); saveSettings();
-  toast(`Zyklisch: ${n} Zustände, Schwelle ${t}`);
+  sfx("toggle"); toast(`Zyklisch: ${n} Zustände, Schwelle ${t}`);
 };
 $("drawStateSelect").onchange = e => { drawState = +e.target.value; };
+// Reaktion-Diffusion
+$("rdPreset").replaceChildren(...Object.entries(RD_PRESETS).map(([k, p]) => new Option(p.name, k)), new Option("Eigene Werte", "custom"));
+$("rdPreset").onchange = e => {
+  const p = RD_PRESETS[e.target.value]; if (!p) return;
+  S.rd = { preset: e.target.value, F: p.F, k: p.k }; sfx("toggle"); syncRuleInputs(); saveSettings(); clearFuture();
+};
+["rdF", "rdK"].forEach(id => $(id).addEventListener("input", () => {
+  S.rd = { preset: "custom", F: +$("rdF").value, k: +$("rdK").value };
+  const m = Object.entries(RD_PRESETS).find(([, p]) => Math.abs(p.F - S.rd.F) < 1e-6 && Math.abs(p.k - S.rd.k) < 1e-6);
+  if (m) S.rd.preset = m[0];
+  syncRuleInputs(); saveSettings(); clearFuture();
+}));
+// Kristallwachstum
+$("dlaWalkers").addEventListener("input", e => { S.dla.walkers = +e.target.value; $("dlaWalkersLabel").textContent = S.dla.walkers; saveSettings(); });
+// Wolfram
+$("wolfPreset").replaceChildren(new Option("Eigene", ""), ...WOLF_PRESETS.map(([r, n]) => new Option(n, r)));
+function setWolfRule(r) { S.wolf.rule = clamp(r | 0, 0, 255); syncRuleInputs(); saveSettings(); clearFuture(); updateStats(); }
+$("wolfPreset").onchange = e => { if (e.target.value !== "") { sfx("toggle"); setWolfRule(+e.target.value); } };
+$("wolfRule").addEventListener("change", e => setWolfRule(+e.target.value || 0));
+$("wolfRule").addEventListener("keydown", e => { if (e.key === "Enter") setWolfRule(+e.target.value || 0); });
+function renderWolfBits() {
+  const box = $("wolfBits"); box.replaceChildren();
+  for (let p = 7; p >= 0; p--) {
+    const b = document.createElement("button"); b.type = "button";
+    const on = (S.wolf.rule >> p) & 1;
+    b.title = `Muster ${[4, 2, 1].map(m => p & m ? "■" : "□").join("")} → ${on ? "an" : "aus"}`;
+    b.innerHTML = `<span class="tri">${[4, 2, 1].map(m => `<i class="${p & m ? "on" : ""}"></i>`).join("")}</span><span class="tri"><i style="visibility:hidden"></i><i class="out ${on ? "on" : ""}"></i></span>`;
+    b.onclick = () => { sfx(on ? "puk" : "pik"); setWolfRule(S.wolf.rule ^ (1 << p)); };
+    box.append(b);
+  }
+}
 
 // Muster
 $("adoptRule").onchange = e => { S.adoptRule = e.target.checked; saveSettings(); };
@@ -3715,7 +4956,7 @@ $("loadRleBtn").onclick = () => {
     if (r.rule && S.adoptRule && r.rule.replace(/\s/g, "").toLowerCase() !== ruleString().toLowerCase()) {
       if (adoptRule(r.rule)) note = ` · Regel ${ruleString()} übernommen`;
     }
-    selectPattern(makePattern({ id: "import-" + Date.now(), name: r.name, desc: "Importiert", cells: r.cells }));
+    selectPattern(makePattern({ id: "import-" + Date.now(), name: r.name, desc: "Importiert", cells: r.cells, hex: r.rule ? /H$/i.test(r.rule.replace(/\s/g, "")) : isHex() }));
     toast(`„${r.name}“ geladen (${r.cells.length} Zellen)${note} – klicke aufs Feld`);
   } catch (e) { toast(e.message); }
 };
@@ -3725,7 +4966,7 @@ $("savePatternBtn").onclick = () => {
   const norm = makePattern({ cells }).cells;
   const name = $("patternName").value.trim() || "Eigenes Muster";
   const all = getSaved();
-  all.push({ id: Date.now().toString(36), name, rule: ruleString(), cells: norm });
+  all.push({ id: Date.now().toString(36), name, rule: ruleString(), cells: norm, hex: isHex() || undefined });
   if (saveJSON(KEYS.patterns, all)) { $("patternName").value = ""; renderSaved(); toast("Muster gespeichert"); }
   else toast("Speichern nicht möglich – lokaler Speicher ist blockiert oder voll.");
 };
@@ -3733,6 +4974,7 @@ $("savePatternBtn").onclick = () => {
 // Feld
 function syncSizeInputs() { $("colsInput").value = S.cols; $("rowsInput").value = S.rows; updateStats(); }
 $("applySizeBtn").onclick = () => {
+  if (duel.phase) { sfx("deny"); toast("Während des Duells nicht möglich – erst „Abbrechen“ oder „Beenden“."); syncSizeInputs(); return; }
   beginEdit();
   resizeGrid(parseInt($("colsInput").value, 10) || S.cols, parseInt($("rowsInput").value, 10) || S.rows);
   clearHistory(); afterBigChange(); saveSettings();
@@ -3741,9 +4983,18 @@ $("applySizeBtn").onclick = () => {
 document.querySelectorAll("[data-size]").forEach(b => b.onclick = () => {
   const [c, r] = b.dataset.size.split("x"); $("colsInput").value = c; $("rowsInput").value = r; $("applySizeBtn").click();
 });
-$("wrapEdges").onchange = e => { S.wrap = e.target.checked; $("autoExpand").disabled = S.wrap; resetDetection(); saveSettings(); requestRender(); toast(S.wrap ? "Ränder sind verbunden (Torus)" : "Ränder sind offen"); };
+function setWrap(on, silent) {
+  S.wrap = on; $("wrapEdges").checked = on; $("autoExpand").disabled = on;
+  resetDetection(); clearFuture(); saveSettings(); requestRender();
+  if (!silent) toast(on ? "Ränder sind verbunden (Torus)" : "Ränder sind offen");
+}
+$("wrapEdges").onchange = e => {
+  if (duel.phase && !e.target.checked) { e.target.checked = true; sfx("deny"); toast("Im Duell sind die Ränder immer verbunden (Torus)."); return; }
+  setWrap(e.target.checked);
+};
 $("autoExpand").onchange = e => { S.autoExpand = e.target.checked; maybeExpand.warned = false; saveSettings(); };
 $("resetFieldBtn").onclick = () => {
+  if (duel.phase) { sfx("deny"); toast("Während des Duells nicht möglich – erst „Abbrechen“ oder „Beenden“."); return; }
   pause(); beginEdit();
   S.wrap = false; S.autoExpand = false; S.autoPause = true; S.density = DEFAULTS.density;
   resizeGrid(DEFAULTS.cols, DEFAULTS.rows);
@@ -3831,6 +5082,7 @@ $("resetAllBtn").onclick = () => confirmClick($("resetAllBtn"), "Wirklich?", () 
   pause();
   if (party) { party = false; stopLogoGlider(); document.title = "Life Lab — Conway's Game of Life"; }
   godUntil = 0;
+  duel.phase = null; duel.last = null; duel.start = null; duel.prevWrap = null; updateDuelUI();
   const keep = { cols: S.cols, rows: S.rows };
   const keepSound = { sound: S.sound, soundSim: S.soundSim, volume: S.volume, musicModes: S.musicModes, musicCalm: S.musicCalm, lang: S.lang };
   Object.assign(S, structuredClone(DEFAULTS), keepSound);
@@ -3874,11 +5126,37 @@ $("demoBtn").onclick = () => {
     placePattern(lib[1], cx, Math.floor(S.rows * 0.5));
     placePattern(lib[2], cx, Math.floor(S.rows * 0.75));
     toast("Oben ein Taktgeber, in der Mitte eine Diode in Durchlassrichtung, unten in Sperrrichtung.");
+  } else if (S.automaton === "rd") {
+    if (S.cols < 160 || S.rows < 110) resizeGrid(Math.max(S.cols, 160), Math.max(S.rows, 110));
+    clearBoard();
+    const cx = S.cols / 2 | 0, cy = S.rows / 2 | 0;
+    rdBlob(cx, cy, 4);
+    for (let j = 0; j < 6; j++) rdBlob((cx + (Math.random() - 0.5) * S.cols * 0.7) | 0, (cy + (Math.random() - 0.5) * S.rows * 0.7) | 0, 2);
+    toast(`${RD_PRESETS[S.rd.preset] ? RD_PRESETS[S.rd.preset].name : "Eigene Werte"}: Aus ein paar Tropfen Stoff B wächst ein Muster. Probier oben die anderen Muster-Typen aus.`);
+  } else if (S.automaton === "dla") {
+    if (S.cols < 160 || S.rows < 110) resizeGrid(Math.max(S.cols, 160), Math.max(S.rows, 110));
+    clearBoard(); dlaWalkers = [];
+    grid[(S.rows / 2 | 0) * S.cols + (S.cols / 2 | 0)] = 1; dlaCount = 1;
+    toast("Ein Kristallkeim in der Mitte – zufällig umherirrende Teilchen bleiben daran kleben.");
+  } else if (S.automaton === "wolfram") {
+    clearBoard();
+    grid[S.cols / 2 | 0] = 1;
+    toast(`Eine einzige Zelle oben in der Mitte, Regel ${S.wolf.rule}. Jede Zeile darunter ist eine Generation.`);
+  } else if (S.automaton === "hex") {
+    clearBoard();
+    const w = Math.min(28, S.cols - 4), h = Math.min(18, S.rows - 4), x0 = (S.cols - w) / 2 | 0, y0 = (S.rows - h) / 2 | 0;
+    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) if (Math.random() < 0.4) grid[y * S.cols + x] = 1;
+    resetPopHist(); requestRender();
+    toast("Zufällige Zellen in der Mitte. Beobachte, wie sie zu kleinen schwingenden Objekten zerfallen – Stillleben gibt es in B2/S34H nicht.");
+  } else if (S.automaton === "duel") {
+    openTab("missions"); jumpTo($("duelBox"), $("demoBtn")); toast("Das Duell startest du im Tab „Spiele“."); return;
   } else {
     const old = S.density;
     if (S.automaton === "brain") S.density = 25;
     randomize(); S.density = old;
   }
+  if (CUSTOM.has(S.automaton)) startSnap = snapshot(), dirty = false;
+  resetPopHist();
   play();
   jumpTo(boardWrap, $("demoBtn"));
 };
@@ -4045,7 +5323,7 @@ if (/^https?:$/.test(location.protocol)) {
 }
 
 // Nur für automatisierte Tests: interner Zugriff
-window.__lifeLab = { tr, setLang, S, get grid() { return grid; }, get generation() { return generation; }, step, analyze, parsePatternText, exportRLE, parseRule, encodeGIF, MISSIONS, missionSim, libraryCache, placePattern, makePattern, detect, setAutomaton, view, render };
+window.__lifeLab = { tr, explainInfo, rotatePattern, adoptRule, setLang, S, get grid() { return grid; }, get generation() { return generation; }, step, analyze, parsePatternText, exportRLE, parseRule, encodeGIF, MISSIONS, missionSim, libraryCache, placePattern, makePattern, detect, setAutomaton, view, render };
 })();
 </script>
 </body>
