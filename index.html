@@ -1947,6 +1947,8 @@ function pushHistory() {
 /** Nach Rückgängig/Wiederholen: gespeicherte Generationen ab der aktuellen verwerfen, sonst führt „Zurück“ in einen falschen Zustand. */
 function trimHistory() {
   while (history.length && history[history.length - 1].generation >= generation) historyBytes -= history.pop().bytes;
+  // Nur behalten, wenn der Verlauf lückenlos bis direkt vor die aktuelle Generation reicht
+  if (history.length && history[history.length - 1].generation !== generation - 1) { history.length = 0; historyBytes = 0; }
   clearFuture();
 }
 function clearHistory() { history.length = 0; historyBytes = 0; clearFuture(); }
@@ -1981,8 +1983,25 @@ function scrubTo(target) {
   chartDirty = true; requestRender(); updateButtons();
 }
 /** Vor jeder Bearbeitung aufrufen: speichert den Zustand für „Rückgängig“. */
+/* Rückgängig/Wiederholen stellen auch die Zeitleiste wieder her (gespeicherte Generationen, Zukunft, Kurve, Startzustand).
+   Gespeichert werden nur Verweise auf die vorhandenen Momentaufnahmen – das kostet kaum Speicher. */
+function timelineState() {
+  return { hist: history.slice(-300), fut: future.slice(), fp: futurePop.slice(), fk: futureKey, ph: popHist.slice(), start: startSnap, dirty };
+}
+function editSnapshot() { return Object.assign(snapshot(), { tl: timelineState() }); }
+function applyTimeline(t) {
+  history.length = 0; history.push(...t.hist); historyBytes = t.hist.reduce((a, h) => a + h.bytes, 0);
+  future.length = 0; future.push(...t.fut); futurePop.length = 0; futurePop.push(...t.fp); futureKey = t.fk;
+  popHist = t.ph.slice(); statHist = []; startSnap = t.start; dirty = t.dirty; chartDirty = true;
+}
+function restoreEdit(snap) {
+  restore(snap);
+  if (snap.tl) { applyTimeline(snap.tl); updateButtons(); } else { trimHistory(); afterBigChange(); }
+  const pop = analyze(grid, S.cols, S.rows).pop;
+  if (popHist[popHist.length - 1] !== pop) popHist.push(pop);
+}
 function beginEdit() {
-  undoStack.push(snapshot());
+  undoStack.push(editSnapshot());
   if (undoStack.length > 60) undoStack.shift();
   redoStack.length = 0;
   dirty = true; clearFuture();
@@ -1994,19 +2013,15 @@ function undo() {
   if (duelBusy()) { sfx("deny"); toast("Während des Duells nicht möglich – erst „Abbrechen“ oder „Beenden“."); return; }
   if (undoStack.length) sfx("undo");
   if (!undoStack.length) { toast("Nichts zum Rückgängigmachen"); return; }
-  redoStack.push(snapshot());
-  restore(undoStack.pop());
-  trimHistory();
-  afterBigChange();
+  redoStack.push(editSnapshot());
+  restoreEdit(undoStack.pop());
 }
 function redo() {
   if (duelBusy()) { sfx("deny"); toast("Während des Duells nicht möglich – erst „Abbrechen“ oder „Beenden“."); return; }
   if (redoStack.length) sfx("redo");
   if (!redoStack.length) { toast("Nichts zum Wiederholen"); return; }
-  undoStack.push(snapshot());
-  restore(redoStack.pop());
-  trimHistory();
-  afterBigChange();
+  undoStack.push(editSnapshot());
+  restoreEdit(redoStack.pop());
 }
 function afterBigChange() {
   dirty = true;
@@ -2017,6 +2032,8 @@ function resetPopHist() { popHist = [analyze(grid, S.cols, S.rows).pop]; statHis
 
 /* ---------- Ein Schritt ---------- */
 function step() {
+  // Nach einem Simulationsschritt ergibt „Wiederholen“ keinen Sinn mehr (wie nach jeder neuen Aktion)
+  if (redoStack.length) { redoStack.length = 0; updateButtons(); }
   if (duelPlacing()) { sfx("deny"); toast("Erst setzen beide ihre Zellen – dann „Fertig ✓“ drücken."); return; }
   if (dirty) { startSnap = snapshot(); dirty = false; }
   if (future.length) {
@@ -3857,7 +3874,7 @@ canvas.addEventListener("pointerdown", e => {
   pointers.set(e.pointerId, p);
   if (pointers.size === 2) {
     // Zwei Finger: Strich abbrechen und zoomen/verschieben
-    if (stroke && stroke.count <= 1 && undoStack.length) { restore(undoStack.pop()); resetPopHist(); updateButtons(); }
+    if (stroke && stroke.count <= 1 && undoStack.length) restoreEdit(undoStack.pop());
     if (stroke && stroke.timer) clearInterval(stroke.timer);
     stopSpraySound();
     stroke = null; panStart = null;
@@ -5333,7 +5350,7 @@ if (/^https?:$/.test(location.protocol)) {
 }
 
 // Nur für automatisierte Tests: interner Zugriff
-window.__lifeLab = { tr, explainInfo, rotatePattern, adoptRule, setLang, S, get grid() { return grid; }, get generation() { return generation; }, step, analyze, parsePatternText, exportRLE, parseRule, encodeGIF, MISSIONS, missionSim, libraryCache, placePattern, makePattern, detect, setAutomaton, view, render };
+window.__lifeLab = { tr, explainInfo, rotatePattern, adoptRule, get history() { return history; }, get future() { return future; }, get undoStack() { return undoStack; }, get redoStack() { return redoStack; }, get popHist() { return popHist; }, setLang, S, get grid() { return grid; }, get generation() { return generation; }, step, analyze, parsePatternText, exportRLE, parseRule, encodeGIF, MISSIONS, missionSim, libraryCache, placePattern, makePattern, detect, setAutomaton, view, render };
 })();
 </script>
 </body>
