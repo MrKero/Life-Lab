@@ -325,6 +325,7 @@ dialog::backdrop{background:#0009;backdrop-filter:blur(3px)}
 @media(max-width:560px){
   header{align-items:flex-start}
   .header-actions button{font-size:12px;padding:7px 9px}
+  .header-actions button.flag{padding:0}
   .logo{width:37px;height:37px;font-size:16px}
   .board-panel{padding:9px}
   .stat{padding:5px 8px;min-width:0}
@@ -1943,6 +1944,11 @@ function pushHistory() {
   history.push(snap); historyBytes += snap.bytes;
   while (history.length > 1000 || historyBytes > 40e6) historyBytes -= history.shift().bytes;
 }
+/** Nach Rückgängig/Wiederholen: gespeicherte Generationen ab der aktuellen verwerfen, sonst führt „Zurück“ in einen falschen Zustand. */
+function trimHistory() {
+  while (history.length && history[history.length - 1].generation >= generation) historyBytes -= history.pop().bytes;
+  clearFuture();
+}
 function clearHistory() { history.length = 0; historyBytes = 0; clearFuture(); }
 /* ---------- Zeitleiste: zurückgespulte Generationen bleiben erhalten, bis sich etwas ändert ---------- */
 const future = [], futurePop = [];
@@ -1970,6 +1976,8 @@ function scrubTo(target) {
     for (let i = 0; i < k; i++) popHist.push(futurePop.length ? futurePop.pop() : popHist[popHist.length - 1]);
     restore(future.pop());
   }
+  const pop = analyze(grid, S.cols, S.rows).pop;   // Kurve und Anzeige an den tatsächlichen Zustand anpassen
+  if (!popHist.length) popHist.push(pop); else popHist[popHist.length - 1] = pop;
   chartDirty = true; requestRender(); updateButtons();
 }
 /** Vor jeder Bearbeitung aufrufen: speichert den Zustand für „Rückgängig“. */
@@ -1988,6 +1996,7 @@ function undo() {
   if (!undoStack.length) { toast("Nichts zum Rückgängigmachen"); return; }
   redoStack.push(snapshot());
   restore(undoStack.pop());
+  trimHistory();
   afterBigChange();
 }
 function redo() {
@@ -1996,6 +2005,7 @@ function redo() {
   if (!redoStack.length) { toast("Nichts zum Wiederholen"); return; }
   undoStack.push(snapshot());
   restore(redoStack.pop());
+  trimHistory();
   afterBigChange();
 }
 function afterBigChange() {
